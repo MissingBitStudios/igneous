@@ -16,6 +16,13 @@ set(BUILD_BULLET2_DEMOS OFF CACHE INTERNAL "" )
 set(BUILD_UNIT_TESTS OFF CACHE INTERNAL "" )
 add_subdirectory(bullet)
 
+# entt
+set(BUILD_TESTING OFF CACHE INTERNAL "" )
+add_subdirectory(entt)
+
+# mono TODO
+#include(${CMAKE_SOURCE_DIR}/cmake/FindMono.cmake)
+
 # openal
 include(FindOpenAL)
 
@@ -29,6 +36,8 @@ set(IGNEOUS_LIBRARIES
   BulletCollision
   BulletDynamics
   BulletSoftBody
+  EnTT
+  #${MONO_LIBRARIES}
   ${OPENAL_LIBRARY}
 CACHE INTERNAL "")
 
@@ -37,5 +46,6 @@ set(IGNEOUS_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/assimp/include
   ${CMAKE_CURRENT_BINARY_DIR}/assimp/include
   ${CMAKE_CURRENT_SOURCE_DIR}/bullet/src
+  #${MONO_INCLUDE_DIRS}
   ${OPENAL_INCLUDE_DIR}
 CACHE INTERNAL "")

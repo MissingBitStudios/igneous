@@ -7,3 +7,6 @@
 [submodule "dependencies/bullet"]
 	path = dependencies/bullet
 	url = https://github.com/bulletphysics/bullet3.git
+[submodule "dependencies/entt"]
+	path = dependencies/entt
+	url = https://github.com/skypjack/entt.git

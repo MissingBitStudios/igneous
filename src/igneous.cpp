@@ -13,6 +13,9 @@ class Engine : public bigg::Application
 		std::cout << "Igneous version: " << IGNEOUS_VERSION << "\n";
 		std::cout << "Assimp version: " << aiGetVersionMajor() << "." << aiGetVersionMinor() << "." << aiGetVersionRevision() << "\n";
 		std::cout << "Bullet version: " << BT_BULLET_VERSION << "\n";
+		std::cout << "EnTT version: " << "" << "\n";
+		//std::cout << "Mono version: " << "" << "\n";
+		std::cout << "OpenAL version: " << "" << "\n";
 	}
 
 	void onReset()
