@@ -3,6 +3,7 @@
 #include <assimp/version.h>
 #include <bigg.hpp>
 #include <btBulletDynamicsCommon.h>
+#include <RakNetVersion.h>
 
 #include "version.h"
 
@@ -14,6 +15,7 @@ class Engine : public bigg::Application
 		std::cout << "Assimp version: " << aiGetVersionMajor() << "." << aiGetVersionMinor() << "." << aiGetVersionRevision() << "\n";
 		std::cout << "Bullet version: " << BT_BULLET_VERSION << "\n";
 		std::cout << "EnTT version: " << "" << "\n";
+		std::cout << "RakNet version: " << RAKNET_VERSION << "\n";
 		//std::cout << "Mono version: " << "" << "\n";
 		std::cout << "OpenAL version: " << "" << "\n";
 	}

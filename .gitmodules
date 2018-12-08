@@ -10,3 +10,6 @@
 [submodule "dependencies/entt"]
 	path = dependencies/entt
 	url = https://github.com/skypjack/entt.git
+[submodule "dependencies/raknet"]
+	path = dependencies/raknet
+	url = https://github.com/facebookarchive/RakNet.git
