@@ -12,11 +12,18 @@ configure_file (
   "${CMAKE_BINARY_DIR}/src/version.h"
 )
 
-file( GLOB IGNEOUS_SOURCES ${CMAKE_SOURCE_DIR}/src/*.cpp ${CMAKE_SOURCE_DIR}/src/*.h)
+file(GLOB IGNEOUS_SOURCES
+  ${CMAKE_SOURCE_DIR}/src/*.cpp
+  ${CMAKE_SOURCE_DIR}/src/*.h
+)
+
 add_executable(${CMAKE_PROJECT_NAME} ${IGNEOUS_SOURCES})
 
-target_link_libraries (${CMAKE_PROJECT_NAME} bigg assimp)
+target_link_libraries (${CMAKE_PROJECT_NAME} ${IGNEOUS_LIBRARIES})
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
   ${CMAKE_BINARY_DIR}/src
+  ${IGNEOUS_INCLUDES}
 )
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${CMAKE_PROJECT_NAME})

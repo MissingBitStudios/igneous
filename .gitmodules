@@ -4,3 +4,6 @@
 [submodule "dependencies/assimp"]
 	path = dependencies/assimp
 	url = https://github.com/assimp/assimp.git
+[submodule "dependencies/bullet"]
+	path = dependencies/bullet
+	url = https://github.com/bulletphysics/bullet3.git
