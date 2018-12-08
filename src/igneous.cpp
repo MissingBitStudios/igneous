@@ -1,6 +1,8 @@
 #include <iostream>
 
+#include <assimp/version.h>
 #include <bigg.hpp>
+#include <btBulletDynamicsCommon.h>
 
 #include "version.h"
 
@@ -9,6 +11,8 @@ class Engine : public bigg::Application
 	void initialize(int _argc, char** _argv)
 	{
 		std::cout << "Igneous version: " << IGNEOUS_VERSION << "\n";
+		std::cout << "Assimp version: " << aiGetVersionMajor() << "." << aiGetVersionMinor() << "." << aiGetVersionRevision() << "\n";
+		std::cout << "Bullet version: " << BT_BULLET_VERSION << "\n";
 	}
 
 	void onReset()
