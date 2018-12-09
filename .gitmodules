@@ -13,3 +13,6 @@
 [submodule "dependencies/raknet"]
 	path = dependencies/raknet
 	url = https://github.com/facebookarchive/RakNet.git
+[submodule "dependencies/stb"]
+	path = dependencies/stb
+	url = https://github.com/nothings/stb.git

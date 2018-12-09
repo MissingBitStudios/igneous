@@ -20,16 +20,19 @@ add_subdirectory(bullet)
 set(BUILD_TESTING OFF CACHE INTERNAL "")
 add_subdirectory(entt)
 
-# raknet
-set(RAKNET_ENABLE_SAMPLES OFF CACHE INTERNAL "")
-set(RAKNET_ENABLE_DLL OFF CACHE INTERNAL "")
-add_subdirectory(raknet)
-
 # mono TODO
 #include(${CMAKE_SOURCE_DIR}/cmake/FindMono.cmake)
 
 # openal
 include(FindOpenAL)
+
+# raknet
+set(RAKNET_ENABLE_SAMPLES OFF CACHE INTERNAL "")
+set(RAKNET_ENABLE_DLL OFF CACHE INTERNAL "")
+add_subdirectory(raknet)
+
+# stb
+include(${CMAKE_SOURCE_DIR}/cmake/UseStb.cmake)
 
 # set libraries list
 set(IGNEOUS_LIBRARIES
@@ -37,9 +40,10 @@ set(IGNEOUS_LIBRARIES
   bigg
   ${BULLET_LIBRARIES}
   EnTT
-  ${RAKNET_COMMON_LIBS}
   #${MONO_LIBRARIES}
   ${OPENAL_LIBRARY}
+  ${RAKNET_COMMON_LIBS}
+  stb
 CACHE INTERNAL "")
 
 # set includes list
@@ -47,7 +51,7 @@ set(IGNEOUS_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/assimp/include
   ${CMAKE_CURRENT_BINARY_DIR}/assimp/include
   ${CMAKE_CURRENT_SOURCE_DIR}/bullet/src
-  ${RAKNET_INCLUDE_DIRS}
   #${MONO_INCLUDE_DIRS}
   ${OPENAL_INCLUDE_DIR}
+  ${RAKNET_INCLUDE_DIRS}
 CACHE INTERNAL "")

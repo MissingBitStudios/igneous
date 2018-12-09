@@ -20,6 +20,8 @@ file(GLOB IGNEOUS_SOURCES
   ${CMAKE_SOURCE_DIR}/src/*.h
 )
 
+file(COPY res/ DESTINATION ${CMAKE_BINARY_DIR}/res)
+
 add_executable(${CMAKE_PROJECT_NAME} ${IGNEOUS_SOURCES})
 
 target_link_libraries (${CMAKE_PROJECT_NAME} ${IGNEOUS_LIBRARIES})
