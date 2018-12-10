@@ -37,6 +37,11 @@ add_subdirectory(spdlog)
 # stb
 include(${CMAKE_SOURCE_DIR}/cmake/UseStb.cmake)
 
+# ttvfs
+set(TTVFS_IGNORE_CASE FALSE CACHE INTERNAL "")
+set(TTVFS_BUILD_CFILEAPI FALSE CACHE INTERNAL "")
+add_subdirectory(ttvfs)
+
 # set libraries list
 set(IGNEOUS_LIBRARIES
   assimp
@@ -48,6 +53,7 @@ set(IGNEOUS_LIBRARIES
   ${RAKNET_COMMON_LIBS}
   spdlog
   stb
+  ttvfs
 CACHE INTERNAL "")
 
 # set includes list
@@ -58,4 +64,5 @@ set(IGNEOUS_INCLUDES
   #${MONO_INCLUDE_DIRS}
   ${OPENAL_INCLUDE_DIR}
   ${RAKNET_INCLUDE_DIRS}
+  ${TTVFS_INCLUDE_DIRS}
 CACHE INTERNAL "")
