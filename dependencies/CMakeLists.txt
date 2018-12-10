@@ -31,6 +31,9 @@ set(RAKNET_ENABLE_SAMPLES OFF CACHE INTERNAL "")
 set(RAKNET_ENABLE_DLL OFF CACHE INTERNAL "")
 add_subdirectory(raknet)
 
+# spdlog
+add_subdirectory(spdlog)
+
 # stb
 include(${CMAKE_SOURCE_DIR}/cmake/UseStb.cmake)
 
@@ -43,6 +46,7 @@ set(IGNEOUS_LIBRARIES
   #${MONO_LIBRARIES}
   ${OPENAL_LIBRARY}
   ${RAKNET_COMMON_LIBS}
+  spdlog
   stb
 CACHE INTERNAL "")
 

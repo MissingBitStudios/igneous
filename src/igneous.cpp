@@ -5,6 +5,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <RakNetVersion.h>
 #include <stb_image.h>
+#include <spdlog/version.h>
 
 #include "version.h"
 
@@ -30,6 +31,7 @@ class Engine : public bigg::Application
 		std::cout << "RakNet version: " << RAKNET_VERSION << "\n";
 		//std::cout << "Mono version: " << mono_get_runtime_build_info() << "\n";
 		std::cout << "OpenAL version: " << "" << "\n";
+		std::cout << "spdlog version: " << SPDLOG_VER_MAJOR << "." << SPDLOG_VER_MINOR << "." << SPDLOG_VER_PATCH << "\n";
 	}
 	
 	void onReset()
