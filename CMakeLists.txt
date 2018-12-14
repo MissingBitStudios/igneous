@@ -10,14 +10,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(dependencies)
 
+add_shader( shaders/vs_cubes.sc VERTEX   OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130 )
+add_shader( shaders/fs_cubes.sc FRAGMENT OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130 )
+
 configure_file (
   "${CMAKE_SOURCE_DIR}/src/version.h.in"
   "${CMAKE_BINARY_DIR}/src/version.h"
 )
 
-file(GLOB IGNEOUS_SOURCES
+file(GLOB_RECURSE IGNEOUS_SOURCES
   ${CMAKE_SOURCE_DIR}/src/*.cpp
   ${CMAKE_SOURCE_DIR}/src/*.h
+  ${CMAKE_SOURCE_DIR}/shaders/*.sc
 )
 
 file(COPY res/ DESTINATION ${CMAKE_BINARY_DIR}/res)
