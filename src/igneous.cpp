@@ -8,7 +8,8 @@
 #include <stb_image.h>
 #include <spdlog/version.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp> 
+#include <glm/gtx/euler_angles.hpp>
+#include <mono/jit/jit.h>
 
 #include "version.h"
 
@@ -63,7 +64,7 @@ class Engine : public bigg::Application
 		std::cout << "GLFW version: " << GLFW_VERSION_MAJOR << "." << GLFW_VERSION_MINOR << "." << GLFW_VERSION_REVISION << "\n";
 		std::cout << "GLM version: " << GLM_VERSION_MAJOR << "." << GLM_VERSION_MINOR << "." << GLM_VERSION_PATCH << "." << GLM_VERSION_REVISION << "\n";
 		std::cout << "RakNet version: " << RAKNET_VERSION << "\n";
-		//std::cout << "Mono version: " << mono_get_runtime_build_info() << "\n";
+		std::cout << "Mono version: " << mono_get_runtime_build_info() << "\n";
 		std::cout << "OpenAL version: " << "" << "\n";
 		std::cout << "spdlog version: " << SPDLOG_VER_MAJOR << "." << SPDLOG_VER_MINOR << "." << SPDLOG_VER_PATCH << "\n";
 

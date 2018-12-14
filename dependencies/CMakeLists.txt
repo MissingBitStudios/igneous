@@ -21,7 +21,7 @@ set(BUILD_TESTING OFF CACHE INTERNAL "")
 add_subdirectory(entt)
 
 # mono TODO
-#include(${CMAKE_SOURCE_DIR}/cmake/FindMono.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/FindMono.cmake)
 
 # openal
 include(FindOpenAL)
@@ -48,7 +48,7 @@ set(IGNEOUS_LIBRARIES
   bigg
   ${BULLET_LIBRARIES}
   EnTT
-  #${MONO_LIBRARIES}
+  ${MONO_LIBRARY}
   ${OPENAL_LIBRARY}
   ${RAKNET_COMMON_LIBS}
   spdlog
@@ -61,7 +61,7 @@ set(IGNEOUS_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/assimp/include
   ${CMAKE_CURRENT_BINARY_DIR}/assimp/include
   ${CMAKE_CURRENT_SOURCE_DIR}/bullet/src
-  #${MONO_INCLUDE_DIRS}
+  ${MONO_INCLUDE_DIR}
   ${OPENAL_INCLUDE_DIR}
   ${RAKNET_INCLUDE_DIRS}
   ${TTVFS_INCLUDE_DIRS}
