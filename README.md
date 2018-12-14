@@ -4,7 +4,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/MissingBitStudios/igneous.svg)](https://github.com/MissingBitStudios/igneous/stargazers)
 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/MissingBitStudios/igneous.svg)
 [![GitHub license](https://img.shields.io/badge/license-CC%20BY--NC--SA-green.svg)](https://github.com/MissingBitStudios/igneous/blob/master/LICENSE.md)
-[![Join the chat at https://discord.gg/CCUwTar](https://img.shields.io/badge/chat-on%20discord-mediumpurple.svg)](https://discord.gg/CCUwTar) [![Join the chat at https://gitter.im/MissingBitStudios/igneous](https://badges.gitter.im/MissingBitStudios/igneous.svg)](https://gitter.im/MissingBitStudios/igneous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://discord.gg/CCUwTar](https://img.shields.io/badge/chat-on%20discord-mediumpurple.svg)](https://discord.gg/CCUwTar)
+[![Join the chat at https://gitter.im/MissingBitStudios/igneous](https://badges.gitter.im/MissingBitStudios/igneous.svg)](https://gitter.im/MissingBitStudios/igneous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Igneous is an open source game engine written in C++.
 
