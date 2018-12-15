@@ -1,6 +1,6 @@
 # igneous
 
-![GitHub tag](https://img.shields.io/github/tag/MissingBitStudios/igneous.svg)
+[![GitHub tag](https://img.shields.io/github/tag/MissingBitStudios/igneous.svg)](https://github.com/MissingBitStudios/igneous/releases)
 [![GitHub stars](https://img.shields.io/github/stars/MissingBitStudios/igneous.svg)](https://github.com/MissingBitStudios/igneous/stargazers)
 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/MissingBitStudios/igneous.svg)
 [![GitHub license](https://img.shields.io/badge/license-CC%20BY--NC--SA-green.svg)](https://github.com/MissingBitStudios/igneous/blob/master/LICENSE.md)
