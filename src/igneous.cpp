@@ -13,6 +13,7 @@
 
 #include "version.h"
 #include "components/cameraComponent.h"
+#include "components/cubeComponent.h"
 #include "components/modelComponent.h"
 #include "components/transformationComponent.h"
 #include "systems/captureSystem.h"
@@ -117,15 +118,17 @@ class Engine : public bigg::Application
 				auto entity = registry.create();
 				registry.assign<Model>(entity, mVbh, mIbh);
 				registry.assign<Transformation>(entity, mtx);
+				registry.assign<Cube>(entity, xx, yy);
 			}
 		}
 
-		glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, -35.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 mtx;
+		mtx = glm::translate(mtx, glm::vec3(0.0f, 0.0f, -35.0f));
+		glm::vec3 focus = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::mat4 proj = bigg::perspective(glm::radians(60.0f), float(getWidth()) / getHeight(), 0.1f, 100.0f);
 		camera = registry.create();
-		registry.assign<Camera>(camera, view, proj);
-
-		RendererSystem::useCamera(camera, uint16_t(getWidth()), uint16_t(getHeight()), registry);
+		registry.assign<Transformation>(camera, mtx);
+		registry.assign<Camera>(camera, focus, proj);
 
 		keySignal.sink().connect<&CaptureSystem::onKey>();
 		keySignal.sink().connect<&MoveSystem::onKey>();
@@ -148,6 +151,7 @@ class Engine : public bigg::Application
 	void update(float dt)
 	{
 		bgfx::touch(0);
+		RendererSystem::useCamera(camera, uint16_t(getWidth()), uint16_t(getHeight()), registry);
 		MoveSystem::update(dt, registry);
 		RendererSystem::render(mProgram, registry);
 		ImGui::ShowDemoWindow();

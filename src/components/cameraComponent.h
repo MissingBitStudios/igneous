@@ -4,6 +4,6 @@
 
 struct Camera
 {
-	glm::mat4 view;
+	glm::vec3 focus;
 	glm::mat4 proj;
 };

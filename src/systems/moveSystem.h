@@ -9,5 +9,7 @@ namespace MoveSystem
 
 	void onKey(int key, int scancode, int action, int mods);
 
+	extern float time;
+	extern int dir;
 	extern bool shouldMove;
 }

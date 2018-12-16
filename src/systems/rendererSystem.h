@@ -2,6 +2,7 @@
 
 #include "../components/modelComponent.h"
 #include "../components/transformationComponent.h"
+#include "../components/cameraComponent.h"
 #include <entt/entt.hpp>
 #include <bigg.hpp>
 
