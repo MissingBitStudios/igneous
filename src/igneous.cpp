@@ -22,6 +22,7 @@
 #include "systems/moveSystem.h"
 #include "util/capture.h"
 #include "util/input.h"
+#include "util/log.h"
 
 struct PosColorVertex
 {
@@ -68,16 +69,17 @@ class Engine : public bigg::Application
 		stbi_image_free(images[1].pixels);
 		stbi_image_free(images[2].pixels);
 
-		std::cout << "Igneous version: " << IGNEOUS_VERSION << "\n";
-		std::cout << "Assimp version: " << aiGetVersionMajor() << "." << aiGetVersionMinor() << "." << aiGetVersionRevision() << "\n";
-		std::cout << "Bullet version: " << BT_BULLET_VERSION << "\n";
-		std::cout << "EnTT version: " << ENTT_VERSION << "\n";
-		std::cout << "GLFW version: " << GLFW_VERSION_MAJOR << "." << GLFW_VERSION_MINOR << "." << GLFW_VERSION_REVISION << "\n";
-		std::cout << "GLM version: " << GLM_VERSION_MAJOR << "." << GLM_VERSION_MINOR << "." << GLM_VERSION_PATCH << "." << GLM_VERSION_REVISION << "\n";
-		std::cout << "RakNet version: " << RAKNET_VERSION << "\n";
-		std::cout << "Mono version: " << mono_get_runtime_build_info() << "\n";
-		std::cout << "OpenAL version: " << "" << "\n";
-		std::cout << "spdlog version: " << SPDLOG_VER_MAJOR << "." << SPDLOG_VER_MINOR << "." << SPDLOG_VER_PATCH << "\n";
+		Log::Init();
+		IG_CORE_INFO("Igneous version: {}", IGNEOUS_VERSION);
+		IG_CORE_INFO("Assimp version: {}.{}.{}", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
+		IG_CORE_INFO("Bullet version: {}", BT_BULLET_VERSION);
+		IG_CORE_INFO("EnTT version: {}", ENTT_VERSION);
+		IG_CORE_INFO("GLFW version: {}.{}.{}", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION);
+		IG_CORE_INFO("GLM version: {}.{}.{}.{}", GLM_VERSION_MAJOR, GLM_VERSION_MINOR, GLM_VERSION_PATCH, GLM_VERSION_REVISION);
+		IG_CORE_INFO("RakNet version: {}", RAKNET_VERSION);
+		IG_CORE_INFO("Mono version: {}", mono_get_runtime_build_info());
+		IG_CORE_INFO("OpenAL version: {}", "");
+		IG_CORE_INFO("spdlog version: {}.{}.{}", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR, SPDLOG_VER_PATCH);
 
 		PosColorVertex::init();
 

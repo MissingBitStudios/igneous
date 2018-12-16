@@ -1,41 +1,44 @@
 #include "captureSystem.h"
 
-void CaptureSystem::screenshot()
+namespace CaptureSystem
 {
-	bgfx::requestScreenShot(BGFX_INVALID_HANDLE, "capture/screenshot");
-	std::cout << "Screenshot!" << std::endl;
-}
-
-void CaptureSystem::record()
-{
-	capture = !capture;
-
-	if (capture)
+	void screenshot()
 	{
-		std::cout << "Capture: " << "On" << "\n";
+		bgfx::requestScreenShot(BGFX_INVALID_HANDLE, "capture/screenshot");
+		std::cout << "Screenshot!" << std::endl;
 	}
-	else
-	{
-		std::cout << "Capture: " << "Off" << "\n";
-	}
-}
 
-void CaptureSystem::onKey(int key, int scancode, int action, int mods)
-{
-	if (action == GLFW_PRESS)
+	void record()
 	{
-		switch (key)
+		capture = !capture;
+
+		if (capture)
 		{
-		case GLFW_KEY_F2:
-			screenshot();
-			break;
-		case GLFW_KEY_F9:
-			record();
-			break;
-		default:
-			break;
+			std::cout << "Capture: " << "On" << "\n";
+		}
+		else
+		{
+			std::cout << "Capture: " << "Off" << "\n";
 		}
 	}
-}
 
-bool CaptureSystem::capture = false;
+	void onKey(int key, int scancode, int action, int mods)
+	{
+		if (action == GLFW_PRESS)
+		{
+			switch (key)
+			{
+			case GLFW_KEY_F2:
+				screenshot();
+				break;
+			case GLFW_KEY_F9:
+				record();
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	bool capture = false;
+}
