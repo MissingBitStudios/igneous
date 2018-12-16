@@ -142,6 +142,7 @@ class Engine : public bigg::Application
 	void onKey(int key, int scancode, int action, int mods)
 	{
 		Input::onKey(key, scancode, action, mods);
+		if (Input::keys[GLFW_KEY_ESCAPE]) glfwSetWindowShouldClose(mWindow, true);
 	}
 	
 	void onMouseButton(int button, int action, int mods)
