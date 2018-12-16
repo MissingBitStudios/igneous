@@ -12,6 +12,7 @@
 #include <entt/entt.hpp>
 
 #include "version.h"
+#include "components/cameraComponent.h"
 #include "components/modelComponent.h"
 #include "components/transformationComponent.h"
 #include "systems/captureSystem.h"
@@ -119,6 +120,13 @@ class Engine : public bigg::Application
 			}
 		}
 
+		glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, -35.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 proj = bigg::perspective(glm::radians(60.0f), float(getWidth()) / getHeight(), 0.1f, 100.0f);
+		camera = registry.create();
+		registry.assign<Camera>(camera, view, proj);
+
+		RendererSystem::useCamera(camera, uint16_t(getWidth()), uint16_t(getHeight()), registry);
+
 		keySignal.sink().connect<&CaptureSystem::onKey>();
 		keySignal.sink().connect<&MoveSystem::onKey>();
 
@@ -139,10 +147,6 @@ class Engine : public bigg::Application
 
 	void update(float dt)
 	{
-		glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, -35.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		glm::mat4 proj = bigg::perspective(glm::radians(60.0f), float(getWidth()) / getHeight(), 0.1f, 100.0f);
-		bgfx::setViewTransform(0, &view[0][0], &proj[0][0]);
-		bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
 		bgfx::touch(0);
 		MoveSystem::update(dt, registry);
 		RendererSystem::render(mProgram, registry);
@@ -171,6 +175,7 @@ private:
 	bgfx::IndexBufferHandle mIbh;
 	entt::registry<> registry;
 	entt::sigh<void(int, int, int, int)> keySignal;
+	uint32_t camera;
 };
 
 int main(int argc, char** argv)
