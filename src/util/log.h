@@ -15,6 +15,8 @@ private:
 	static std::shared_ptr<spdlog::logger> s_ClientLogger;
 };
 
+#define IG_LOG_INIT() Log::Init()
+
 #define IG_CORE_TRACE(...)    Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define IG_CORE_INFO(...)     Log::GetCoreLogger()->info(__VA_ARGS__)
 #define IG_CORE_WARN(...)     Log::GetCoreLogger()->warn(__VA_ARGS__)

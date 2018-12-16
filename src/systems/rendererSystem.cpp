@@ -1,5 +1,10 @@
 #include "rendererSystem.h"
+
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "../components/cameraComponent.h"
+#include "../components/modelComponent.h"
+#include "../components/transformationComponent.h"
 
 namespace RendererSystem
 {

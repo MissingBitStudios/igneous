@@ -1,9 +1,12 @@
 #include "moveSystem.h"
-#include <glm/gtx/euler_angles.hpp> 
+
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
+
 #include "../components/cameraComponent.h"
 #include "../components/cubeComponent.h"
+#include "../components/transformationComponent.h"
 #include "../util/input.h"
 
 namespace MoveSystem

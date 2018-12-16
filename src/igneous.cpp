@@ -1,28 +1,26 @@
-#include <iostream>
-
 #include <assimp/version.h>
 #include <bigg.hpp>
 #include <btBulletDynamicsCommon.h>
 #include <bx/string.h>
+#include <entt/entt.hpp>
+#include <entt/config/version.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <mono/jit/jit.h>
 #include <RakNetVersion.h>
-#include <stb_image.h>
 #include <spdlog/version.h>
-#include <entt/entt.hpp>
-#include <entt/config/version.h>
+#include <stb_image.h>
 
-#include "version.h"
 #include "components/cameraComponent.h"
 #include "components/cubeComponent.h"
 #include "components/modelComponent.h"
 #include "components/transformationComponent.h"
 #include "systems/captureSystem.h"
-#include "systems/rendererSystem.h"
 #include "systems/moveSystem.h"
+#include "systems/rendererSystem.h"
 #include "util/capture.h"
 #include "util/input.h"
 #include "util/log.h"
+#include "version.h"
 
 struct PosColorVertex
 {
@@ -69,7 +67,7 @@ class Engine : public bigg::Application
 		stbi_image_free(images[1].pixels);
 		stbi_image_free(images[2].pixels);
 
-		Log::Init();
+		IG_LOG_INIT();
 		IG_CORE_INFO("Igneous version: {}", IGNEOUS_VERSION);
 		IG_CORE_INFO("Assimp version: {}.{}.{}", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
 		IG_CORE_INFO("Bullet version: {}", BT_BULLET_VERSION);
@@ -194,7 +192,7 @@ class Engine : public bigg::Application
 
 	int shutdown()
 	{
-		std::cout << "Shutdown\n";
+		IG_CORE_INFO("Shutdown");
 		return 0;
 	}
 private:

@@ -1,25 +1,19 @@
 #include "captureSystem.h"
 
+#include "../util/log.h"
+
 namespace CaptureSystem
 {
 	void screenshot()
 	{
 		bgfx::requestScreenShot(BGFX_INVALID_HANDLE, "capture/screenshot");
-		std::cout << "Screenshot!" << std::endl;
+		IG_CORE_INFO("Screenshot requested");
 	}
 
 	void record()
 	{
 		capture = !capture;
-
-		if (capture)
-		{
-			std::cout << "Capture: " << "On" << "\n";
-		}
-		else
-		{
-			std::cout << "Capture: " << "Off" << "\n";
-		}
+		IG_CORE_INFO("Capture: {}", capture?"ON":"OFF");
 	}
 
 	void onKey(int key, int scancode, int action, int mods)

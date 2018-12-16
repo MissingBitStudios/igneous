@@ -1,7 +1,7 @@
 #pragma once
 
-#include <entt/entt.hpp>
 #include <GLFW/glfw3.h>
+#include <entt/entt.hpp>
 
 namespace Input
 {

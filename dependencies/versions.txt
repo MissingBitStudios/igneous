@@ -1,8 +1,7 @@
 assimp 4.1.0
 bigg 83f0ca5
 bullet 2.87
-entt 2.7.3
+entt 3.x.y-WIP
 raknet 1a16989
 spdlog 1.2.1
 stb e6afb9c
-ttvfs 7ade1d7

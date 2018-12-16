@@ -1,9 +1,8 @@
 #include "capture.h"
 
-#include <bx/debug.h>
 #include <bimg/bimg.h>
+#include <bx/debug.h>
 #include <inttypes.h>
-#include <iostream>
 #include <string>
 
 void savePng(const char* _filePath, uint32_t _width, uint32_t _height, uint32_t _srcPitch, const void* _src, bimg::TextureFormat::Enum _format, bool _yflip)
