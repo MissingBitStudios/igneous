@@ -31,10 +31,31 @@ The OpenAL variable should be named 'OPENALDIR' exactly as written here without 
 git clone https://github.com/MissingBitStudios/igneous.git
 cd igneous
 git submodule update --init --recursive
+```
+
+### Build
+
+```
 mkdir build
 cd build
 cmake ..
 ```
+
+## Built With
+
+* [Assimp](https://github.com/assimp/assimp) - [Website](http://assimp.sourceforge.net/)
+* [bgfx](https://github.com/bkaradzic/bgfx)
+* [bigg](https://github.com/JoshuaBrookover/bigg)
+* [Bullet Physics](https://github.com/bulletphysics/bullet3) - [Website](http://bulletphysics.org/)
+* [EnTT](https://github.com/skypjack/entt)
+* [GLFW](https://github.com/glfw/glfw) - [Website](http://www.glfw.org/)
+* [GLM](https://github.com/g-truc/glm) - [Website](https://glm.g-truc.net/)
+* [Dear ImGui](https://github.com/ocornut/imgui)
+* [Mono](https://github.com/mono/mono) - [Website](https://www.mono-project.com/)
+* [OpenAL](https://www.openal.org/)
+* [RakNet](https://github.com/facebookarchive/RakNet) - [Website](http://www.raknet.net/)
+* [spdlog](https://github.com/gabime/spdlog)
+* [stb](https://github.com/nothings/stb)
 
 ## Contributing
 
