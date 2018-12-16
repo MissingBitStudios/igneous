@@ -150,6 +150,21 @@ class Engine : public bigg::Application
 		Input::onMouseButton(button, action, mods);
 	}
 
+	void onScroll(double xoffset, double yoffset)
+	{
+		Input::onScroll(xoffset, yoffset);
+	}
+
+	void onCursorPos(double xpos, double ypos)
+	{
+		Input::onCursorPos(xpos, ypos);
+	}
+
+	void onCursorEnter(int entered)
+	{
+		Input::onCursorEnter(entered);
+	}
+
 	void onReset()
 	{
 		bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL, 0xc0c0c0ff, 1.0f, 0);
