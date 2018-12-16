@@ -10,6 +10,7 @@
 #include <stb_image.h>
 #include <spdlog/version.h>
 #include <entt/entt.hpp>
+#include <entt/config/version.h>
 
 #include "version.h"
 #include "components/cameraComponent.h"
@@ -20,6 +21,7 @@
 #include "systems/rendererSystem.h"
 #include "systems/moveSystem.h"
 #include "util/capture.h"
+#include "util/input.h"
 
 struct PosColorVertex
 {
@@ -69,7 +71,7 @@ class Engine : public bigg::Application
 		std::cout << "Igneous version: " << IGNEOUS_VERSION << "\n";
 		std::cout << "Assimp version: " << aiGetVersionMajor() << "." << aiGetVersionMinor() << "." << aiGetVersionRevision() << "\n";
 		std::cout << "Bullet version: " << BT_BULLET_VERSION << "\n";
-		std::cout << "EnTT version: " << "" << "\n";
+		std::cout << "EnTT version: " << ENTT_VERSION << "\n";
 		std::cout << "GLFW version: " << GLFW_VERSION_MAJOR << "." << GLFW_VERSION_MINOR << "." << GLFW_VERSION_REVISION << "\n";
 		std::cout << "GLM version: " << GLM_VERSION_MAJOR << "." << GLM_VERSION_MINOR << "." << GLM_VERSION_PATCH << "." << GLM_VERSION_REVISION << "\n";
 		std::cout << "RakNet version: " << RAKNET_VERSION << "\n";
@@ -130,8 +132,8 @@ class Engine : public bigg::Application
 		registry.assign<Transformation>(camera, mtx);
 		registry.assign<Camera>(camera, focus, proj);
 
-		keySignal.sink().connect<&CaptureSystem::onKey>();
-		keySignal.sink().connect<&MoveSystem::onKey>();
+		Input::keySignal.sink().connect<&CaptureSystem::onKey>();
+		Input::keySignal.sink().connect<&MoveSystem::onKey>();
 
 		mReset |= BGFX_RESET_MSAA_X4;
 		reset(mReset);
@@ -139,9 +141,14 @@ class Engine : public bigg::Application
 
 	void onKey(int key, int scancode, int action, int mods)
 	{
-		keySignal.publish(key, scancode, action, mods);
+		Input::onKey(key, scancode, action, mods);
 	}
 	
+	void onMouseButton(int button, int action, int mods)
+	{
+		Input::onMouseButton(button, action, mods);
+	}
+
 	void onReset()
 	{
 		bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL, 0xc0c0c0ff, 1.0f, 0);
@@ -178,7 +185,6 @@ private:
 	bgfx::VertexBufferHandle mVbh;
 	bgfx::IndexBufferHandle mIbh;
 	entt::registry<> registry;
-	entt::sigh<void(int, int, int, int)> keySignal;
 	uint32_t camera;
 };
 
