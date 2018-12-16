@@ -1,6 +1,6 @@
 #include "rendererSystem.h"
 
-void render(bgfx::ProgramHandle program, entt::registry<> &registry) {
+void RendererSystem::render(bgfx::ProgramHandle program, entt::registry<> &registry) {
 	registry.view<Model, Transformation>().each([program](const auto, auto &model, auto &transformation)
 	{
 		bgfx::setTransform(&transformation.mtx);

@@ -5,4 +5,7 @@
 #include <entt/entt.hpp>
 #include <bigg.hpp>
 
-void render(bgfx::ProgramHandle program, entt::registry<> &registry);
+namespace RendererSystem
+{
+	void render(bgfx::ProgramHandle program, entt::registry<> &registry);
+}

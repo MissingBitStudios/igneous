@@ -3,4 +3,11 @@
 #include "../components/transformationComponent.h"
 #include <entt/entt.hpp>
 
-void move(float dt, entt::registry<> &registry);
+namespace MoveSystem
+{
+	void update(float dt, entt::registry<> &registry);
+
+	void onKey(int key, int scancode, int action, int mods);
+
+	extern bool shouldMove;
+}

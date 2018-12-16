@@ -14,8 +14,10 @@
 #include "version.h"
 #include "components/modelComponent.h"
 #include "components/transformationComponent.h"
+#include "systems/captureSystem.h"
 #include "systems/rendererSystem.h"
 #include "systems/moveSystem.h"
+#include "util/capture.h"
 
 struct PosColorVertex
 {
@@ -116,6 +118,17 @@ class Engine : public bigg::Application
 				registry.assign<Transformation>(entity, mtx);
 			}
 		}
+
+		keySignal.sink().connect<&CaptureSystem::onKey>();
+		keySignal.sink().connect<&MoveSystem::onKey>();
+
+		mReset |= BGFX_RESET_MSAA_X4;
+		reset(mReset);
+	}
+
+	void onKey(int key, int scancode, int action, int mods)
+	{
+		keySignal.publish(key, scancode, action, mods);
 	}
 	
 	void onReset()
@@ -131,9 +144,19 @@ class Engine : public bigg::Application
 		bgfx::setViewTransform(0, &view[0][0], &proj[0][0]);
 		bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
 		bgfx::touch(0);
-		move(dt, registry);
-		render(mProgram, registry);
+		MoveSystem::update(dt, registry);
+		RendererSystem::render(mProgram, registry);
 		ImGui::ShowDemoWindow();
+		if (CaptureSystem::capture && (mReset & BGFX_RESET_CAPTURE) != BGFX_RESET_CAPTURE)
+		{
+			mReset |= BGFX_RESET_CAPTURE;
+			reset(mReset);
+		}
+		else if (!CaptureSystem::capture && (mReset & BGFX_RESET_CAPTURE) == BGFX_RESET_CAPTURE)
+		{
+			mReset &= ~BGFX_RESET_CAPTURE;
+			reset(mReset);
+		}
 	}
 
 	int shutdown()
@@ -142,14 +165,16 @@ class Engine : public bigg::Application
 		return 0;
 	}
 private:
+	uint32_t mReset = BGFX_RESET_NONE;
 	bgfx::ProgramHandle mProgram;
 	bgfx::VertexBufferHandle mVbh;
 	bgfx::IndexBufferHandle mIbh;
 	entt::registry<> registry;
+	entt::sigh<void(int, int, int, int)> keySignal;
 };
 
 int main(int argc, char** argv)
 {
 	Engine igneous;
-	return igneous.run(argc, argv);
+	return igneous.run(argc, argv, bgfx::RendererType::Count, BGFX_PCI_ID_AMD, 0, new CaptureCallback);
 }
