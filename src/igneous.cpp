@@ -14,6 +14,7 @@
 #include "components/cubeComponent.h"
 #include "components/modelComponent.h"
 #include "components/transformationComponent.h"
+#include "servers/audioServer.h"
 #include "systems/captureSystem.h"
 #include "systems/moveSystem.h"
 #include "systems/rendererSystem.h"
@@ -67,17 +68,24 @@ class Engine : public bigg::Application
 		stbi_image_free(images[1].pixels);
 		stbi_image_free(images[2].pixels);
 
-		IG_LOG_INIT();
-		IG_CORE_INFO("Igneous version: {}", IGNEOUS_VERSION);
-		IG_CORE_INFO("Assimp version: {}.{}.{}", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
-		IG_CORE_INFO("Bullet version: {}", BT_BULLET_VERSION);
-		IG_CORE_INFO("EnTT version: {}", ENTT_VERSION);
-		IG_CORE_INFO("GLFW version: {}.{}.{}", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION);
-		IG_CORE_INFO("GLM version: {}.{}.{}.{}", GLM_VERSION_MAJOR, GLM_VERSION_MINOR, GLM_VERSION_PATCH, GLM_VERSION_REVISION);
-		IG_CORE_INFO("RakNet version: {}", RAKNET_VERSION);
-		IG_CORE_INFO("Mono version: {}", mono_get_runtime_build_info());
-		IG_CORE_INFO("OpenAL version: {}", "");
-		IG_CORE_INFO("spdlog version: {}.{}.{}", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR, SPDLOG_VER_PATCH);
+		audio = &AudioServer::getInstance();
+
+		IG_CORE_INFO("Igneous Version: {}", IGNEOUS_VERSION);
+		IG_CORE_INFO("Assimp Version: {}.{}.{}", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
+		IG_CORE_INFO("Bullet Version: {}", BT_BULLET_VERSION);
+		IG_CORE_INFO("EnTT Version: {}", ENTT_VERSION);
+		IG_CORE_INFO("GLFW Version: {}.{}.{}", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION);
+		IG_CORE_INFO("GLM Version: {}.{}.{}.{}", GLM_VERSION_MAJOR, GLM_VERSION_MINOR, GLM_VERSION_PATCH, GLM_VERSION_REVISION);
+		IG_CORE_INFO("Dear ImGui Version: {}", IMGUI_VERSION);
+		IG_CORE_INFO("RakNet Version: {}", RAKNET_VERSION);
+		IG_CORE_INFO("Mono Version: {}", mono_get_runtime_build_info());
+		IG_CORE_INFO("OpenAL Version: {}", audio->getVersion());
+		IG_CORE_INFO("spdlog Version: {}.{}.{}", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR, SPDLOG_VER_PATCH);
+
+		IG_CORE_INFO("OpenAL Vendor: {}", audio->getVendor());
+		IG_CORE_INFO("OpenAL Renderer: {}", audio->getRenderer());
+		IG_CORE_INFO("OpenAL Devices: {}", audio->getDevices());
+		IG_CORE_INFO("OpenAL Extensions: {}", audio->getExtensions());
 
 		PosColorVertex::init();
 
@@ -177,7 +185,22 @@ class Engine : public bigg::Application
 		RendererSystem::useCamera(camera, uint16_t(getWidth()), uint16_t(getHeight()), registry);
 		MoveSystem::update(dt, registry);
 		RendererSystem::render(mProgram, registry);
+
 		ImGui::ShowDemoWindow();
+
+		ImGui::Begin("Audio Test");
+		if (ImGui::Button("bell"))
+		{
+			audio->playSound(audio->loadSound("res/audio/test.ogg"));
+
+		}
+		if (ImGui::Button("forest"))
+		{
+			audio->playSound(audio->loadSound("res/audio/forest.ogg"));
+
+		}
+		ImGui::End();
+
 		if (CaptureSystem::capture && (mReset & BGFX_RESET_CAPTURE) != BGFX_RESET_CAPTURE)
 		{
 			mReset |= BGFX_RESET_CAPTURE;
@@ -202,6 +225,7 @@ private:
 	bgfx::IndexBufferHandle mIbh;
 	entt::registry<> registry;
 	uint32_t camera;
+	AudioServer* audio;
 };
 
 int main(int argc, char** argv)

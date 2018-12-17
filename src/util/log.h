@@ -6,25 +6,24 @@
 class Log
 {
 public:
-	static void Init();
+	static Log& getInstance();
 
-	inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-	inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+	inline std::shared_ptr<spdlog::logger>& getCoreLogger() { return coreLogger; }
+	inline std::shared_ptr<spdlog::logger>& getClientLogger() { return clientLogger; }
 private:
-	static std::shared_ptr<spdlog::logger> s_CoreLogger;
-	static std::shared_ptr<spdlog::logger> s_ClientLogger;
+	Log();
+	std::shared_ptr<spdlog::logger> coreLogger;
+	std::shared_ptr<spdlog::logger> clientLogger;
 };
 
-#define IG_LOG_INIT() Log::Init()
+#define IG_CORE_TRACE(...)    Log::getInstance().getCoreLogger()->trace(__VA_ARGS__)
+#define IG_CORE_INFO(...)     Log::getInstance().getCoreLogger()->info(__VA_ARGS__)
+#define IG_CORE_WARN(...)     Log::getInstance().getCoreLogger()->warn(__VA_ARGS__)
+#define IG_CORE_ERROR(...)    Log::getInstance().getCoreLogger()->error(__VA_ARGS__)
+#define IG_CORE_FATAL(...)    Log::getInstance().getCoreLogger()->fatal(__VA_ARGS__)
 
-#define IG_CORE_TRACE(...)    Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define IG_CORE_INFO(...)     Log::GetCoreLogger()->info(__VA_ARGS__)
-#define IG_CORE_WARN(...)     Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define IG_CORE_ERROR(...)    Log::GetCoreLogger()->error(__VA_ARGS__)
-#define IG_CORE_FATAL(...)    Log::GetCoreLogger()->fatal(__VA_ARGS__)
-
-#define IG_CLIENT_TRACE(...)	      Log::GetClientLogger()->trace(__VA_ARGS__)
-#define IG_CLIENT_INFO(...)	      Log::GetClientLogger()->info(__VA_ARGS__)
-#define IG_CLIENT_WARN(...)	      Log::GetClientLogger()->warn(__VA_ARGS__)
-#define IG_CLIENT_ERROR(...)	      Log::GetClientLogger()->error(__VA_ARGS__)
-#define IG_CLIENT_FATAL(...)         Log::GetClientLogger()->fatal(__VA_ARGS__)
+#define IG_CLIENT_TRACE(...)  Log::getInstance().getClientLogger()->trace(__VA_ARGS__)
+#define IG_CLIENT_INFO(...)   Log::getInstance().getClientLogger()->info(__VA_ARGS__)
+#define IG_CLIENT_WARN(...)   Log::getInstance().getClientLogger()->warn(__VA_ARGS__)
+#define IG_CLIENT_ERROR(...)  Log::getInstance().getClientLogger()->error(__VA_ARGS__)
+#define IG_CLIENT_FATAL(...)  Log::getInstance().getClientLogger()->fatal(__VA_ARGS__)
