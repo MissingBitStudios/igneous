@@ -10,6 +10,9 @@ public:
 
 	inline std::shared_ptr<spdlog::logger>& getCoreLogger() { return coreLogger; }
 	inline std::shared_ptr<spdlog::logger>& getClientLogger() { return clientLogger; }
+
+	Log(Log const&) = delete;
+	void operator=(Log const&) = delete;
 private:
 	Log();
 	std::shared_ptr<spdlog::logger> coreLogger;

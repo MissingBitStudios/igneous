@@ -8,14 +8,15 @@
 
 namespace RendererSystem
 {
-	void render(bgfx::ProgramHandle program, entt::registry<> &registry) {
-		registry.view<Model, Transformation>().each([program](const auto, auto &model, auto &transformation)
+	void render(entt::registry<> &registry) {
+		registry.view<Model, Transformation>().each([](const auto, auto &model, auto &transformation)
 		{
 			bgfx::setTransform(&transformation.mtx);
 			bgfx::setVertexBuffer(0, model.mVbh);
 			bgfx::setIndexBuffer(model.mIbh);
+			bgfx::setTexture(0, model.uniform, model.texture);
 			bgfx::setState(BGFX_STATE_DEFAULT);
-			bgfx::submit(0, program);
+			bgfx::submit(0, model.program);
 		});
 	}
 

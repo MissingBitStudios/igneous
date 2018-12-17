@@ -6,7 +6,6 @@
 #include <entt/config/version.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <mono/jit/jit.h>
-#include <pcil/pcil.hpp>
 #include <RakNetVersion.h>
 #include <spdlog/version.h>
 #include <stb_image.h>
@@ -16,6 +15,7 @@
 #include "components/modelComponent.h"
 #include "components/transformationComponent.h"
 #include "servers/audioServer.h"
+#include "servers/rendererServer.h"
 #include "systems/captureSystem.h"
 #include "systems/moveSystem.h"
 #include "systems/rendererSystem.h"
@@ -29,12 +29,15 @@ struct PosColorVertex
 	float x;
 	float y;
 	float z;
+	float tex_x;
+	float tex_y;
 	uint32_t abgr;
 	static void init()
 	{
 		ms_decl
 			.begin()
 			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
 			.end();
 	}
@@ -44,14 +47,14 @@ bgfx::VertexDecl PosColorVertex::ms_decl;
 
 static PosColorVertex s_cubeVertices[] =
 {
-	{ -1.0f,  1.0f,  1.0f, 0xff000000 },
-	{ 1.0f,  1.0f,  1.0f, 0xff0000ff },
-	{ -1.0f, -1.0f,  1.0f, 0xff00ff00 },
-	{ 1.0f, -1.0f,  1.0f, 0xff00ffff },
-	{ -1.0f,  1.0f, -1.0f, 0xffff0000 },
-	{ 1.0f,  1.0f, -1.0f, 0xffff00ff },
-	{ -1.0f, -1.0f, -1.0f, 0xffffff00 },
-	{ 1.0f, -1.0f, -1.0f, 0xffffffff },
+	{ -1.0f,  1.0f,  1.0f, 0.0f, 0.0f, 0xff000000 },
+	{ 1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 0xff0000ff },
+	{ -1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 0xff00ff00 },
+	{ 1.0f, -1.0f,  1.0f, 1.0f, 1.0f, 0xff00ffff },
+	{ -1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 0xffff0000 },
+	{ 1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0xffff00ff },
+	{ -1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0xffffff00 },
+	{ 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 0xffffffff },
 };
 static const uint16_t s_cubeTriList[] = { 2, 1, 0, 2, 3, 1, 5, 6, 4, 7, 6, 5, 4, 2, 0, 6, 2, 4, 3, 5, 1, 3, 7, 5, 1, 4, 0, 1, 5, 4, 6, 3, 2, 7, 3, 6 };
 
@@ -70,7 +73,7 @@ class Engine : public bigg::Application
 		stbi_image_free(images[2].pixels);
 
 		audio = &AudioServer::getInstance();
-
+		RendererServer* renderer = &RendererServer::getInstance();
 
 		IG_CORE_INFO("Igneous Version: {}", IGNEOUS_VERSION);
 		IG_CORE_INFO("Assimp Version: {}.{}.{}", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
@@ -85,9 +88,8 @@ class Engine : public bigg::Application
 		IG_CORE_INFO("spdlog Version: {}.{}.{}", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR, SPDLOG_VER_PATCH);
 
 		IG_CORE_INFO("-----Renderer Info-----");
-		const bgfx::Caps* caps = bgfx::getCaps();
-		IG_CORE_INFO("Renderer Vendor: {}", pcil::vendorLookup(caps->vendorId));
-		IG_CORE_INFO("Renderer Device: {}", pcil::deviceLookup(caps->vendorId, caps->deviceId));
+		IG_CORE_INFO("Renderer Vendor: {}", renderer->getVendorName());
+		IG_CORE_INFO("Renderer Device: {}", renderer->getDeviceName());
 
 		IG_CORE_INFO("-----OpenAL Info-----");
 		IG_CORE_INFO("OpenAL Vendor: {}", audio->getVendor());
@@ -96,6 +98,9 @@ class Engine : public bigg::Application
 		IG_CORE_INFO("OpenAL Extensions: {}", audio->getExtensions());
 
 		PosColorVertex::init();
+
+		s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Int1);
+		handle = renderer->loadTexture("res/icons/icon48.png", BGFX_TEXTURE_U_CLAMP | BGFX_TEXTURE_V_CLAMP);
 
 		char vsName[32];
 		char fsName[32];
@@ -134,7 +139,7 @@ class Engine : public bigg::Application
 				glm::mat4 mtx;
 				mtx = glm::translate(mtx, glm::vec3(15.0f - float(xx) * 3.0f, -15.0f + float(yy) * 3.0f, 0.0f));
 				auto entity = registry.create();
-				registry.assign<Model>(entity, mVbh, mIbh);
+				registry.assign<Model>(entity, mVbh, mIbh, handle, s_tex, mProgram);
 				registry.assign<Transformation>(entity, mtx);
 				registry.assign<Cube>(entity, xx, yy);
 			}
@@ -189,10 +194,10 @@ class Engine : public bigg::Application
 
 	void update(float dt)
 	{
-		bgfx::touch(0);
 		RendererSystem::useCamera(camera, uint16_t(getWidth()), uint16_t(getHeight()), registry);
 		MoveSystem::update(dt, registry);
-		RendererSystem::render(mProgram, registry);
+		bgfx::touch(0);
+		RendererSystem::render(registry);
 
 		ImGui::ShowDemoWindow();
 
@@ -223,6 +228,9 @@ class Engine : public bigg::Application
 
 	int shutdown()
 	{
+		bgfx::destroy(handle);
+		bgfx::destroy(s_tex);
+		bgfx::destroy(mProgram);
 		IG_CORE_INFO("Shutdown");
 		return 0;
 	}
@@ -234,6 +242,8 @@ private:
 	entt::registry<> registry;
 	uint32_t camera;
 	AudioServer* audio;
+	bgfx::TextureHandle handle;
+	bgfx::UniformHandle s_tex;
 };
 
 int main(int argc, char** argv)
