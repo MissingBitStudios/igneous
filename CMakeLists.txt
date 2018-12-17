@@ -13,6 +13,8 @@ add_subdirectory(dependencies)
 
 add_shader( shaders/vs_cubes.sc VERTEX   OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130 )
 add_shader( shaders/fs_cubes.sc FRAGMENT OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130 )
+add_shader( shaders/vs_splash.sc VERTEX   OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130 )
+add_shader( shaders/fs_splash.sc FRAGMENT OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130 )
 
 configure_file (
   "${CMAKE_SOURCE_DIR}/src/version.h.in"

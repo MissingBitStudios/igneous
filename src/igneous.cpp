@@ -72,8 +72,9 @@ class Engine : public bigg::Application
 		stbi_image_free(images[1].pixels);
 		stbi_image_free(images[2].pixels);
 
-		audio = &AudioServer::getInstance();
 		RendererServer* renderer = &RendererServer::getInstance();
+
+		audio = &AudioServer::getInstance();
 
 		IG_CORE_INFO("Igneous Version: {}", IGNEOUS_VERSION);
 		IG_CORE_INFO("Assimp Version: {}.{}.{}", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
@@ -102,32 +103,7 @@ class Engine : public bigg::Application
 		s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Int1);
 		handle = renderer->loadTexture("res/icons/icon48.png", BGFX_TEXTURE_U_CLAMP | BGFX_TEXTURE_V_CLAMP);
 
-		char vsName[32];
-		char fsName[32];
-
-		const char* shaderPath = "???";
-
-		switch (bgfx::getRendererType())
-		{
-		case bgfx::RendererType::Noop:
-		case bgfx::RendererType::Direct3D9:  shaderPath = "shaders/dx9/";   break;
-		case bgfx::RendererType::Direct3D11:
-		case bgfx::RendererType::Direct3D12: shaderPath = "shaders/dx11/";  break;
-		case bgfx::RendererType::Gnm:                                       break;
-		case bgfx::RendererType::Metal:      shaderPath = "shaders/metal/"; break;
-		case bgfx::RendererType::OpenGL:     shaderPath = "shaders/glsl/";  break;
-		case bgfx::RendererType::OpenGLES:   shaderPath = "shaders/essl/";  break;
-		case bgfx::RendererType::Vulkan:                                    break;
-		case bgfx::RendererType::Count:                                     break;
-		}
-
-		bx::strCopy(vsName, BX_COUNTOF(vsName), shaderPath);
-		bx::strCat(vsName, BX_COUNTOF(vsName), "vs_cubes.bin");
-
-		bx::strCopy(fsName, BX_COUNTOF(fsName), shaderPath);
-		bx::strCat(fsName, BX_COUNTOF(fsName), "fs_cubes.bin");
-
-		mProgram = bigg::loadProgram(vsName, fsName);
+		mProgram = renderer->loadProgram("vs_cubes", "fs_cubes");
 		mVbh = bgfx::createVertexBuffer(bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices)), PosColorVertex::ms_decl);
 		mIbh = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList)));
 		bgfx::setDebug(BGFX_DEBUG_TEXT);
