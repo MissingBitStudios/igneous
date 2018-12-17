@@ -6,6 +6,7 @@
 #include <entt/config/version.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <mono/jit/jit.h>
+#include <pcil/pcil.hpp>
 #include <RakNetVersion.h>
 #include <spdlog/version.h>
 #include <stb_image.h>
@@ -70,18 +71,25 @@ class Engine : public bigg::Application
 
 		audio = &AudioServer::getInstance();
 
+
 		IG_CORE_INFO("Igneous Version: {}", IGNEOUS_VERSION);
 		IG_CORE_INFO("Assimp Version: {}.{}.{}", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
 		IG_CORE_INFO("Bullet Version: {}", BT_BULLET_VERSION);
+		IG_CORE_INFO("Dear ImGui Version: {}", IMGUI_VERSION);
 		IG_CORE_INFO("EnTT Version: {}", ENTT_VERSION);
 		IG_CORE_INFO("GLFW Version: {}.{}.{}", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION);
 		IG_CORE_INFO("GLM Version: {}.{}.{}.{}", GLM_VERSION_MAJOR, GLM_VERSION_MINOR, GLM_VERSION_PATCH, GLM_VERSION_REVISION);
-		IG_CORE_INFO("Dear ImGui Version: {}", IMGUI_VERSION);
 		IG_CORE_INFO("RakNet Version: {}", RAKNET_VERSION);
 		IG_CORE_INFO("Mono Version: {}", mono_get_runtime_build_info());
 		IG_CORE_INFO("OpenAL Version: {}", audio->getVersion());
 		IG_CORE_INFO("spdlog Version: {}.{}.{}", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR, SPDLOG_VER_PATCH);
 
+		IG_CORE_INFO("-----Renderer Info-----");
+		const bgfx::Caps* caps = bgfx::getCaps();
+		IG_CORE_INFO("Renderer Vendor: {}", pcil::vendorLookup(caps->vendorId));
+		IG_CORE_INFO("Renderer Device: {}", pcil::deviceLookup(caps->vendorId, caps->deviceId));
+
+		IG_CORE_INFO("-----OpenAL Info-----");
 		IG_CORE_INFO("OpenAL Vendor: {}", audio->getVendor());
 		IG_CORE_INFO("OpenAL Renderer: {}", audio->getRenderer());
 		IG_CORE_INFO("OpenAL Devices: {}", audio->getDevices());

@@ -20,8 +20,11 @@ add_subdirectory(bullet)
 set(BUILD_TESTING OFF CACHE INTERNAL "")
 add_subdirectory(entt)
 
-# mono TODO
+# mono
 include(${CMAKE_SOURCE_DIR}/cmake/FindMono.cmake)
+
+# pcil
+add_subdirectory(pcil)
 
 # openal
 include(FindOpenAL)
@@ -44,6 +47,7 @@ set(IGNEOUS_LIBRARIES
   ${BULLET_LIBRARIES}
   EnTT
   ${MONO_LIBRARY}
+  pcil
   ${OPENAL_LIBRARY}
   ${RAKNET_COMMON_LIBS}
   spdlog
