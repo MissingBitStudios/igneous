@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
 #include <bx/file.h>
@@ -9,8 +11,8 @@ class RendererServer
 public:
 	static RendererServer& getInstance();
 
-	const char* getVendorName();
-	const char* getDeviceName();
+	std::string getSupportedRenderers();
+	std::string getGpuInfo();
 
 	bgfx::TextureHandle loadTexture(const char* _filePath, uint32_t _flags);
 	bgfx::ProgramHandle loadProgram(const char* vs, const char* fs);
@@ -19,7 +21,7 @@ public:
 	void operator=(RendererServer const&) = delete;
 private:
 	RendererServer();
-	~RendererServer() {}
+	~RendererServer();
 
 	struct SplashVertex
 	{

@@ -6,6 +6,7 @@
 
 AudioServer::AudioServer()
 {
+	IG_CORE_INFO("Initializing Audio Server");
 	// Initialize Open AL quit with error if it fails
 	const ALCchar* deviceName = alcGetString(0, ALC_DEVICE_SPECIFIER);
 	device = alcOpenDevice(deviceName);
@@ -28,6 +29,7 @@ AudioServer::AudioServer()
 	{
 		IG_CORE_ERROR("OpenAL failed to open a device! Error: {}", ALErrorToString(alGetError()));
 	}
+	IG_CORE_INFO("Audio Server Initialized");
 }
 
 AudioServer& AudioServer::getInstance() {
@@ -102,6 +104,7 @@ const char* AudioServer::ALErrorToString(ALCenum error)
 
 AudioServer::~AudioServer()
 {
+	IG_CORE_INFO("Shutingdown Audio Server");
 	for (const ALuint buffer : buffers) {
 		alDeleteBuffers(1, &buffer);
 		buffers.pop_front();
@@ -110,4 +113,5 @@ AudioServer::~AudioServer()
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(context);
 	alcCloseDevice(device);
+	IG_CORE_INFO("Audio Server Shutdown");
 }

@@ -72,10 +72,12 @@ class Engine : public bigg::Application
 		stbi_image_free(images[1].pixels);
 		stbi_image_free(images[2].pixels);
 
+		IG_CORE_INFO("Initializing Servers");
 		RendererServer* renderer = &RendererServer::getInstance();
-
 		audio = &AudioServer::getInstance();
+		IG_CORE_INFO("Servers Initialized");
 
+		IG_CORE_INFO("-----Version Info-----");
 		IG_CORE_INFO("Igneous Version: {}", IGNEOUS_VERSION);
 		IG_CORE_INFO("Assimp Version: {}.{}.{}", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
 		IG_CORE_INFO("Bullet Version: {}", BT_BULLET_VERSION);
@@ -89,8 +91,8 @@ class Engine : public bigg::Application
 		IG_CORE_INFO("spdlog Version: {}.{}.{}", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR, SPDLOG_VER_PATCH);
 
 		IG_CORE_INFO("-----Renderer Info-----");
-		IG_CORE_INFO("Renderer Vendor: {}", renderer->getVendorName());
-		IG_CORE_INFO("Renderer Device: {}", renderer->getDeviceName());
+		IG_CORE_INFO("{}", renderer->getSupportedRenderers());
+		IG_CORE_INFO("{}", renderer->getGpuInfo());
 
 		IG_CORE_INFO("-----OpenAL Info-----");
 		IG_CORE_INFO("OpenAL Vendor: {}", audio->getVendor());
@@ -204,10 +206,10 @@ class Engine : public bigg::Application
 
 	int shutdown()
 	{
+		IG_CORE_INFO("Shutingdown Servers");
 		bgfx::destroy(handle);
 		bgfx::destroy(s_tex);
 		bgfx::destroy(mProgram);
-		IG_CORE_INFO("Shutdown");
 		return 0;
 	}
 private:

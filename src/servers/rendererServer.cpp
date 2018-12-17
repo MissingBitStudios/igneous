@@ -4,8 +4,11 @@
 #include <pcil/pcil.hpp>
 #include <stb_image.h>
 
+#include "../util/log.h"
+
 RendererServer::RendererServer()
 {
+	IG_CORE_INFO("Initializing Renderer Server");
 	static SplashVertex s_splashVertices[] =
 	{
 		{ -1.0f,  1.0f, 0.0f, 0.0f, 0.0f },
@@ -30,6 +33,7 @@ RendererServer::RendererServer()
 	bgfx::destroy(splashTexture);
 	bgfx::destroy(s_splash);
 	bgfx::destroy(splashProgram);
+	IG_CORE_INFO("Renderer Server Initialized");
 }
 
 RendererServer& RendererServer::getInstance() {
@@ -37,15 +41,35 @@ RendererServer& RendererServer::getInstance() {
 	return instance;
 }
 
-const char* RendererServer::getVendorName()
+std::string RendererServer::getSupportedRenderers()
 {
-	return pcil::vendorLookup(bgfx::getCaps()->vendorId);
+	std::string supportedRenderers = "Supported Renderers: ";
+	bgfx::RendererType::Enum rendererTypes[bgfx::RendererType::Count];
+	uint8_t num = bgfx::getSupportedRenderers(bgfx::RendererType::Count, rendererTypes);
+
+	for (uint8_t i = 0; i < num; i++)
+	{
+		supportedRenderers += bgfx::getRendererName(rendererTypes[i]);
+		supportedRenderers += i != num - 1 ? ", " : "";
+	}
+
+	return supportedRenderers;
 }
 
-const char* RendererServer::getDeviceName()
+std::string RendererServer::getGpuInfo()
 {
 	const bgfx::Caps* caps = bgfx::getCaps();
-	return pcil::deviceLookup(caps->vendorId, caps->deviceId);
+	std::string gpuInfo = "Number of GPUs: " + std::to_string(caps->numGPUs) + "\n";
+	std::string isSelected;
+
+	for (uint8_t i = 0; i < caps->numGPUs; i++)
+	{
+		isSelected = caps->deviceId == caps->gpu[i].deviceId ? "(Selected)" : "          ";
+		gpuInfo += "GPU[" + std::to_string(i) + "]" + isSelected + "| Vendor: " + std::to_string(caps->gpu[i].vendorId) + " \"" + pcil::vendorLookup(caps->gpu[i].vendorId) + "\" | Device ID: " + std::to_string(caps->gpu[i].deviceId) + " \"" + pcil::deviceLookup(caps->gpu[i].vendorId, caps->gpu[i].deviceId) + "\"";
+		gpuInfo += i < caps->numGPUs - 1 ? "\n" : "";
+	}
+
+	return gpuInfo;
 }
 
 bgfx::TextureHandle RendererServer::loadTexture(const char* _filePath, uint32_t _flags)
@@ -95,6 +119,12 @@ bgfx::ProgramHandle RendererServer::loadProgram(const char* vs, const char* fs)
 	bx::strCat(fsName, BX_COUNTOF(fsName), ".bin");
 
 	return bigg::loadProgram(vsName, fsName);
+}
+
+RendererServer::~RendererServer()
+{
+	IG_CORE_INFO("Shutingdown Renderer Server");
+	IG_CORE_INFO("Renderer Server Shutdown");
 }
 
 bgfx::VertexDecl RendererServer::SplashVertex::ms_decl;
