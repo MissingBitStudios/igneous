@@ -5,6 +5,9 @@ set(MONO_SEARCH_PATHS
   /opt/local
   /opt/csw
   /opt
+  /usr/bin
+  /usr/local/bin
+  C:\\Program Files\ (x86)
 )
 
 find_path(MONO_INCLUDE_DIR mono/jit/jit.h

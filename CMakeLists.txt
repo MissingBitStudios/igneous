@@ -4,6 +4,10 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the igneous source code and call cmake from there")
 endif()
 
+if (POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif (POLICY CMP0048)
+
 project(igneous VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -11,10 +15,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(dependencies)
 
-add_shader( shaders/vs_cubes.sc VERTEX   OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130 )
-add_shader( shaders/fs_cubes.sc FRAGMENT OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130 )
-add_shader( shaders/vs_splash.sc VERTEX   OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130 )
-add_shader( shaders/fs_splash.sc FRAGMENT OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130 )
+file(GLOB_RECURSE shaders "${CMAKE_SOURCE_DIR}/shaders/*.sc")
+foreach(shader ${shaders})
+  if(${shader} MATCHES "/vs_[^/]+\\.sc$")
+    add_shader(${shader} VERTEX OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
+  elseif(${shader} MATCHES "/fs_[^/]+\\.sc$")
+    add_shader(${shader} FRAGMENT OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
+  endif(${shader} MATCHES "/vs_[^/]+\\.sc$")
+endforeach(shader)
 
 configure_file (
   "${CMAKE_SOURCE_DIR}/src/version.h.in"
