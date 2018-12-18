@@ -8,10 +8,9 @@ bgfx::VertexDecl Vertex::ms_decl;
 
 Model::Model(const char* path)
 {
-	Vertex::init();
 	// read file via ASSIMP
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals);
 	// check for errors
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 	{
@@ -42,7 +41,7 @@ void Model::processNode(aiNode *node, const aiScene *scene)
 
 }
 
-Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
+Mesh* Model::processMesh(aiMesh *mesh, const aiScene *scene)
 {
 	// data to fill
 	std::vector<Vertex> vertices;
@@ -55,7 +54,34 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 		vertex.pos_x = mesh->mVertices[i].x;
 		vertex.pos_y = mesh->mVertices[i].y;
 		vertex.pos_z = mesh->mVertices[i].z;
-		
+		// normals
+		if (mesh->mNormals) // does the mesh contain normals?
+		{
+			vertex.norm_x = mesh->mNormals[i].x;
+			vertex.norm_y = mesh->mNormals[i].y;
+			vertex.norm_z = mesh->mNormals[i].z;
+		}
+		// texture coordinates
+		if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+		{
+			vertex.tex_x = mesh->mTextureCoords[0][i].x;
+			vertex.tex_y = mesh->mTextureCoords[0][i].y;
+		}
+		// tangent
+		if (mesh->mTangents) // does the mesh contain tangents?
+		{
+			vertex.tan_x = mesh->mTangents[i].x;
+			vertex.tan_y = mesh->mTangents[i].y;
+			vertex.tan_z = mesh->mTangents[i].z;
+		}
+		// bitangent
+		if (mesh->mBitangents) // does the mesh contain bitangents?
+		{
+			vertex.bi_x = mesh->mBitangents[i].x;
+			vertex.bi_y = mesh->mBitangents[i].y;
+			vertex.bi_z = mesh->mBitangents[i].z;
+		}
+
 		vertices.push_back(vertex);
 	}
 	// now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
@@ -68,5 +94,28 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	}
 
 	// return a mesh object created from the extracted mesh data
-	return { vertices, indices };
+	return new Mesh(vertices, indices);
+}
+
+Model::~Model()
+{
+	for (Mesh* mesh : meshes)
+	{
+		delete mesh;
+	}
+}
+
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint16_t> indices)
+{
+	this->vertices = vertices;
+	this->indices = indices;
+
+	vbh = bgfx::createVertexBuffer(bgfx::makeRef(&this->vertices[0], this->vertices.size() * sizeof(Vertex)), Vertex::ms_decl);
+	ibh = bgfx::createIndexBuffer(bgfx::makeRef(&this->indices[0], this->indices.size() * sizeof(uint16_t)));
+}
+
+Mesh::~Mesh()
+{
+	bgfx::destroy(vbh);
+	bgfx::destroy(ibh);
 }

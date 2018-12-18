@@ -105,6 +105,7 @@ class Engine : public bigg::Application
 		IG_CORE_INFO("OpenAL Extensions: {}", audio->getExtensions());
 
 		PosColorVertex::init();
+		Vertex::init();
 
 		s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Int1);
 		handle = renderer->loadTexture("res/icons/icon48.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP);
@@ -129,8 +130,7 @@ class Engine : public bigg::Application
 		}
 
 		p = renderer->loadProgram("vs_bunny", "fs_bunny");
-		bvbh = bgfx::createVertexBuffer(bgfx::makeRef(&bunny.meshes[0].vertices[0], bunny.meshes[0].vertices.size() * sizeof(Vertex)), Vertex::ms_decl);
-		bibh = bgfx::createIndexBuffer(bgfx::makeRef(&bunny.meshes[0].indices[0], bunny.meshes[0].indices.size() * sizeof(uint16_t)));
+		bunny = new Model("res/models/bunny.obj");
 
 		glm::mat4 mtx;
 		mtx = glm::translate(mtx, glm::vec3(0.0f, 0.0f, -35.0f));
@@ -187,10 +187,10 @@ class Engine : public bigg::Application
 		RendererSystem::render(registry);
 
 		glm::mat4 mat;
-		mat = glm::translate(mat, glm::vec3(0.0f, 0.0f, -10.0f));
+		mat = glm::translate(mat, glm::vec3(0.0f, 0.0f, -30.0f));
 		bgfx::setTransform(&mat);
-		bgfx::setVertexBuffer(0, bvbh);
-		bgfx::setIndexBuffer(bibh);
+		bgfx::setVertexBuffer(0, bunny->meshes[0]->vbh);
+		bgfx::setIndexBuffer(bunny->meshes[0]->ibh);
 		bgfx::setState(BGFX_STATE_DEFAULT);
 		bgfx::submit(0, p);
 
@@ -229,9 +229,8 @@ class Engine : public bigg::Application
 		bgfx::destroy(handle);
 		bgfx::destroy(s_tex);
 		bgfx::destroy(mProgram);
-		bgfx::destroy(bvbh);
-		bgfx::destroy(bibh);
 		bgfx::destroy(p);
+		delete bunny;
 		delete sky;
 		return 0;
 	}
@@ -247,9 +246,7 @@ private:
 	bgfx::UniformHandle s_tex;
 	SkySystem* sky;
 	bgfx::ProgramHandle p;
-	Model bunny = Model("res/models/bunny.obj");
-	bgfx::VertexBufferHandle bvbh;
-	bgfx::IndexBufferHandle bibh;
+	Model* bunny;
 };
 
 int main(int argc, char** argv)
