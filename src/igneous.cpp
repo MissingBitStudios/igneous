@@ -23,6 +23,7 @@
 #include "util/capture.h"
 #include "util/input.h"
 #include "util/log.h"
+#include "util/model.h"
 #include "version.h"
 
 struct PosColorVertex
@@ -112,8 +113,6 @@ class Engine : public bigg::Application
 		mVbh = bgfx::createVertexBuffer(bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices)), PosColorVertex::ms_decl);
 		mIbh = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList)));
 
-		bgfx::ProgramHandle skyProgram = renderer->loadProgram("vs_sky", "fs_sky");
-
 		bgfx::setDebug(BGFX_DEBUG_TEXT);
 		
 		for (uint32_t yy = 0; yy < 11; ++yy)
@@ -123,11 +122,15 @@ class Engine : public bigg::Application
 				glm::mat4 mtx;
 				mtx = glm::translate(mtx, glm::vec3(15.0f - float(xx) * 3.0f, -15.0f + float(yy) * 3.0f, 0.0f));
 				auto entity = registry.create();
-				registry.assign<Model>(entity, mVbh, mIbh, handle, s_tex, mProgram);
+				registry.assign<ModelComponent>(entity, mVbh, mIbh, handle, s_tex, mProgram);
 				registry.assign<Transformation>(entity, mtx);
 				registry.assign<Cube>(entity, xx, yy);
 			}
 		}
+
+		p = renderer->loadProgram("vs_bunny", "fs_bunny");
+		bvbh = bgfx::createVertexBuffer(bgfx::makeRef(&bunny.meshes[0].vertices[0], bunny.meshes[0].vertices.size() * sizeof(Vertex)), Vertex::ms_decl);
+		bibh = bgfx::createIndexBuffer(bgfx::makeRef(&bunny.meshes[0].indices[0], bunny.meshes[0].indices.size() * sizeof(uint16_t)));
 
 		glm::mat4 mtx;
 		mtx = glm::translate(mtx, glm::vec3(0.0f, 0.0f, -35.0f));
@@ -183,6 +186,14 @@ class Engine : public bigg::Application
 		bgfx::touch(0);
 		RendererSystem::render(registry);
 
+		glm::mat4 mat;
+		mat = glm::translate(mat, glm::vec3(0.0f, 0.0f, -10.0f));
+		bgfx::setTransform(&mat);
+		bgfx::setVertexBuffer(0, bvbh);
+		bgfx::setIndexBuffer(bibh);
+		bgfx::setState(BGFX_STATE_DEFAULT);
+		bgfx::submit(0, p);
+
 		sky->update(dt);
 
 		ImGui::ShowDemoWindow();
@@ -218,6 +229,9 @@ class Engine : public bigg::Application
 		bgfx::destroy(handle);
 		bgfx::destroy(s_tex);
 		bgfx::destroy(mProgram);
+		bgfx::destroy(bvbh);
+		bgfx::destroy(bibh);
+		bgfx::destroy(p);
 		delete sky;
 		return 0;
 	}
@@ -232,6 +246,10 @@ private:
 	bgfx::TextureHandle handle;
 	bgfx::UniformHandle s_tex;
 	SkySystem* sky;
+	bgfx::ProgramHandle p;
+	Model bunny = Model("res/models/bunny.obj");
+	bgfx::VertexBufferHandle bvbh;
+	bgfx::IndexBufferHandle bibh;
 };
 
 int main(int argc, char** argv)

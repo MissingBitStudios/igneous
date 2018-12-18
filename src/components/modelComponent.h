@@ -2,7 +2,7 @@
 
 #include <bgfx/bgfx.h>
 
-struct Model
+struct ModelComponent
 {
 	bgfx::VertexBufferHandle mVbh;
 	bgfx::IndexBufferHandle mIbh;

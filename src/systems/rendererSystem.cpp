@@ -9,7 +9,7 @@
 namespace RendererSystem
 {
 	void render(entt::registry<> &registry) {
-		registry.view<Model, Transformation>().each([](const auto, auto &model, auto &transformation)
+		registry.view<ModelComponent, Transformation>().each([](const auto, auto &model, auto &transformation)
 		{
 			bgfx::setTransform(&transformation.mtx);
 			bgfx::setVertexBuffer(0, model.mVbh);
