@@ -19,6 +19,7 @@
 #include "systems/captureSystem.h"
 #include "systems/moveSystem.h"
 #include "systems/rendererSystem.h"
+#include "systems/skySystem.h"
 #include "util/capture.h"
 #include "util/input.h"
 #include "util/log.h"
@@ -77,6 +78,8 @@ class Engine : public bigg::Application
 		audio = &AudioServer::getInstance();
 		IG_CORE_INFO("Servers Initialized");
 
+		sky = new SkySystem;
+
 		IG_CORE_INFO("-----Version Info-----");
 		IG_CORE_INFO("Igneous Version: {}", IGNEOUS_VERSION);
 		IG_CORE_INFO("Assimp Version: {}.{}.{}", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
@@ -103,11 +106,14 @@ class Engine : public bigg::Application
 		PosColorVertex::init();
 
 		s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Int1);
-		handle = renderer->loadTexture("res/icons/icon48.png", BGFX_TEXTURE_U_CLAMP | BGFX_TEXTURE_V_CLAMP);
+		handle = renderer->loadTexture("res/icons/icon48.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP);
 
 		mProgram = renderer->loadProgram("vs_cubes", "fs_cubes");
 		mVbh = bgfx::createVertexBuffer(bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices)), PosColorVertex::ms_decl);
 		mIbh = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList)));
+
+		bgfx::ProgramHandle skyProgram = renderer->loadProgram("vs_sky", "fs_sky");
+
 		bgfx::setDebug(BGFX_DEBUG_TEXT);
 		
 		for (uint32_t yy = 0; yy < 11; ++yy)
@@ -166,7 +172,7 @@ class Engine : public bigg::Application
 
 	void onReset()
 	{
-		bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL, 0xc0c0c0ff, 1.0f, 0);
+		bgfx::setViewClear(0, BGFX_CLEAR_DEPTH, 0xc0c0c0ff, 1.0f, 0);
 		bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
 	}
 
@@ -176,6 +182,8 @@ class Engine : public bigg::Application
 		MoveSystem::update(dt, registry);
 		bgfx::touch(0);
 		RendererSystem::render(registry);
+
+		sky->update(dt);
 
 		ImGui::ShowDemoWindow();
 
@@ -210,6 +218,7 @@ class Engine : public bigg::Application
 		bgfx::destroy(handle);
 		bgfx::destroy(s_tex);
 		bgfx::destroy(mProgram);
+		delete sky;
 		return 0;
 	}
 private:
@@ -222,6 +231,7 @@ private:
 	AudioServer* audio;
 	bgfx::TextureHandle handle;
 	bgfx::UniformHandle s_tex;
+	SkySystem* sky;
 };
 
 int main(int argc, char** argv)

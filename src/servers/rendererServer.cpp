@@ -22,7 +22,7 @@ RendererServer::RendererServer()
 
 	bgfx::ProgramHandle splashProgram = loadProgram("vs_splash", "fs_splash");
 	bgfx::UniformHandle s_splash = bgfx::createUniform("s_splash", bgfx::UniformType::Int1);
-	bgfx::TextureHandle splashTexture = loadTexture("res/textures/splash.png", BGFX_TEXTURE_U_CLAMP | BGFX_TEXTURE_V_CLAMP);
+	bgfx::TextureHandle splashTexture = loadTexture("res/textures/splash.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP);
 
 	bgfx::setVertexBuffer(0, bgfx::createVertexBuffer(bgfx::makeRef(s_splashVertices, sizeof(s_splashVertices)), SplashVertex::ms_decl));
 	bgfx::setIndexBuffer(bgfx::createIndexBuffer(bgfx::makeRef(s_splashTriList, sizeof(s_splashTriList))));

@@ -42,7 +42,7 @@ CaptureCallback::~CaptureCallback()
 	s_fileWriter = NULL;
 }
 
-void CaptureCallback::fatal(bgfx::Fatal::Enum _code, const char* _str)
+void CaptureCallback::fatal(const char* _filePath, uint16_t _line, bgfx::Fatal::Enum _code, const char* _str)
 {
 	// Something unexpected happened, inform user and bail out.
 	bx::debugPrintf("Fatal error: 0x%08x: %s", _code, _str);
