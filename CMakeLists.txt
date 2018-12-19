@@ -15,14 +15,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(dependencies)
 
-file(GLOB_RECURSE shaders "${CMAKE_SOURCE_DIR}/shaders/*.sc")
-foreach(shader ${shaders})
-  if(${shader} MATCHES "/vs_[^/]+\\.sc$")
-    add_shader(${shader} VERTEX OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
-  elseif(${shader} MATCHES "/fs_[^/]+\\.sc$")
-    add_shader(${shader} FRAGMENT OUTPUT ${CMAKE_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
-  endif(${shader} MATCHES "/vs_[^/]+\\.sc$")
-endforeach(shader)
+include(cmake/add_shaders.cmake)
 
 configure_file (
   "${CMAKE_SOURCE_DIR}/src/version.h.in"
