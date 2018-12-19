@@ -4,6 +4,7 @@
 #include <bx/string.h>
 #include <entt/entt.hpp>
 #include <entt/config/version.h>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>
 #include <mono/jit/jit.h>
 #include <RakNetVersion.h>
@@ -139,6 +140,8 @@ class Engine : public bigg::Application
 
 		mReset |= BGFX_RESET_MSAA_X4;
 		reset(mReset);
+
+		Input::setCursorVisible(mWindow, false);
 	}
 
 	void onKey(int key, int scancode, int action, int mods)
@@ -226,6 +229,7 @@ class Engine : public bigg::Application
 
 	int shutdown()
 	{
+		Input::setCursorVisible(mWindow, true);
 		IG_CORE_INFO("Shutingdown Servers");
 		bgfx::destroy(handle);
 		bgfx::destroy(s_tex);

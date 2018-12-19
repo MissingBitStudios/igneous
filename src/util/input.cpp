@@ -1,5 +1,7 @@
 #include "input.h"
 
+#include <imgui.h>
+
 namespace Input
 {
 	void onKey(int key, int scancode, int action, int mods)
@@ -45,6 +47,16 @@ namespace Input
 	void onCursorEnter(int entered)
 	{
 		cursorEnterSignal.publish(entered);
+	}
+
+	void setCursorPos(GLFWwindow* window, double xpos, double ypos)
+	{
+		glfwSetCursorPos(window, xpos, ypos);
+	}
+
+	void setCursorVisible(GLFWwindow* window, bool visible)
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 	}
 
 	bool keys[GLFW_KEY_LAST + 1] = { 0 };

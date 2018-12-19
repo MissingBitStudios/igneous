@@ -15,6 +15,10 @@ namespace Input
 
 	void onCursorEnter(int entered);
 
+	void setCursorPos(GLFWwindow* window, double xpos, double ypos);
+
+	void setCursorVisible(GLFWwindow* window, bool visible);
+
 	extern bool keys[GLFW_KEY_LAST + 1];
 	extern bool mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1];
 	extern double scrollX, scrollY;

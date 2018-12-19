@@ -9,6 +9,8 @@ bgfx::VertexDecl Vertex::ms_decl;
 
 Model::Model(const char* path)
 {
+	IG_CORE_INFO("Loading model: {}", path);
+
 	// read file via ASSIMP
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_JoinIdenticalVertices);

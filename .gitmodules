@@ -1,6 +1,6 @@
 [submodule "dependencies/bigg"]
 	path = dependencies/bigg
-	url = https://github.com/JoshuaBrookover/bigg.git
+	url = https://github.com/prowolf/bigg.git
 [submodule "dependencies/assimp"]
 	path = dependencies/assimp
 	url = https://github.com/assimp/assimp.git
@@ -22,3 +22,6 @@
 [submodule "pcil"]
 	path = dependencies/pcil
 	url = https://github.com/prowolf/pcil.git
+[submodule "bigg"]
+	path = dependencies/bigg
+	url = https://github.com/prowolf/bigg.git

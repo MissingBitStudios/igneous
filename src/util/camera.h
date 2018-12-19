@@ -1,5 +1,6 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
@@ -17,4 +18,7 @@ private:
 	glm::vec3 right;
 	glm::mat4 view;
 	glm::mat4 proj;
+
+	double last_x;
+	double last_y;
 };
