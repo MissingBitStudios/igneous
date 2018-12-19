@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <string>
 
 #include <bgfx/bgfx.h>
@@ -14,14 +15,18 @@ public:
 	std::string getSupportedRenderers();
 	std::string getGpuInfo();
 
-	bgfx::TextureHandle loadTexture(const char* _filePath, uint32_t _flags);
+	bgfx::TextureHandle loadTexture(const char* _filePath, uint32_t _flags = 0, bool track = true);
 	bgfx::ProgramHandle loadProgram(const char* vs, const char* fs);
+
+	void cleanUp();
 
 	RendererServer(RendererServer const&) = delete;
 	void operator=(RendererServer const&) = delete;
 private:
 	RendererServer();
 	~RendererServer();
+
+	std::map<std::string, bgfx::TextureHandle> textures;
 
 	struct SplashVertex
 	{

@@ -22,7 +22,7 @@ RendererServer::RendererServer()
 
 	bgfx::ProgramHandle splashProgram = loadProgram("vs_splash", "fs_splash");
 	bgfx::UniformHandle s_splash = bgfx::createUniform("s_splash", bgfx::UniformType::Int1);
-	bgfx::TextureHandle splashTexture = loadTexture("res/textures/splash.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP);
+	bgfx::TextureHandle splashTexture = loadTexture("res/textures/splash.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP, false);
 
 	bgfx::setVertexBuffer(0, bgfx::createVertexBuffer(bgfx::makeRef(s_splashVertices, sizeof(s_splashVertices)), SplashVertex::ms_decl));
 	bgfx::setIndexBuffer(bgfx::createIndexBuffer(bgfx::makeRef(s_splashTriList, sizeof(s_splashTriList))));
@@ -72,18 +72,43 @@ std::string RendererServer::getGpuInfo()
 	return gpuInfo;
 }
 
-bgfx::TextureHandle RendererServer::loadTexture(const char* _filePath, uint32_t _flags)
+bgfx::TextureHandle RendererServer::loadTexture(const char* _filePath, uint32_t _flags, bool track)
 {
 	bgfx::TextureHandle handle = BGFX_INVALID_HANDLE;
 
-	int width, height;
-	stbi_uc* data = stbi_load(_filePath, &width, &height, 0, 4);
-	handle = bgfx::createTexture2D((uint16_t)width, (uint16_t)height, false, 1, bgfx::TextureFormat::RGBA8, _flags, bgfx::copy(data, width * height * sizeof(stbi_uc*)));
-	stbi_image_free(data);
+	IG_CORE_INFO("Searching for texture: {}", _filePath);
 
-	if (bgfx::isValid(handle))
+	if (textures.count(_filePath))
 	{
-		bgfx::setName(handle, _filePath);
+		IG_CORE_INFO("Found identical texture: {}", _filePath);
+		handle = textures.at(_filePath);
+	}
+	else
+	{
+		IG_CORE_INFO("Loading texture: {}", _filePath);
+		int width, height;
+		stbi_uc* data = stbi_load(_filePath, &width, &height, 0, 4);
+		const bgfx::Memory* mem = bgfx::copy(data, width * height * sizeof(stbi_uc*));
+		if (NULL != mem)
+		{
+			handle = bgfx::createTexture2D((uint16_t)width, (uint16_t)height, false, 1, bgfx::TextureFormat::RGBA8, _flags, mem);
+		}
+		else
+		{
+			IG_CORE_ERROR("Could not load texture: {}", _filePath);
+		}
+		stbi_image_free(data);
+
+#if IG_DEBUG
+		if (bgfx::isValid(handle))
+		{
+			bgfx::setName(handle, _filePath);
+		}
+#endif
+		if (track)
+		{
+			textures.insert({ _filePath, handle });
+		}
 	}
 
 	return handle;
@@ -119,6 +144,17 @@ bgfx::ProgramHandle RendererServer::loadProgram(const char* vs, const char* fs)
 	bx::strCat(fsName, BX_COUNTOF(fsName), ".bin");
 
 	return bigg::loadProgram(vsName, fsName);
+}
+
+void RendererServer::cleanUp()
+{
+	IG_CORE_INFO("Cleaning up Renderer Server");
+	for (auto it = textures.begin(); it != textures.end(); ++it)
+	{
+		IG_CORE_INFO("Destroying texture: {}", it->first);
+		bgfx::destroy(it->second);
+	}
+	IG_CORE_INFO("Renderer Server Cleaned up ");
 }
 
 RendererServer::~RendererServer()

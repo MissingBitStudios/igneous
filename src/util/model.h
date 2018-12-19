@@ -8,8 +8,6 @@
 #include <assimp/postprocess.h>
 #include <bgfx/bgfx.h>
 
-#include "mesh.h"
-
 struct Vertex
 {
 	float pos_x;
@@ -48,11 +46,12 @@ struct Vertex
 class Mesh
 {
 public:
-	Mesh(std::vector<Vertex> vertices, std::vector<uint16_t> indices);
+	Mesh(std::vector<Vertex> vertices, std::vector<uint16_t> indices, std::vector<bgfx::TextureHandle> textures);
 	~Mesh();
 
 	bgfx::VertexBufferHandle vbh;
 	bgfx::IndexBufferHandle ibh;
+	std::vector<bgfx::TextureHandle> textures;
 private:
 	std::vector<Vertex> vertices;
 	std::vector<uint16_t> indices;
@@ -63,10 +62,12 @@ class Model
 public:
 	Model(const char* path);
 	~Model();
-	/*  Model Data  */
+
 	std::vector<Mesh*> meshes;
 private:
-	/*  Functions   */
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh* processMesh(aiMesh *mesh, const aiScene *scene);
+	std::vector<bgfx::TextureHandle> loadMaterialTextures(aiMaterial *mat, aiTextureType type);
+
+	std::string directory;
 };

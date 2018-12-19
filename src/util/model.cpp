@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 
 #include "log.h"
+#include "../servers/rendererServer.h"
 
 bgfx::VertexDecl Vertex::ms_decl;
 
@@ -17,6 +18,8 @@ Model::Model(const char* path)
 		IG_CORE_ERROR("ASSIMP: {}", importer.GetErrorString());
 		return;
 	}
+
+	directory = std::string(path).substr(0, std::string(path).find_last_of('/') + 1);
 
 	// process ASSIMP's root node recursively
 	processNode(scene->mRootNode, scene);
@@ -46,6 +49,7 @@ Mesh* Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	// data to fill
 	std::vector<Vertex> vertices;
 	std::vector<uint16_t> indices;
+	std::vector<bgfx::TextureHandle> textures;
 
 	const aiMaterial *mtl = scene->mMaterials[mesh->mMaterialIndex];
 	aiColor4D diffuse;
@@ -112,8 +116,36 @@ Mesh* Model::processMesh(aiMesh *mesh, const aiScene *scene)
 			indices.push_back(uint16_t(face.mIndices[j]));
 	}
 
+	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+	// 1. diffuse maps
+	std::vector<bgfx::TextureHandle> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE);
+	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+	// 2. specular maps
+	std::vector<bgfx::TextureHandle> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR);
+	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+	// 3. normal maps
+	std::vector<bgfx::TextureHandle> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT);
+	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+	// 4. height maps
+	std::vector<bgfx::TextureHandle> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT);
+	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+
 	// return a mesh object created from the extracted mesh data
-	return new Mesh(vertices, indices);
+	return new Mesh(vertices, indices, textures);
+}
+
+std::vector<bgfx::TextureHandle> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type)
+{
+	RendererServer* renderer = &RendererServer::getInstance();
+	std::vector<bgfx::TextureHandle> textures;
+	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+	{
+		aiString str;
+		mat->GetTexture(type, i, &str);
+		textures.push_back(renderer->loadTexture((directory + std::string(str.C_Str())).c_str()));
+	}
+	return textures;
 }
 
 Model::~Model()
@@ -124,10 +156,11 @@ Model::~Model()
 	}
 }
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint16_t> indices)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint16_t> indices, std::vector<bgfx::TextureHandle> textures)
 {
 	this->vertices = vertices;
 	this->indices = indices;
+	this->textures = textures;
 
 	vbh = bgfx::createVertexBuffer(bgfx::makeRef(&this->vertices[0], this->vertices.size() * sizeof(Vertex)), Vertex::ms_decl);
 	ibh = bgfx::createIndexBuffer(bgfx::makeRef(&this->indices[0], this->indices.size() * sizeof(uint16_t)));

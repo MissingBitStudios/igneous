@@ -10,7 +10,6 @@
 #include <spdlog/version.h>
 #include <stb_image.h>
 
-#include "components/cameraComponent.h"
 #include "components/cubeComponent.h"
 #include "components/modelComponent.h"
 #include "components/transformationComponent.h"
@@ -20,6 +19,7 @@
 #include "systems/moveSystem.h"
 #include "systems/rendererSystem.h"
 #include "systems/skySystem.h"
+#include "util/camera.h"
 #include "util/capture.h"
 #include "util/input.h"
 #include "util/log.h"
@@ -108,7 +108,7 @@ class Engine : public bigg::Application
 		Vertex::init();
 
 		s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Int1);
-		handle = renderer->loadTexture("res/icons/icon48.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP);
+		handle = renderer->loadTexture("res/icons/icon48.png", BGFX_SAMPLER_UVW_CLAMP, false);
 
 		mProgram = renderer->loadProgram("vs_cubes", "fs_cubes");
 		mVbh = bgfx::createVertexBuffer(bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices)), PosColorVertex::ms_decl);
@@ -130,15 +130,9 @@ class Engine : public bigg::Application
 		}
 
 		p = renderer->loadProgram("vs_bunny", "fs_bunny");
-		bunny = new Model("res/models/Barn.obj");
+		bunny = new Model("res/models/sponza/sponza.obj");
 
-		glm::mat4 mtx;
-		mtx = glm::translate(mtx, glm::vec3(0.0f, 0.0f, -35.0f));
-		glm::vec3 focus = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::mat4 proj = bigg::perspective(glm::radians(60.0f), float(getWidth()) / getHeight(), 0.1f, 100.0f);
-		camera = registry.create();
-		registry.assign<Transformation>(camera, mtx);
-		registry.assign<Camera>(camera, focus, proj);
+		camera = new Camera(glm::vec3(0.0f, 5.0f, -35.0f), getWidth(), getHeight());
 
 		Input::keySignal.sink().connect<&CaptureSystem::onKey>();
 		Input::keySignal.sink().connect<&MoveSystem::onKey>();
@@ -181,18 +175,24 @@ class Engine : public bigg::Application
 
 	void update(float dt)
 	{
-		RendererSystem::useCamera(camera, uint16_t(getWidth()), uint16_t(getHeight()), registry);
+		camera->update(dt);
+		camera->use(getWidth(), getHeight());
 		MoveSystem::update(dt, registry);
 		bgfx::touch(0);
 		RendererSystem::render(registry);
 
 		glm::mat4 mat;
-		mat = glm::translate(mat, glm::vec3(0.0f, 0.0f, -30.0f));
+		mat = glm::translate(mat, glm::vec3(0.0f, 0.0f, -35.0f));
+		mat = glm::scale(mat, glm::vec3(0.01f));
 		for (Mesh* mesh : bunny->meshes)
 		{
 			bgfx::setTransform(&mat);
 			bgfx::setVertexBuffer(0, mesh->vbh);
 			bgfx::setIndexBuffer(mesh->ibh);
+			if(mesh->textures.size() > 0)
+				bgfx::setTexture(0, s_tex, mesh->textures[0]);
+			else
+				bgfx::setTexture(0, s_tex, handle);
 			bgfx::setState(BGFX_STATE_DEFAULT);
 			bgfx::submit(0, p);
 		}
@@ -205,12 +205,10 @@ class Engine : public bigg::Application
 		if (ImGui::Button("bell"))
 		{
 			audio->playSound(audio->loadSound("res/audio/test.ogg"));
-
 		}
 		if (ImGui::Button("forest"))
 		{
 			audio->playSound(audio->loadSound("res/audio/forest.ogg"));
-
 		}
 		ImGui::End();
 
@@ -233,6 +231,8 @@ class Engine : public bigg::Application
 		bgfx::destroy(s_tex);
 		bgfx::destroy(mProgram);
 		bgfx::destroy(p);
+		RendererServer* renderer = &RendererServer::getInstance();
+		renderer->cleanUp();
 		delete bunny;
 		delete sky;
 		return 0;
@@ -243,13 +243,13 @@ private:
 	bgfx::VertexBufferHandle mVbh;
 	bgfx::IndexBufferHandle mIbh;
 	entt::registry<> registry;
-	uint32_t camera;
 	AudioServer* audio;
 	bgfx::TextureHandle handle;
 	bgfx::UniformHandle s_tex;
 	SkySystem* sky;
 	bgfx::ProgramHandle p;
 	Model* bunny;
+	Camera* camera;
 };
 
 int main(int argc, char** argv)
