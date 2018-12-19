@@ -10,7 +10,7 @@ Model::Model(const char* path)
 {
 	// read file via ASSIMP
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals);
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_JoinIdenticalVertices);
 	// check for errors
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 	{
@@ -47,6 +47,10 @@ Mesh* Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	std::vector<Vertex> vertices;
 	std::vector<uint16_t> indices;
 
+	const aiMaterial *mtl = scene->mMaterials[mesh->mMaterialIndex];
+	aiColor4D diffuse;
+	bool hasMtlColor = AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &diffuse);
+
 	// Walk through each of the mesh's vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -66,6 +70,21 @@ Mesh* Model::processMesh(aiMesh *mesh, const aiScene *scene)
 		{
 			vertex.tex_x = mesh->mTextureCoords[0][i].x;
 			vertex.tex_y = mesh->mTextureCoords[0][i].y;
+		}
+		// colors
+		if (hasMtlColor)
+		{
+			vertex.col_r = diffuse.r;
+			vertex.col_g = diffuse.g;
+			vertex.col_b = diffuse.b;
+			vertex.col_a = diffuse.a;
+		}
+		else if (mesh->mColors[0])
+		{
+			vertex.col_r = mesh->mColors[0][i].r;
+			vertex.col_g = mesh->mColors[0][i].g;
+			vertex.col_b = mesh->mColors[0][i].b;
+			vertex.col_a = mesh->mColors[0][i].a;
 		}
 		// tangent
 		if (mesh->mTangents) // does the mesh contain tangents?

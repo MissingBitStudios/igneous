@@ -20,6 +20,10 @@ struct Vertex
 	float norm_z;
 	float tex_x;
 	float tex_y;
+	float col_r;
+	float col_g;
+	float col_b;
+	float col_a;
 	float tan_x;
 	float tan_y;
 	float tan_z;
@@ -33,6 +37,7 @@ struct Vertex
 			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float)
 			.end();

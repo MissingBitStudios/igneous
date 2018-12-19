@@ -130,7 +130,7 @@ class Engine : public bigg::Application
 		}
 
 		p = renderer->loadProgram("vs_bunny", "fs_bunny");
-		bunny = new Model("res/models/bunny.obj");
+		bunny = new Model("res/models/Barn.obj");
 
 		glm::mat4 mtx;
 		mtx = glm::translate(mtx, glm::vec3(0.0f, 0.0f, -35.0f));
@@ -175,7 +175,7 @@ class Engine : public bigg::Application
 
 	void onReset()
 	{
-		bgfx::setViewClear(0, BGFX_CLEAR_DEPTH, 0xc0c0c0ff, 1.0f, 0);
+		bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xc0c0c0ff, 1.0f, 0);
 		bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
 	}
 
@@ -188,11 +188,14 @@ class Engine : public bigg::Application
 
 		glm::mat4 mat;
 		mat = glm::translate(mat, glm::vec3(0.0f, 0.0f, -30.0f));
-		bgfx::setTransform(&mat);
-		bgfx::setVertexBuffer(0, bunny->meshes[0]->vbh);
-		bgfx::setIndexBuffer(bunny->meshes[0]->ibh);
-		bgfx::setState(BGFX_STATE_DEFAULT);
-		bgfx::submit(0, p);
+		for (Mesh* mesh : bunny->meshes)
+		{
+			bgfx::setTransform(&mat);
+			bgfx::setVertexBuffer(0, mesh->vbh);
+			bgfx::setIndexBuffer(mesh->ibh);
+			bgfx::setState(BGFX_STATE_DEFAULT);
+			bgfx::submit(0, p);
+		}
 
 		sky->update(dt);
 
