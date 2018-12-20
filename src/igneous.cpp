@@ -109,8 +109,8 @@ class Engine : public bigg::Application
 		Vertex::init();
 
 		s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Int1);
+		s_norm = bgfx::createUniform("s_norm", bgfx::UniformType::Int1);
 		handle = renderer->loadTexture("res/icons/icon48.png", BGFX_SAMPLER_UVW_CLAMP, false);
-
 		mProgram = renderer->loadProgram("vs_cubes", "fs_cubes");
 		mVbh = bgfx::createVertexBuffer(bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices)), PosColorVertex::ms_decl);
 		mIbh = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList)));
@@ -132,6 +132,7 @@ class Engine : public bigg::Application
 
 		p = renderer->loadProgram("vs_bunny", "fs_bunny");
 		bunny = new Model("res/models/sponza/sponza.obj");
+		barn = new Model("res/models/BigBarn/BigBarn.obj");
 
 		camera = new Camera(glm::vec3(0.0f, 5.0f, -35.0f), getWidth(), getHeight());
 
@@ -196,7 +197,11 @@ class Engine : public bigg::Application
 				bgfx::setTexture(0, s_tex, mesh->textures[0]);
 			else
 				bgfx::setTexture(0, s_tex, handle);
-			bgfx::setState(BGFX_STATE_DEFAULT);
+			if (mesh->textures.size() > 1)
+				bgfx::setTexture(1, s_norm, mesh->textures[1]);
+			else
+				bgfx::setTexture(1, s_norm, handle);
+			bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
 			bgfx::submit(0, p);
 		}
 
@@ -238,6 +243,7 @@ class Engine : public bigg::Application
 		RendererServer* renderer = &RendererServer::getInstance();
 		renderer->cleanUp();
 		delete bunny;
+		delete barn;
 		delete sky;
 		return 0;
 	}
@@ -250,9 +256,11 @@ private:
 	AudioServer* audio;
 	bgfx::TextureHandle handle;
 	bgfx::UniformHandle s_tex;
+	bgfx::UniformHandle s_norm;
 	SkySystem* sky;
 	bgfx::ProgramHandle p;
 	Model* bunny;
+	Model* barn;
 	Camera* camera;
 };
 
