@@ -23,6 +23,9 @@ add_subdirectory(entt)
 # mono
 include(${CMAKE_SOURCE_DIR}/cmake/FindMono.cmake)
 
+# stb
+include(${CMAKE_SOURCE_DIR}/cmake/UseFastnoise.cmake)
+
 # pcil
 add_subdirectory(pcil)
 
@@ -47,6 +50,7 @@ set(IGNEOUS_LIBRARIES
   ${BULLET_LIBRARIES}
   EnTT
   ${MONO_LIBRARY}
+  fastnoise
   pcil
   ${OPENAL_LIBRARY}
   ${RAKNET_COMMON_LIBS}

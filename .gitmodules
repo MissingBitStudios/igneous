@@ -22,3 +22,6 @@
 [submodule "bigg"]
 	path = dependencies/bigg
 	url = https://github.com/prowolf/bigg.git
+[submodule "dependencies/fastnoise"]
+	path = dependencies/fastnoise
+	url = https://github.com/Auburns/FastNoise.git

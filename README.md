@@ -41,6 +41,17 @@ cd build
 cmake ..
 ```
 
+### Update
+
+```
+cd igneous
+git pull
+git submodule sync
+git submodule update --init --recursive
+cd build
+cmake ..
+```
+
 ## Built With
 
 * [Assimp](https://github.com/assimp/assimp) - [Website](http://assimp.sourceforge.net/)

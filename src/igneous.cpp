@@ -24,6 +24,7 @@
 #include "util/input.h"
 #include "util/log.h"
 #include "util/model.h"
+#include "util/terrain.h"
 #include "version.h"
 
 class Engine : public bigg::Application
@@ -92,9 +93,17 @@ class Engine : public bigg::Application
 		registry.assign<ModelComponent>(entity, barn, c);
 		registry.assign<Transformation>(entity, mat0);
 
+		Model* terrain = Terrain::terrain(0, 5, 5);
+
+		glm::mat4 mat1;
+		mat1 = glm::translate(mat1, glm::vec3(-35.0f, 0.0f, 0.0f));
+		entity = registry.create();
+		registry.assign<ModelComponent>(entity, terrain, c);
+		registry.assign<Transformation>(entity, mat1);
+
 		handle = renderer->loadTexture("res/icons/icon48.png", false);
 
-		camera = new Camera(glm::vec3(0.0f, 5.0f, -35.0f), getWidth(), getHeight());
+		camera = new Camera(glm::vec3(-35.0f, 5.0f, 0.0f), getWidth(), getHeight());
 
 		Input::keySignal.sink().connect<&CaptureSystem::onKey>();
 

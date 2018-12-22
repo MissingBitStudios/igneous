@@ -61,6 +61,7 @@ class Model
 {
 public:
 	Model(const char* path);
+	Model() {}
 	~Model();
 
 	std::vector<Mesh*> meshes;
