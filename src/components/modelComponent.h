@@ -2,11 +2,10 @@
 
 #include <bgfx/bgfx.h>
 
+#include "../util/model.h"
+
 struct ModelComponent
 {
-	bgfx::VertexBufferHandle mVbh;
-	bgfx::IndexBufferHandle mIbh;
-	bgfx::TextureHandle texture;
-	bgfx::UniformHandle uniform;
+	Model* model;
 	bgfx::ProgramHandle program;
 };

@@ -3,7 +3,6 @@ $input v_texcoord0, v_normal, v_color0, v_fogamount
 #include <bgfx_shader.sh>
 
 SAMPLER2D(s_tex, 0);
-SAMPLER2D(s_norm, 1);
 
 void main()
 {

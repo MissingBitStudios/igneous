@@ -27,40 +27,6 @@
 #include "util/model.h"
 #include "version.h"
 
-struct PosColorVertex
-{
-	float x;
-	float y;
-	float z;
-	float tex_x;
-	float tex_y;
-	uint32_t abgr;
-	static void init()
-	{
-		ms_decl
-			.begin()
-			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-			.end();
-	}
-	static bgfx::VertexDecl ms_decl;
-};
-bgfx::VertexDecl PosColorVertex::ms_decl;
-
-static PosColorVertex s_cubeVertices[] =
-{
-	{ -1.0f,  1.0f,  1.0f, 0.0f, 0.0f, 0xff000000 },
-	{ 1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 0xff0000ff },
-	{ -1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 0xff00ff00 },
-	{ 1.0f, -1.0f,  1.0f, 1.0f, 1.0f, 0xff00ffff },
-	{ -1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 0xffff0000 },
-	{ 1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0xffff00ff },
-	{ -1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0xffffff00 },
-	{ 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 0xffffffff },
-};
-static const uint16_t s_cubeTriList[] = { 2, 1, 0, 2, 3, 1, 5, 6, 4, 7, 6, 5, 4, 2, 0, 6, 2, 4, 3, 5, 1, 3, 7, 5, 1, 4, 0, 1, 5, 4, 6, 3, 2, 7, 3, 6 };
-
 class Engine : public bigg::Application
 {
 	void initialize(int _argc, char** _argv)
@@ -105,34 +71,27 @@ class Engine : public bigg::Application
 		IG_CORE_INFO("OpenAL Devices: {}", audio->getDevices());
 		IG_CORE_INFO("OpenAL Extensions: {}", audio->getExtensions());
 
-		PosColorVertex::init();
 		Vertex::init();
 
-		s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Int1);
-		s_norm = bgfx::createUniform("s_norm", bgfx::UniformType::Int1);
-		handle = renderer->loadTexture("res/icons/icon48.png", BGFX_SAMPLER_UVW_CLAMP, false);
-		mProgram = renderer->loadProgram("vs_cubes", "fs_cubes");
-		mVbh = bgfx::createVertexBuffer(bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices)), PosColorVertex::ms_decl);
-		mIbh = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList)));
-
-		bgfx::setDebug(BGFX_DEBUG_TEXT);
-		
-		for (uint32_t yy = 0; yy < 11; ++yy)
-		{
-			for (uint32_t xx = 0; xx < 11; ++xx)
-			{
-				glm::mat4 mtx;
-				mtx = glm::translate(mtx, glm::vec3(15.0f - float(xx) * 3.0f, -15.0f + float(yy) * 3.0f, 0.0f));
-				auto entity = registry.create();
-				registry.assign<ModelComponent>(entity, mVbh, mIbh, handle, s_tex, mProgram);
-				registry.assign<Transformation>(entity, mtx);
-				registry.assign<Cube>(entity, xx, yy);
-			}
-		}
-
 		p = renderer->loadProgram("vs_bunny", "fs_bunny");
+		c = renderer->loadProgram("vs_cubes", "fs_cubes");
 		bunny = new Model("res/models/sponza/sponza.obj");
 		barn = new Model("res/models/BigBarn/BigBarn.obj");
+
+		glm::mat4 mat;
+		mat = glm::translate(mat, glm::vec3(0.0f, 0.0f, -35.0f));
+		mat = glm::scale(mat, glm::vec3(0.01f));
+
+		auto entity = registry.create();
+		registry.assign<ModelComponent>(entity, bunny, p);
+		registry.assign<Transformation>(entity, mat);
+
+		glm::mat4 mat0;
+		entity = registry.create();
+		registry.assign<ModelComponent>(entity, barn, c);
+		registry.assign<Transformation>(entity, mat0);
+
+		handle = renderer->loadTexture("res/icons/icon48.png", false);
 
 		camera = new Camera(glm::vec3(0.0f, 5.0f, -35.0f), getWidth(), getHeight());
 
@@ -181,29 +140,8 @@ class Engine : public bigg::Application
 	{
 		camera->update(dt);
 		camera->use(getWidth(), getHeight());
-		MoveSystem::update(dt, registry);
 		bgfx::touch(0);
-		RendererSystem::render(registry);
-
-		glm::mat4 mat;
-		mat = glm::translate(mat, glm::vec3(0.0f, 0.0f, -35.0f));
-		mat = glm::scale(mat, glm::vec3(0.01f));
-		for (Mesh* mesh : bunny->meshes)
-		{
-			bgfx::setTransform(&mat);
-			bgfx::setVertexBuffer(0, mesh->vbh);
-			bgfx::setIndexBuffer(mesh->ibh);
-			if(mesh->textures.size() > 0)
-				bgfx::setTexture(0, s_tex, mesh->textures[0]);
-			else
-				bgfx::setTexture(0, s_tex, handle);
-			if (mesh->textures.size() > 1)
-				bgfx::setTexture(1, s_norm, mesh->textures[1]);
-			else
-				bgfx::setTexture(1, s_norm, handle);
-			bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
-			bgfx::submit(0, p);
-		}
+		RendererSystem::render(registry, handle);
 
 		sky->update(dt);
 
@@ -237,9 +175,8 @@ class Engine : public bigg::Application
 		Input::setCursorVisible(mWindow, true);
 		IG_CORE_INFO("Shutingdown Servers");
 		bgfx::destroy(handle);
-		bgfx::destroy(s_tex);
-		bgfx::destroy(mProgram);
 		bgfx::destroy(p);
+		bgfx::destroy(c);
 		RendererServer* renderer = &RendererServer::getInstance();
 		renderer->cleanUp();
 		delete bunny;
@@ -249,16 +186,12 @@ class Engine : public bigg::Application
 	}
 private:
 	uint32_t mReset = BGFX_RESET_NONE;
-	bgfx::ProgramHandle mProgram;
-	bgfx::VertexBufferHandle mVbh;
-	bgfx::IndexBufferHandle mIbh;
 	entt::registry<> registry;
 	AudioServer* audio;
 	bgfx::TextureHandle handle;
-	bgfx::UniformHandle s_tex;
-	bgfx::UniformHandle s_norm;
 	SkySystem* sky;
 	bgfx::ProgramHandle p;
+	bgfx::ProgramHandle c;
 	Model* bunny;
 	Model* barn;
 	Camera* camera;

@@ -5,7 +5,5 @@
 
 namespace RendererSystem
 {
-	void render(entt::registry<> &registry);
-
-	void useCamera(uint32_t entity, uint16_t width, uint16_t height, entt::registry<> &registry);
+	void render(entt::registry<> &registry, bgfx::TextureHandle handle);
 }
