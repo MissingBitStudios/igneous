@@ -26,5 +26,6 @@ namespace RendererSystem
 				bgfx::submit(0, model.program);
 			}
 		});
+		bgfx::destroy(s_tex);
 	}
 }

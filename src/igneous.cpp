@@ -17,7 +17,6 @@
 #include "servers/audioServer.h"
 #include "servers/rendererServer.h"
 #include "systems/captureSystem.h"
-#include "systems/moveSystem.h"
 #include "systems/rendererSystem.h"
 #include "systems/skySystem.h"
 #include "util/camera.h"
@@ -31,6 +30,7 @@ class Engine : public bigg::Application
 {
 	void initialize(int _argc, char** _argv)
 	{
+		IG_CORE_INFO("Setting window title and icon");
 		glfwSetWindowTitle(mWindow, "Igneous");
 		GLFWimage images[3];
 		images[0].pixels = stbi_load("res/icons/icon16.png", &images[0].width, &images[0].height, 0, 4);
@@ -40,6 +40,7 @@ class Engine : public bigg::Application
 		stbi_image_free(images[0].pixels);
 		stbi_image_free(images[1].pixels);
 		stbi_image_free(images[2].pixels);
+		IG_CORE_INFO("Window title and icon set");
 
 		IG_CORE_INFO("Initializing Servers");
 		RendererServer* renderer = &RendererServer::getInstance();
@@ -96,7 +97,6 @@ class Engine : public bigg::Application
 		camera = new Camera(glm::vec3(0.0f, 5.0f, -35.0f), getWidth(), getHeight());
 
 		Input::keySignal.sink().connect<&CaptureSystem::onKey>();
-		Input::keySignal.sink().connect<&MoveSystem::onKey>();
 
 		mReset |= BGFX_RESET_MSAA_X4;
 		reset(mReset);
@@ -108,6 +108,8 @@ class Engine : public bigg::Application
 	{
 		Input::onKey(key, scancode, action, mods);
 		if (Input::keys[GLFW_KEY_ESCAPE]) glfwSetWindowShouldClose(mWindow, true);
+		if (Input::keys[GLFW_KEY_R]) Input::setCursorVisible(mWindow, true);
+		if (Input::keys[GLFW_KEY_H]) Input::setCursorVisible(mWindow, false);
 	}
 	
 	void onMouseButton(int button, int action, int mods)
