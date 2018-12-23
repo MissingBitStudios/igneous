@@ -47,7 +47,12 @@ include(${CMAKE_SOURCE_DIR}/cmake/UseStb.cmake)
 set(IGNEOUS_LIBRARIES
   assimp
   bigg
-  ${BULLET_LIBRARIES}
+  LinearMath
+  Bullet3Common
+  BulletInverseDynamics
+  BulletCollision
+  BulletDynamics
+  BulletSoftBody
   EnTT
   ${MONO_LIBRARY}
   fastnoise

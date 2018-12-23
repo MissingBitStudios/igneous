@@ -15,6 +15,7 @@
 #include "components/modelComponent.h"
 #include "components/transformationComponent.h"
 #include "servers/audioServer.h"
+#include "servers/physicsServer.h"
 #include "servers/rendererServer.h"
 #include "systems/captureSystem.h"
 #include "systems/rendererSystem.h"
@@ -46,6 +47,7 @@ class Engine : public bigg::Application
 		IG_CORE_INFO("Initializing Servers");
 		RendererServer* renderer = &RendererServer::getInstance();
 		audio = &AudioServer::getInstance();
+		physics = &PhysicsServer::getInstance();
 		IG_CORE_INFO("Servers Initialized");
 
 		sky = new SkySystem;
@@ -93,13 +95,19 @@ class Engine : public bigg::Application
 		registry.assign<ModelComponent>(entity, barn, c);
 		registry.assign<Transformation>(entity, mat0);
 
-		Model* terrain = Terrain::terrain(0, 5, 5);
+		Model* terrain = Terrain::terrain(0, 10, 10);
 
 		glm::mat4 mat1;
 		mat1 = glm::translate(mat1, glm::vec3(-35.0f, 0.0f, 0.0f));
 		entity = registry.create();
 		registry.assign<ModelComponent>(entity, terrain, c);
 		registry.assign<Transformation>(entity, mat1);
+
+		glm::mat4 mat2;
+		mat2 = glm::translate(mat1, glm::vec3(50.0f, 0.0f, 0.0f));
+		entity = registry.create();
+		registry.assign<ModelComponent>(entity, terrain, c);
+		registry.assign<Transformation>(entity, mat2);
 
 		handle = renderer->loadTexture("res/icons/icon48.png", false);
 
@@ -149,6 +157,7 @@ class Engine : public bigg::Application
 
 	void update(float dt)
 	{
+		physics->step(dt);
 		camera->update(dt);
 		camera->use(getWidth(), getHeight());
 		bgfx::touch(0);
@@ -206,6 +215,7 @@ private:
 	Model* bunny;
 	Model* barn;
 	Camera* camera;
+	PhysicsServer* physics;
 };
 
 int main(int argc, char** argv)
