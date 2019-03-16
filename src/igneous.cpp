@@ -14,6 +14,8 @@
 #include "components/cubeComponent.h"
 #include "components/modelComponent.h"
 #include "components/transformationComponent.h"
+#include "modules/console/Console.h"
+#include "modules/gui/gui.h"
 #include "servers/audioServer.h"
 #include "servers/physicsServer.h"
 #include "servers/rendererServer.h"
@@ -50,7 +52,10 @@ class Engine : public bigg::Application
 		physics = &PhysicsServer::getInstance();
 		IG_CORE_INFO("Servers Initialized");
 
+		gui::cherryTheme();
 		sky = new SkySystem;
+
+		console = &Console::GetInstance();
 
 		IG_CORE_INFO("-----Version Info-----");
 		IG_CORE_INFO("Igneous Version: {}", IGNEOUS_VERSION);
@@ -113,12 +118,14 @@ class Engine : public bigg::Application
 
 		camera = new Camera(glm::vec3(-35.0f, 5.0f, 0.0f), getWidth(), getHeight());
 
-		Input::keySignal.sink().connect<&CaptureSystem::onKey>();
+		IN_KEY_SINK(&CaptureSystem::onKey);
 
 		mReset |= BGFX_RESET_MSAA_X4;
 		reset(mReset);
 
 		Input::setCursorVisible(mWindow, false);
+
+		IG_CONSOLE_INFO("Engine Initialized!");
 	}
 
 	void onKey(int key, int scancode, int action, int mods)
@@ -166,6 +173,7 @@ class Engine : public bigg::Application
 		sky->update(dt);
 
 		ImGui::ShowDemoWindow();
+		console->Render();
 
 		ImGui::Begin("Audio Test");
 		if (ImGui::Button("bell"))
@@ -216,6 +224,7 @@ private:
 	Model* barn;
 	Camera* camera;
 	PhysicsServer* physics;
+	Console* console;
 };
 
 int main(int argc, char** argv)

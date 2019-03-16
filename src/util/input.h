@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <entt/entt.hpp>
 
+#define IN_KEY_SINK(callback) Input::keySignal.sink().connect<callback>()
+
 namespace Input
 {
 	void onKey(int key, int scancode, int action, int mods);

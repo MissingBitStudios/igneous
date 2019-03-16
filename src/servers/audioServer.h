@@ -5,6 +5,8 @@
 #include <al.h>
 #include <alc.h>
 
+#include "../modules/console/Console.h"
+
 class AudioServer
 {
 public:
@@ -24,6 +26,8 @@ public:
 private:
 	AudioServer();
 	~AudioServer();
+
+	static void play_sound_callback(arg_list args);
 
 	const char* ALErrorToString(ALCenum error);
 

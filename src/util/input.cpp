@@ -16,7 +16,7 @@ namespace Input
 		}
 		keySignal.publish(key, scancode, action, mods);
 	}
-
+	
 	void onMouseButton(int button, int action, int mods)
 	{
 		if (action == GLFW_PRESS)

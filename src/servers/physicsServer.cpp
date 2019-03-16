@@ -20,6 +20,7 @@ PhysicsServer::PhysicsServer()
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+	dynamicsWorld->debugDrawWorld();
 	IG_CORE_INFO("Physics Server Initialized");
 }
 

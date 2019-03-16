@@ -2,6 +2,7 @@
 
 #define STB_VORBIS_HEADER_ONLY
 #include "stb_vorbis.c"
+
 #include "../util/log.h"
 
 AudioServer::AudioServer()
@@ -30,6 +31,9 @@ AudioServer::AudioServer()
 		IG_CORE_ERROR("OpenAL failed to open a device! Error: {}", ALErrorToString(alGetError()));
 	}
 	IG_CORE_INFO("Audio Server Initialized");
+
+	Console& console = Console::GetInstance();
+	console.Register("play_sound", play_sound_callback);
 }
 
 AudioServer& AudioServer::getInstance() {
@@ -85,6 +89,16 @@ void AudioServer::playSound(ALuint buffer)
 	const ALuint buffers[1] = { buffer };
 	alSourceQueueBuffers(source, 1, buffers);
 	alSourcePlay(source);
+}
+
+void AudioServer::play_sound_callback(arg_list args)
+{
+	if (args.size() > 0)
+	{
+		AudioServer& audio = getInstance();
+		std::string path = "res/audio/" + args[0] + ".ogg";
+		audio.playSound(audio.loadSound(path.c_str()));
+	}
 }
 
 const char* AudioServer::ALErrorToString(ALCenum error)
