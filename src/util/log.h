@@ -10,18 +10,28 @@ class Log
 public:
 	static Log& getInstance();
 
+#if IG_DEBUG
 	inline std::shared_ptr<spdlog::logger>& getCoreLogger() { return coreLogger; }
 	inline std::shared_ptr<spdlog::logger>& getClientLogger() { return clientLogger; }
+#endif
 	inline std::shared_ptr<spdlog::logger>& getConsoleLogger() { return consoleLogger; }
 
 	Log(Log const&) = delete;
 	void operator=(Log const&) = delete;
 private:
 	Log();
+#if IG_DEBUG
 	std::shared_ptr<spdlog::logger> coreLogger;
 	std::shared_ptr<spdlog::logger> clientLogger;
+#endif
 	std::shared_ptr<spdlog::logger> consoleLogger;
 };
+
+#define IG_CONSOLE_TRACE(...)  Log::getInstance().getConsoleLogger()->trace(__VA_ARGS__)
+#define IG_CONSOLE_INFO(...)   Log::getInstance().getConsoleLogger()->info(__VA_ARGS__)
+#define IG_CONSOLE_WARN(...)   Log::getInstance().getConsoleLogger()->warn(__VA_ARGS__)
+#define IG_CONSOLE_ERROR(...)  Log::getInstance().getConsoleLogger()->error(__VA_ARGS__)
+#define IG_CONSOLE_FATAL(...)  Log::getInstance().getConsoleLogger()->fatal(__VA_ARGS__)
 
 #if IG_DEBUG
 #define IG_CORE_TRACE(...)    Log::getInstance().getCoreLogger()->trace(__VA_ARGS__)
@@ -35,12 +45,6 @@ private:
 #define IG_CLIENT_WARN(...)   Log::getInstance().getClientLogger()->warn(__VA_ARGS__)
 #define IG_CLIENT_ERROR(...)  Log::getInstance().getClientLogger()->error(__VA_ARGS__)
 #define IG_CLIENT_FATAL(...)  Log::getInstance().getClientLogger()->fatal(__VA_ARGS__)
-
-#define IG_CONSOLE_TRACE(...)  Log::getInstance().getConsoleLogger()->trace(__VA_ARGS__)
-#define IG_CONSOLE_INFO(...)   Log::getInstance().getConsoleLogger()->info(__VA_ARGS__)
-#define IG_CONSOLE_WARN(...)   Log::getInstance().getConsoleLogger()->warn(__VA_ARGS__)
-#define IG_CONSOLE_ERROR(...)  Log::getInstance().getConsoleLogger()->error(__VA_ARGS__)
-#define IG_CONSOLE_FATAL(...)  Log::getInstance().getConsoleLogger()->fatal(__VA_ARGS__)
 #else
 #define IG_CORE_TRACE(...)
 #define IG_CORE_INFO(...)
@@ -53,10 +57,4 @@ private:
 #define IG_CLIENT_WARN(...)
 #define IG_CLIENT_ERROR(...)
 #define IG_CLIENT_FATAL(...)
-
-#define IG_CONSOLE_TRACE(...)
-#define IG_CONSOLE_INFO(...)
-#define IG_CONSOLE_WARN(...)
-#define IG_CONSOLE_ERROR(...)
-#define IG_CONSOLE_FATAL(...)
 #endif

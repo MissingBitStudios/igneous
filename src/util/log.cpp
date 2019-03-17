@@ -9,27 +9,24 @@
 
 Log::Log()
 {
-	spdlog::set_pattern("%^[%T][%n][%l]: %v%$");
+	spdlog::set_pattern("[%T][%n]%^[%l]%$: %v");
 
+#if IG_DEBUG
+	//Engine logger
 	coreLogger = spdlog::stdout_color_mt("IGNEOUS");
 	coreLogger->set_level(spdlog::level::trace);
 
+	//Embedded application logger
 	clientLogger = spdlog::stdout_color_mt("APP");
 	clientLogger->set_level(spdlog::level::trace);
+#endif
 
-	auto dist_sink = std::make_shared<spdlog::sinks::dist_sink_st>();
-
+	//Console logger
+	consoleLogger = spdlog::stdout_color_mt("CONSOLE");
 	auto con_sink = std::make_shared<console_sink<std::mutex>>();
-	con_sink->set_pattern("%^[%l] %v%$");
-	dist_sink->add_sink(con_sink);
-
-	auto color_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-	color_sink->set_pattern("%^[%T][%n][%l]: %v%$");
-	dist_sink->add_sink(color_sink);
-
-	consoleLogger = std::make_shared<spdlog::logger>("CONSOLE", dist_sink);
+	con_sink->set_pattern("%^%v%$");
+	consoleLogger->sinks().push_back(con_sink);
 	consoleLogger->set_level(spdlog::level::trace);
-	spdlog::register_logger(consoleLogger);
 }
 
 Log& Log::getInstance() {

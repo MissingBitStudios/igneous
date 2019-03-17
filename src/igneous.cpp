@@ -46,6 +46,8 @@ class Engine : public bigg::Application
 		stbi_image_free(images[2].pixels);
 		IG_CORE_INFO("Window title and icon set");
 
+		Input::Init(mWindow);
+
 		IG_CORE_INFO("Initializing Servers");
 		RendererServer* renderer = &RendererServer::getInstance();
 		audio = &AudioServer::getInstance();
@@ -71,8 +73,8 @@ class Engine : public bigg::Application
 		IG_CORE_INFO("spdlog Version: {}.{}.{}", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR, SPDLOG_VER_PATCH);
 
 		IG_CORE_INFO("-----Renderer Info-----");
-		IG_CORE_INFO("{}", renderer->getSupportedRenderers());
-		IG_CORE_INFO("{}", renderer->getGpuInfo());
+		IG_CORE_INFO(renderer->getSupportedRenderers());
+		IG_CORE_INFO(renderer->getGpuInfo());
 
 		IG_CORE_INFO("-----OpenAL Info-----");
 		IG_CORE_INFO("OpenAL Vendor: {}", audio->getVendor());
@@ -128,33 +130,12 @@ class Engine : public bigg::Application
 		IG_CONSOLE_INFO("Engine Initialized!");
 	}
 
-	void onKey(int key, int scancode, int action, int mods)
-	{
-		Input::onKey(key, scancode, action, mods);
-		if (Input::keys[GLFW_KEY_ESCAPE]) glfwSetWindowShouldClose(mWindow, true);
-		if (Input::keys[GLFW_KEY_R]) Input::setCursorVisible(mWindow, true);
-		if (Input::keys[GLFW_KEY_H]) Input::setCursorVisible(mWindow, false);
-	}
-	
-	void onMouseButton(int button, int action, int mods)
-	{
-		Input::onMouseButton(button, action, mods);
-	}
-
-	void onScroll(double xoffset, double yoffset)
-	{
-		Input::onScroll(xoffset, yoffset);
-	}
-
-	void onCursorPos(double xpos, double ypos)
-	{
-		Input::onCursorPos(xpos, ypos);
-	}
-
-	void onCursorEnter(int entered)
-	{
-		Input::onCursorEnter(entered);
-	}
+	//Input callbacks
+	void onKey(int key, int scancode, int action, int mods) { Input::onKey(key, scancode, action, mods); }
+	void onMouseButton(int button, int action, int mods) { Input::onMouseButton(button, action, mods); }
+	void onScroll(double xoffset, double yoffset) { Input::onScroll(xoffset, yoffset); }
+	void onCursorPos(double xpos, double ypos) { Input::onCursorPos(xpos, ypos); }
+	void onCursorEnter(int entered) { Input::onCursorEnter(entered); }
 
 	void onReset()
 	{
