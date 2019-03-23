@@ -22,7 +22,7 @@
 #include "systems/captureSystem.h"
 #include "systems/rendererSystem.h"
 #include "systems/skySystem.h"
-#include "util/camera.h"
+#include "util/fpsCamera.h"
 #include "util/capture.h"
 #include "util/input.h"
 #include "util/log.h"
@@ -118,7 +118,7 @@ class Engine : public bigg::Application
 
 		handle = renderer->loadTexture("res/icons/icon48.png", false);
 
-		camera = new Camera(glm::vec3(-35.0f, 5.0f, 0.0f), getWidth(), getHeight());
+		camera = new FPSCamera(glm::vec3(-35.0f, 5.0f, 0.0f), getWidth(), getHeight());
 
 		IN_KEY_SINK(&CaptureSystem::onKey);
 
@@ -203,7 +203,7 @@ private:
 	bgfx::ProgramHandle c;
 	Model* bunny;
 	Model* barn;
-	Camera* camera;
+	FPSCamera* camera;
 	PhysicsServer* physics;
 	Console* console;
 };

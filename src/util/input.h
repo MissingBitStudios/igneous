@@ -16,21 +16,13 @@ namespace Input
 	void Init(GLFWwindow* window);
 
 	void onKey(int key, int scancode, int action, int mods);
-
 	void onMouseButton(int button, int action, int mods);
-
 	void onScroll(double xoffset, double yoffset);
-
 	void onCursorPos(double xpos, double ypos);
-
 	void onCursorEnter(int entered);
-
 	void setCursorPos(GLFWwindow* window, double xpos, double ypos);
-
 	void setCursorVisible(GLFWwindow* window, bool visible);
-
 	void toggleCursorCallback(arg_list args);
-
 	void quitCallback(arg_list args);
 
 	extern bool keys[GLFW_KEY_LAST + 1];
