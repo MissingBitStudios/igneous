@@ -1,4 +1,4 @@
-#include "Console.h"
+#include "console.h"
 
 #include <cctype>
 #include <regex>
@@ -42,20 +42,20 @@ Console& Console::getInstance() {
 	return instance;
 }
 
-void Console::alias(const std::string& alias, const std::string& exe)
+void Console::alias(const std::string& name, const std::string& exe)
 {
-	RETURN_INVALID(alias);
-	if (commandExists(alias) || variableExists(alias)) { IG_CONSOLE_ERROR("A command or variable already exists with the name: {}", alias); return; }
+	RETURN_INVALID(name);
+	if (commandExists(name) || variableExists(name)) { IG_CONSOLE_ERROR("A command or variable already exists with the name: {}", name); return; }
 
 	if (!exe.empty())
 	{
-		aliases[alias] = parse(exe);
+		aliases[name] = parse(exe);
 	}
 }
 
-bool Console::aliasExists(const std::string& alias) const
+bool Console::aliasExists(const std::string& name) const
 {
-	return aliases.count(alias);
+	return aliases.count(name);
 }
 
 void Console::aliasCallback(arg_list args)
@@ -105,17 +105,17 @@ void Console::clearCallback(arg_list args)
 	cmd.clear();
 }
 
-void Console::command(const std::string& command, command_callback callback)
+void Console::command(const std::string& name, command_callback callback)
 {
-	RETURN_INVALID(command);
-	RETURN_EXISTS(command);
+	RETURN_INVALID(name);
+	RETURN_EXISTS(name);
 
-	commands[command] = callback;
+	commands[name] = callback;
 }
 
-bool Console::commandExists(const std::string& command) const
+bool Console::commandExists(const std::string& name) const
 {
-	return commands.count(command);
+	return commands.count(name);
 }
 
 void Console::execute(call_sequence calls, bool positive) const
@@ -251,6 +251,7 @@ void Console::onKey(int key, int scancode, int action, int mods)
 call_sequence Console::parse(std::string input)
 {
 	call_sequence seq;
+	if (input.empty()) return seq;
 	arg_list elements;
 	size_t clipStart = 0;
 	bool clipping = false;
@@ -521,9 +522,14 @@ std::string Console::unparse(call_sequence calls)
 	return out;
 }
 
-ConVar* Console::variable(const std::string& variable, const std::string& defaultValue)
+ConVar* Console::variable(const std::string& name, const std::string& defaultValue, convar_callback callback)
 {
-	return variables[variable] = new ConVar(variable, defaultValue);
+	return variables[name] = new ConVar(name, defaultValue, callback);
+}
+
+ConVar* Console::variable(const std::string& name, const std::string& defaultValue, const std::string& initialValue, convar_callback callback)
+{
+	return variables[name] = new ConVar(name, defaultValue, initialValue, callback);
 }
 
 bool Console::variableExists(const std::string& variable) const

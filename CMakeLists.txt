@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.8)
 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the igneous source code and call cmake from there")
@@ -33,11 +33,15 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/capture)
 
 add_executable(${CMAKE_PROJECT_NAME} ${IGNEOUS_SOURCES})
 
-target_link_libraries (${CMAKE_PROJECT_NAME} ${IGNEOUS_LIBRARIES})
+target_link_libraries(${CMAKE_PROJECT_NAME} ${IGNEOUS_LIBRARIES})
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
   ${CMAKE_BINARY_DIR}/src
   ${IGNEOUS_INCLUDES}
 )
+
+add_subdirectory(engine)
+add_subdirectory(samples)
+add_dependencies(igneous sandbox libigneous)
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${CMAKE_PROJECT_NAME})

@@ -9,12 +9,26 @@ namespace Input
 		IG_CORE_INFO("Initializing Input");
 		window = win;
 		Console& console = Console::getInstance();
-		console.command("toggle_cursor", toggleCursorCallback);
 		console.command("quit", quitCallback);
 
-		console.bind(GLFW_KEY_T, "toggle_cursor");
+		console.variable("cursor_visible", "0", cursorVisibleCallback);
+
+		console.bind(GLFW_KEY_T, "^cursor_visible");
 		console.bind(GLFW_KEY_ESCAPE, "quit");
 		IG_CORE_INFO("Input Initialized");
+	}
+
+	void cursorVisibleCallback(std::string oldValue, std::string newValue)
+	{
+		bool visible = false;
+		try {
+			visible = std::stoi(newValue) != 0;
+		}
+		catch (std::logic_error e)
+		{
+			visible = newValue != "false";
+		}
+		Input::setCursorVisible(window, visible);
 	}
 
 	void onKey(int key, int scancode, int action, int mods)
@@ -70,11 +84,6 @@ namespace Input
 	void setCursorVisible(GLFWwindow* window, bool visible)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
-	}
-
-	void toggleCursorCallback(arg_list args)
-	{
-		Input::setCursorVisible(window, glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED);
 	}
 
 	void quitCallback(arg_list args)

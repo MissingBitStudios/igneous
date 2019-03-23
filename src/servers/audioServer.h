@@ -5,7 +5,7 @@
 #include <al.h>
 #include <alc.h>
 
-#include "../modules/console/Console.h"
+#include "../modules/console/console.h"
 
 class AudioServer
 {

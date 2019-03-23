@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 
 #include <bigg.hpp>
 #include <bgfx/bgfx.h>

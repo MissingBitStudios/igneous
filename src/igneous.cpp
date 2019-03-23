@@ -16,6 +16,7 @@
 #include "components/transformationComponent.h"
 #include "modules/console/Console.h"
 #include "modules/gui/gui.h"
+#include "modules/scripting/scripting.h"
 #include "servers/audioServer.h"
 #include "servers/physicsServer.h"
 #include "servers/rendererServer.h"
@@ -84,21 +85,21 @@ class Engine : public bigg::Application
 
 		Vertex::init();
 
-		p = renderer->loadProgram("vs_bunny", "fs_bunny");
+		//p = renderer->loadProgram("vs_bunny", "fs_bunny");
 		c = renderer->loadProgram("vs_cubes", "fs_cubes");
-		bunny = new Model("res/models/sponza/sponza.obj");
+		//bunny = new Model("res/models/sponza/sponza.obj");
 		barn = new Model("res/models/BigBarn/BigBarn.obj");
 
-		glm::mat4 mat;
-		mat = glm::translate(mat, glm::vec3(0.0f, 0.0f, -35.0f));
-		mat = glm::scale(mat, glm::vec3(0.01f));
+		//glm::mat4 mat;
+		//mat = glm::translate(mat, glm::vec3(0.0f, 0.0f, -35.0f));
+		//mat = glm::scale(mat, glm::vec3(0.01f));
 
-		auto entity = registry.create();
-		registry.assign<ModelComponent>(entity, bunny, p);
-		registry.assign<Transformation>(entity, mat);
+		//auto entity = registry.create();
+		//registry.assign<ModelComponent>(entity, bunny, p);
+		//registry.assign<Transformation>(entity, mat);
 
 		glm::mat4 mat0;
-		entity = registry.create();
+		auto entity = registry.create();
 		registry.assign<ModelComponent>(entity, barn, c);
 		registry.assign<Transformation>(entity, mat0);
 
@@ -128,6 +129,8 @@ class Engine : public bigg::Application
 		Input::setCursorVisible(mWindow, false);
 
 		IG_CONSOLE_INFO("Engine Initialized!");
+
+		scripting = new Scripting((void**)_argv);
 	}
 
 	//Input callbacks
@@ -145,6 +148,7 @@ class Engine : public bigg::Application
 
 	void update(float dt)
 	{
+		scripting->update(dt);
 		physics->step(dt);
 		camera->update(dt);
 		camera->use(getWidth(), getHeight());
@@ -181,14 +185,15 @@ class Engine : public bigg::Application
 
 	int shutdown()
 	{
+		delete scripting;
 		Input::setCursorVisible(mWindow, true);
 		IG_CORE_INFO("Shutingdown Servers");
 		bgfx::destroy(handle);
-		bgfx::destroy(p);
+		//bgfx::destroy(p);
 		bgfx::destroy(c);
 		RendererServer* renderer = &RendererServer::getInstance();
 		renderer->cleanUp();
-		delete bunny;
+		//delete bunny;
 		delete barn;
 		delete sky;
 		return 0;
@@ -199,13 +204,14 @@ private:
 	AudioServer* audio;
 	bgfx::TextureHandle handle;
 	SkySystem* sky;
-	bgfx::ProgramHandle p;
+	//bgfx::ProgramHandle p;
 	bgfx::ProgramHandle c;
-	Model* bunny;
+	//Model* bunny;
 	Model* barn;
 	FPSCamera* camera;
 	PhysicsServer* physics;
 	Console* console;
+	Scripting* scripting;
 };
 
 int main(int argc, char** argv)

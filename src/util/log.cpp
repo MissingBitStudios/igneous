@@ -2,8 +2,9 @@
 
 #include <mutex>
 
+#if IG_DEBUG
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/sinks/dist_sink.h>
+#endif
 
 #include "../modules/console/console_sink.h"
 
@@ -19,7 +20,6 @@ Log::Log()
 	//Embedded application logger
 	clientLogger = spdlog::stdout_color_mt("APP");
 	clientLogger->set_level(spdlog::level::trace);
-#endif
 
 	//Console logger
 	consoleLogger = spdlog::stdout_color_mt("CONSOLE");
@@ -27,6 +27,12 @@ Log::Log()
 	con_sink->set_pattern("%v");
 	consoleLogger->sinks().push_back(con_sink);
 	consoleLogger->set_level(spdlog::level::trace);
+#else
+	//Console logger
+	auto con_sink = std::make_shared<console_sink<std::mutex>>();
+	consoleLogger = std::make_shared<spdlog::logger>("CONSOLE", con_sink);
+	consoleLogger->set_level(spdlog::level::trace);
+#endif
 }
 
 Log& Log::getInstance() {

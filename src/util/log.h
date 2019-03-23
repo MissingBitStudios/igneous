@@ -27,34 +27,39 @@ private:
 	std::shared_ptr<spdlog::logger> consoleLogger;
 };
 
-#define IG_CONSOLE_TRACE(...)  Log::getInstance().getConsoleLogger()->trace(__VA_ARGS__)
-#define IG_CONSOLE_INFO(...)   Log::getInstance().getConsoleLogger()->info(__VA_ARGS__)
-#define IG_CONSOLE_WARN(...)   Log::getInstance().getConsoleLogger()->warn(__VA_ARGS__)
-#define IG_CONSOLE_ERROR(...)  Log::getInstance().getConsoleLogger()->error(__VA_ARGS__)
-#define IG_CONSOLE_FATAL(...)  Log::getInstance().getConsoleLogger()->fatal(__VA_ARGS__)
-
 #if IG_DEBUG
 #define IG_CORE_TRACE(...)    Log::getInstance().getCoreLogger()->trace(__VA_ARGS__)
 #define IG_CORE_INFO(...)     Log::getInstance().getCoreLogger()->info(__VA_ARGS__)
 #define IG_CORE_WARN(...)     Log::getInstance().getCoreLogger()->warn(__VA_ARGS__)
 #define IG_CORE_ERROR(...)    Log::getInstance().getCoreLogger()->error(__VA_ARGS__)
 #define IG_CORE_FATAL(...)    Log::getInstance().getCoreLogger()->fatal(__VA_ARGS__)
+#define IG_CORE_LOG(msg, level)  Log::getInstance().getCoreLogger()->log((spdlog::level::level_enum)level, msg)
 
 #define IG_CLIENT_TRACE(...)  Log::getInstance().getClientLogger()->trace(__VA_ARGS__)
 #define IG_CLIENT_INFO(...)   Log::getInstance().getClientLogger()->info(__VA_ARGS__)
 #define IG_CLIENT_WARN(...)   Log::getInstance().getClientLogger()->warn(__VA_ARGS__)
 #define IG_CLIENT_ERROR(...)  Log::getInstance().getClientLogger()->error(__VA_ARGS__)
 #define IG_CLIENT_FATAL(...)  Log::getInstance().getClientLogger()->fatal(__VA_ARGS__)
+#define IG_CLIENT_LOG(msg, level)  Log::getInstance().getClientLogger()->log((spdlog::level::level_enum)level, msg)
 #else
 #define IG_CORE_TRACE(...)
 #define IG_CORE_INFO(...)
 #define IG_CORE_WARN(...)
 #define IG_CORE_ERROR(...)
 #define IG_CORE_FATAL(...)
+#define IG_CORE_LOG(msg, level)
 
 #define IG_CLIENT_TRACE(...)
 #define IG_CLIENT_INFO(...)
 #define IG_CLIENT_WARN(...)
 #define IG_CLIENT_ERROR(...)
 #define IG_CLIENT_FATAL(...)
+#define IG_CLIENT_LOG(msg, level)
 #endif
+
+#define IG_CONSOLE_TRACE(...)  Log::getInstance().getConsoleLogger()->trace(__VA_ARGS__)
+#define IG_CONSOLE_INFO(...)   Log::getInstance().getConsoleLogger()->info(__VA_ARGS__)
+#define IG_CONSOLE_WARN(...)   Log::getInstance().getConsoleLogger()->warn(__VA_ARGS__)
+#define IG_CONSOLE_ERROR(...)  Log::getInstance().getConsoleLogger()->error(__VA_ARGS__)
+#define IG_CONSOLE_FATAL(...)  Log::getInstance().getConsoleLogger()->fatal(__VA_ARGS__)
+#define IG_CONSOLE_LOG(msg, level)  Log::getInstance().getConsoleLogger()->log((spdlog::level::level_enum)level, msg)

@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <entt/entt.hpp>
 
-#include "../modules/console/Console.h"
+#include "../modules/console/console.h"
 
 #define IN_KEY_SINK(callback) Input::keySignal.sink().connect<callback>()
 #define IN_MOUSE_SINK(callback) Input::mouseSignal.sink().connect<callback>()
@@ -15,6 +15,7 @@ namespace Input
 {
 	void Init(GLFWwindow* window);
 
+	void cursorVisibleCallback(std::string oldValue, std::string newValue);
 	void onKey(int key, int scancode, int action, int mods);
 	void onMouseButton(int button, int action, int mods);
 	void onScroll(double xoffset, double yoffset);
@@ -22,7 +23,6 @@ namespace Input
 	void onCursorEnter(int entered);
 	void setCursorPos(GLFWwindow* window, double xpos, double ypos);
 	void setCursorVisible(GLFWwindow* window, bool visible);
-	void toggleCursorCallback(arg_list args);
 	void quitCallback(arg_list args);
 
 	extern bool keys[GLFW_KEY_LAST + 1];

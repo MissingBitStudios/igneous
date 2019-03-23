@@ -53,13 +53,13 @@ public:
 		off
 	};
 
-	void alias(const std::string& alias, const std::string& exe);
-	bool aliasExists(const std::string& alias) const;
+	void alias(const std::string& name, const std::string& exe);
+	bool aliasExists(const std::string& name) const;
 	void bind(int key, const std::string& exe);
 	bool bindExists(int key) const;
 	void clear();
-	void command(const std::string& command, command_callback callback);
-	bool commandExists(const std::string& command) const;
+	void command(const std::string& name, command_callback callback);
+	bool commandExists(const std::string& name) const;
 	void execute(call_sequence calls, bool positive = true) const;
 	void execute(const std::string& input, bool record = false, bool positive = true);
 	bool exists(const std::string& name) const;
@@ -76,7 +76,8 @@ public:
 	static int textEditCallbackStub(ImGuiInputTextCallbackData* data);
 	void unbind(int key);
 	static std::string unparse(call_sequence calls);
-	ConVar* variable(const std::string& variable, const std::string& defaultValue);
+	ConVar* variable(const std::string& name, const std::string& defaultValue, convar_callback callback = nullptr);
+	ConVar* variable(const std::string& name, const std::string& defaultValue, const std::string& initialValue, convar_callback callback = nullptr);
 	bool variableExists(const std::string& variable) const;
 	void write(const std::string& contents, level_enum level);
 
