@@ -29,9 +29,9 @@ namespace Input
 
 	void setCursorVisible(GLFWwindow* window, bool visible);
 
-	void toggle_cursor_callback(arg_list args);
+	void toggleCursorCallback(arg_list args);
 
-	void quit_callback(arg_list args);
+	void quitCallback(arg_list args);
 
 	extern bool keys[GLFW_KEY_LAST + 1];
 	extern bool mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1];

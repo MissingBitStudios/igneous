@@ -89,7 +89,7 @@ bgfx::TextureHandle RendererServer::loadTexture(const char* _filePath, uint32_t 
 		int width, height;
 		stbi_uc* data = stbi_load(_filePath, &width, &height, 0, 4);
 		const bgfx::Memory* mem = bgfx::copy(data, width * height * sizeof(stbi_uc*));
-		if (NULL != mem)
+		if (nullptr != mem)
 		{
 			handle = bgfx::createTexture2D((uint16_t)width, (uint16_t)height, false, 1, bgfx::TextureFormat::RGBA8, _flags, mem);
 		}

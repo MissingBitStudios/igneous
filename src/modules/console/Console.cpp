@@ -2,21 +2,29 @@
 
 #include <cctype>
 #include <regex>
+#include <sstream>
 
 #include "../../util/input.h"
-#include "../../util/log.h"
 
 Console::Console()
 {
-	Register("alias", alias_callback);
-	Register("bind", bind_callback);
-	Register("clear", clear_callback);
-	Register("unbind", unbind_callback);
-	Register("print", print_callback);
+	IG_CORE_INFO("Initializing Console");
+	command("alias", aliasCallback);
+	command("bind", bindCallback);
+	command("clear", clearCallback);
+	command("help", helpCallback);
+	command("print", printCallback);
+	command("unbind", unbindCallback);
 
-	Set("console", false);
+	consoleVar = variable("console", "0");
 
-	IN_KEY_SINK(&OnKey);
+	alias("+test", "print down;play_sound forest");
+	alias("-test", "print up");
+	bind(GLFW_KEY_GRAVE_ACCENT, "^console");
+	bind(GLFW_KEY_Z, "+test");
+	bind(GLFW_KEY_V, "-test");
+
+	IN_KEY_SINK(&onKey);
 
 	colors[trace] = WHITE;
 	colors[debug] = CYAN;
@@ -25,67 +33,64 @@ Console::Console()
 	colors[err] = RED;
 	colors[critical] = RED;
 	colors[off] = WHITE;
+
+	IG_CORE_INFO("Console Initialized");
 }
 
-Console::~Console()
-{
-	Clear();
-}
-
-Console& Console::GetInstance() {
+Console& Console::getInstance() {
 	static Console instance;
 	return instance;
 }
 
-void Console::Alias(std::string alias, std::string exe)
+void Console::alias(const std::string& alias, const std::string& exe)
 {
-	RETURN_INVALID(alias, "Alias");
-	RETURN_EXISTS(alias);
+	RETURN_INVALID(alias);
+	if (commandExists(alias) || variableExists(alias)) { IG_CONSOLE_ERROR("A command or variable already exists with the name: {}", alias); return; }
 
 	if (!exe.empty())
 	{
-		aliases[alias] = exe;
-	}
-	else
-	{
-		aliases.erase(alias);
+		aliases[alias] = parse(exe);
 	}
 }
 
-bool Console::AliasExists(std::string alias)
+bool Console::aliasExists(const std::string& alias) const
 {
 	return aliases.count(alias);
 }
 
-void Console::alias_callback(arg_list args)
+void Console::aliasCallback(arg_list args)
 {
+	Console& cmd = getInstance();
 	if (args.size() >= 2)
 	{
-		Console& cmd = GetInstance();
-		cmd.Alias(args[0], args[1]);
+		cmd.alias(args[0], args[1]);
+	}
+	else if (args.size() == 1)
+	{
+		cmd.remove(args[0]);
 	}
 }
 
-void Console::Bind(int key, std::string command)
+void Console::bind(int key, const std::string& exe)
 {
-	binds[key] = command;
+	binds[key] = parse(exe);
 }
 
-bool Console::BindExists(int key)
+bool Console::bindExists(int key) const
 {
 	return binds.count(key);
 }
 
-void Console::bind_callback(arg_list args)
+void Console::bindCallback(arg_list args)
 {
 	if (args.size() >= 2)
 	{
-		Console& cmd = GetInstance();
-		cmd.Bind(std::stoi(args[0]), args[1]);
+		Console& cmd = getInstance();
+		cmd.bind(std::stoi(args[0]), args[1]);
 	}
 }
 
-void Console::Clear()
+void Console::clear()
 {
 	for (line l : lines)
 	{
@@ -94,15 +99,77 @@ void Console::Clear()
 	lines.clear();
 }
 
-void Console::clear_callback(arg_list args)
+void Console::clearCallback(arg_list args)
 {
-	Console& cmd = GetInstance();
-	cmd.Clear();
+	Console& cmd = getInstance();
+	cmd.clear();
 }
 
-bool Console::CommandExists(std::string command)
+void Console::command(const std::string& command, command_callback callback)
+{
+	RETURN_INVALID(command);
+	RETURN_EXISTS(command);
+
+	commands[command] = callback;
+}
+
+bool Console::commandExists(const std::string& command) const
 {
 	return commands.count(command);
+}
+
+void Console::execute(call_sequence calls, bool positive) const
+{
+	for (call c : calls)
+	{
+		if (c.flags & CF_TOGGLE && positive)
+		{
+			if (variableExists(c.name))
+			{
+				ConVar& var = *get(c.name);
+				var = !var;
+			}
+			else
+			{
+				IG_CONSOLE_ERROR("No variable exists with the name: {}", c.name);
+			}
+		}
+		else if (c.flags & CF_ONOFF)
+		{
+			std::string name = positive ? "+" + c.name : "-" + c.name;
+			if (aliasExists(name) || commandExists(name))
+			{
+				run(name, c.args);
+			}
+			else
+			{
+				IG_CONSOLE_ERROR("No alias or command exists with the name: {}", c.name);
+			}
+		}
+		else if (positive)
+		{
+			if (aliasExists(c.name) || commandExists(c.name))
+			{
+				run(c.name, c.args);
+			}
+			else if (variableExists(c.name))
+			{
+				ConVar& var = *get(c.name);
+				if (c.args.empty())
+				{
+					IG_CONSOLE_TRACE(var);
+				}
+				else
+				{
+					var = c.args[0];
+				}
+			}
+			else
+			{
+				IG_CONSOLE_ERROR("No alias, command, or variable exists with the name: {}", c.name);
+			}
+		}
+	}
 }
 
 /**
@@ -119,101 +186,125 @@ bool Console::CommandExists(std::string command)
  *
  * @param input The input string to parse.
  */
-void Console::Execute(std::string input, bool record)
+void Console::execute(const std::string& input, bool record, bool positive)
 {
 	if (record)
 	{
 		IG_CONSOLE_TRACE("] {}", input);
 	}
-	arg_list elements;
-	std::size_t clipStart = 0;
-	bool clipping = false;
-	bool quoting = false;
-	for (std::size_t i = 0; i <= input.length(); i++)
+
+	execute(parse(input), positive);
+
+	if (record && input.size() > 0 && ((history.size() > 0 && input != history[0]) || history.size() == 0))
 	{
-		char currentChar;
-		if (i != input.length())
-			currentChar = input[i];
-		else
-			currentChar = ' ';
-		if (currentChar == '\"' && input[i - 1] != '\\')
+		if (history.size() >= max_history)
 		{
-			quoting = !quoting;
-			if (quoting)
-			{
-				clipStart = i + 1;
-				clipping = true;
-			}
-			else
-			{
-				std::string token = input.substr(clipStart, i - clipStart);
-				token = std::regex_replace(token, std::regex("\\\\\""), "\"");
-				elements.push_back(token);
-				clipping = false;
-			}
+			history.pop_back();
 		}
-		else
-		{
-			if (!std::isspace(currentChar) && !clipping)
-			{
-				clipStart = i;
-				clipping = true;
-			}
-			else if (std::isspace(currentChar) && clipping && !quoting)
-			{
-				elements.push_back(input.substr(clipStart, i - clipStart));
-				clipping = false;
-			}
-		}
-	}
-	if (elements.size() > 0)
-	{
-		if (record)
-		{
-			if ((history.size() > 0 && input != history[0]) || history.size() == 0)
-			{
-				if (history.size() >= max_history)
-				{
-					history.pop_back();
-				}
-				history.push_front(input);
-			}
-		}
-		std::string command = elements[0];
-		elements.erase(elements.begin());
-		Run(command, elements);
+		history.push_front(input);
 	}
 }
 
-bool Console::Exists(std::string name)
+bool Console::exists(const std::string& name) const
 {
-	return AliasExists(name) || CommandExists(name) || VariableExists(name);
+	return aliasExists(name) || commandExists(name) || variableExists(name);
 }
 
-bool Console::IsValid(std::string name)
+ConVar* Console::get(const std::string& variable) const
+{
+	if (!isValid(variable)) { IG_CONSOLE_ERROR("Variable name is invalid."); return nullptr; }
+
+	if (variables.count(variable))
+	{
+		return variables.at(variable);
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+void Console::helpCallback(arg_list args)
+{
+	Console& cmd = getInstance();
+	cmd.printInfo();
+}
+
+bool Console::isValid(const std::string& name) const
 {
 	return name.find_first_not_of("\t\n\v\f\r ") != std::string::npos;
 }
 
-void Console::OnKey(int key, int scancode, int action, int mods)
+void Console::onKey(int key, int scancode, int action, int mods)
 {
+	Console& cmd = getInstance();
 	if (action == GLFW_PRESS)
 	{
-		Console& cmd = GetInstance();
-		cmd.RunBind(key);
+		cmd.runBind(key, true);
 	}
-}
-
-void Console::Output(std::string contents, level_enum level)
-{
-	if (lines.size() >= max_lines)
+	else if (action == GLFW_RELEASE)
 	{
-		lines.pop_front();
+		cmd.runBind(key, false);
 	}
-	lines.push_back(line{ colors[level], _strdup(contents.c_str()) });
 }
 
-void Console::print_callback(arg_list args)
+call_sequence Console::parse(std::string input)
+{
+	call_sequence seq;
+	arg_list elements;
+	size_t clipStart = 0;
+	bool clipping = false;
+	bool quoting = false;
+	for (size_t i = 0; i <= input.size(); i++)
+	{
+		char cchar = i == input.size() ? ' ' : input[i];
+
+		if (cchar == '"')
+		{
+			if (input[i - 1] == '\\')
+			{
+				input.erase(i - 1, 1);
+				i--;
+			}
+			else
+			{
+				if (quoting)
+				{
+					elements.push_back(input.substr(clipStart, i - clipStart));
+					clipping = false;
+				}
+				quoting = !quoting;
+			}
+		}
+		else
+		{
+			if ((std::isspace(cchar) || cchar == ';') && clipping && !quoting)
+			{
+				elements.push_back(input.substr(clipStart, i - clipStart));
+				clipping = false;
+			}
+			else if (!clipping && !std::isspace(cchar))
+			{
+				clipStart = i;
+				clipping = true;
+			}
+
+			if ((i == input.size() || cchar == ';') && !clipping && !quoting)
+			{
+				std::string name = elements[0];
+				elements.erase(elements.begin());
+				int flags = CF_NONE;
+				if (name[0] == '^') { flags |= CF_TOGGLE; name.erase(name.begin()); }
+				else if (name[0] == '+') { flags |= CF_ONOFF; name.erase(name.begin()); }
+				seq.push_back(call{ name, elements, flags });
+				elements.clear();
+			}
+		}
+	}
+	return seq;
+}
+
+void Console::printCallback(arg_list args)
 {
 	if (args.size() > 0)
 	{
@@ -221,23 +312,55 @@ void Console::print_callback(arg_list args)
 	}
 }
 
-void Console::Register(std::string command, command_callback callback)
+void Console::printInfo() const
 {
-	RETURN_INVALID(command, "Command");
-	RETURN_EXISTS(command);
+	IG_CONSOLE_TRACE("Aliases:");
+	for (auto it = aliases.begin(); it != aliases.end(); it++)
+	{
+		IG_CONSOLE_TRACE("  {} = {}", it->first, unparse(it->second));
+	}
 
-	commands[command] = callback;
+	IG_CONSOLE_TRACE("Binds:");
+	for (auto it = binds.begin(); it != binds.end(); it++)
+	{
+		IG_CONSOLE_TRACE("  {} = {}", glfwGetKeyName(it->first, 0), unparse(it->second));
+	}
+
+	IG_CONSOLE_TRACE("Commands:");
+	for (auto it = commands.begin(); it != commands.end(); it++)
+	{
+		IG_CONSOLE_TRACE("  {}", it->first);
+	}
+
+	IG_CONSOLE_TRACE("Variables:");
+	for (auto it = variables.begin(); it != variables.end(); it++)
+	{
+		IG_CONSOLE_TRACE("  {} = {}", it->first, *it->second);
+	}
 }
 
-void Console::Remove(std::string command)
+void Console::remove(const std::string& name)
 {
-	RETURN_INVALID(command, "Command");
+	RETURN_INVALID(name);
 
-	commands.erase(command);
+	if (aliasExists(name))
+	{
+		aliases.erase(name);
+	}
+	else if (commandExists(name))
+	{
+		commands.erase(name);
+	}
+	else if (variableExists(name))
+	{
+		delete variables[name];
+		variables.erase(name);
+	}
 }
 
-void Console::Render()
+void Console::render()
 {
+	if (!*consoleVar) return;
 	if (!ImGui::Begin("Console"))
 	{
 		// Early out if the window is collapsed, as an optimization.
@@ -260,16 +383,17 @@ void Console::Render()
 	ImGui::PopStyleVar();
 	ImGui::EndChild();
 	ImGui::Separator();
-	static char in[256];
-	strcpy_s(in, 256, input.c_str());
 	ImGui::PushItemWidth(-50.0f);
-	bool exe = ImGui::InputText("##input", in, 256, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackHistory, &TextEditCallbackStub);
+	static char buf[max_input];
+	strcpy_s(buf, max_input, input.c_str());
+	bool exe = ImGui::InputText("##input", buf, max_input, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackHistory, &textEditCallbackStub);
+	ImGui::SetItemDefaultFocus();
+	input = buf;
 	ImGui::PopItemWidth();
-	input = in;
-	ImGui::SameLine(); exe |= ImGui::Button("Exe");
+	ImGui::SameLine(); exe |= ImGui::Button("Exe", ImVec2(-1.0f, -1.0f));
 	if (exe)
 	{
-		Execute(input, true);
+		execute(input, true);
 		input = "";
 		editing = "";
 		history_index = -1;
@@ -279,39 +403,34 @@ void Console::Render()
 	ImGui::End();
 }
 
-void Console::Run(std::string command, arg_list args)
+void Console::run(const std::string& name, arg_list args) const
 {
-	RETURN_INVALID(command, "Command");
+	RETURN_INVALID(name);
 
-	if (CommandExists(command))
+	if (aliasExists(name))
 	{
-		command_callback callback = commands.at(command);
+		execute(aliases.at(name));
+	}
+	else if (commandExists(name))
+	{
+		command_callback callback = commands.at(name);
 		callback(args);
 	}
 	else
 	{
-		IG_CONSOLE_ERROR("Unrecognized command: {}", command);
+		IG_CONSOLE_ERROR("Unrecognized command: {}", name);
 	}
 }
 
-void Console::RunBind(int key)
+void Console::runBind(int key, bool positive) const
 {
-	if (BindExists(key))
+	if (bindExists(key))
 	{
-		Execute(binds.at(key));
+		execute(binds.at(key), positive);
 	}
 }
 
-void Console::Set(std::string variable, var_type value)
-{
-	RETURN_INVALID(variable, "Variable");
-
-	RETURN_EXISTS(variable);
-
-	variables[variable] = value;
-}
-
-int Console::TextEditCallback(ImGuiInputTextCallbackData* data)
+int Console::textEditCallback(ImGuiInputTextCallbackData* data)
 {
 	switch (data->EventFlag)
 	{
@@ -338,21 +457,18 @@ int Console::TextEditCallback(ImGuiInputTextCallbackData* data)
 				history_index--;
 			}
 
+			data->DeleteChars(0, data->BufTextLen);
 			if (history_index == -1)
 			{
-				data->DeleteChars(0, data->BufTextLen);
 				data->InsertChars(0, editing.c_str());
 			}
 			else if (history_index == -2)
 			{
-				data->DeleteChars(0, data->BufTextLen);
-				data->InsertChars(0, "");
 				editing = "";
 				history_index = -1;
 			}
 			else
 			{
-				data->DeleteChars(0, data->BufTextLen);
 				data->InsertChars(0, history[history_index].c_str());
 			}
 		}
@@ -364,31 +480,62 @@ int Console::TextEditCallback(ImGuiInputTextCallbackData* data)
 	return 0;
 }
 
-int Console::TextEditCallbackStub(ImGuiInputTextCallbackData* data)
+int Console::textEditCallbackStub(ImGuiInputTextCallbackData* data)
 {
-	Console& cmd = GetInstance();
-	return cmd.TextEditCallback(data);
+	Console& cmd = getInstance();
+	return cmd.textEditCallback(data);
 }
 
-void Console::Unbind(int key)
+void Console::unbind(int key)
 {
 	binds.erase(key);
 }
 
-void Console::unbind_callback(arg_list args)
+void Console::unbindCallback(arg_list args)
 {
-	Console& cmd = GetInstance();
-	cmd.Unbind(std::stoi(args[0]));
+	Console& cmd = getInstance();
+	cmd.unbind(std::stoi(args[0]));
 }
 
-void Console::Unset(std::string variable)
+std::string Console::unparse(call_sequence calls)
 {
-	RETURN_INVALID(variable, "Variable");
+	std::string out;
+	for (size_t i = 0; i < calls.size(); i++)
+	{
+		const call& c = calls[i];
+		// add name with prefix if any
+		if (c.flags & CF_TOGGLE) out += '^' + c.name;
+		else if (c.flags & CF_ONOFF) out += '+' + c.name;
+		else out += c.name;
 
-	variables.erase(variable);
+		for (const std::string& arg : c.args)
+		{
+			out += ' ';
+			//add arg with quotes if theres a space
+			if (arg.find(' ') == std::string::npos) out += arg;
+			else out += '"' + arg + '"';
+		}
+		//add ; if not last call
+		if (i < calls.size() - 1) out += ';';
+	}
+	return out;
 }
 
-bool Console::VariableExists(std::string variable)
+ConVar* Console::variable(const std::string& variable, const std::string& defaultValue)
+{
+	return variables[variable] = new ConVar(variable, defaultValue);
+}
+
+bool Console::variableExists(const std::string& variable) const
 {
 	return variables.count(variable);
+}
+
+void Console::write(const std::string& contents, level_enum level)
+{
+	if (lines.size() >= max_lines)
+	{
+		lines.pop_front();
+	}
+	lines.push_back(line{ colors[level], _strdup(contents.c_str()) });
 }

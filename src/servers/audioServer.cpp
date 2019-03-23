@@ -13,7 +13,7 @@ AudioServer::AudioServer()
 	device = alcOpenDevice(deviceName);
 	if (device)
 	{
-		context = alcCreateContext(device, NULL); // create context
+		context = alcCreateContext(device, nullptr); // create context
 		if (context)
 		{
 			if (!alcMakeContextCurrent(context))
@@ -32,8 +32,8 @@ AudioServer::AudioServer()
 	}
 	IG_CORE_INFO("Audio Server Initialized");
 
-	Console& console = Console::GetInstance();
-	console.Register("play_sound", play_sound_callback);
+	Console& console = Console::getInstance();
+	console.command("play_sound", playSoundCallback);
 }
 
 AudioServer& AudioServer::getInstance() {
@@ -45,7 +45,7 @@ const char* AudioServer::getVersion() { return alGetString(AL_VERSION); }
 const char* AudioServer::getVendor() { return alGetString(AL_VENDOR); }
 const char* AudioServer::getRenderer() { return alGetString(AL_RENDERER); }
 const char* AudioServer::getExtensions() { return alGetString(AL_EXTENSIONS); }
-const char* AudioServer::getDevices() { return alcGetString(NULL, ALC_DEVICE_SPECIFIER); }
+const char* AudioServer::getDevices() { return alcGetString(nullptr, ALC_DEVICE_SPECIFIER); }
 
 void AudioServer::setListenerData(float x, float y, float z) {
 	alListener3f(AL_POSITION, x, y, z);
@@ -91,7 +91,7 @@ void AudioServer::playSound(ALuint buffer)
 	alSourcePlay(source);
 }
 
-void AudioServer::play_sound_callback(arg_list args)
+void AudioServer::playSoundCallback(arg_list args)
 {
 	if (args.size() > 0)
 	{
@@ -124,7 +124,7 @@ AudioServer::~AudioServer()
 		buffers.pop_front();
 	}
 
-	alcMakeContextCurrent(NULL);
+	alcMakeContextCurrent(nullptr);
 	alcDestroyContext(context);
 	alcCloseDevice(device);
 	IG_CORE_INFO("Audio Server Shutdown");

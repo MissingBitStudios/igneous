@@ -25,7 +25,7 @@ protected:
 	{
 		fmt::memory_buffer formatted;
 		sink::formatter_->format(msg, formatted);
-		Console::GetInstance().Output(fmt::to_string(formatted), levels[msg.level]);
+		Console::getInstance().write(fmt::to_string(formatted), levels[msg.level]);
 	}
 
 	void flush_() override {}

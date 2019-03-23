@@ -6,13 +6,15 @@ namespace Input
 {
 	void Init(GLFWwindow* win)
 	{
+		IG_CORE_INFO("Initializing Input");
 		window = win;
-		Console& console = Console::GetInstance();
-		console.Register("toggle_cursor", toggle_cursor_callback);
-		console.Register("quit", quit_callback);
+		Console& console = Console::getInstance();
+		console.command("toggle_cursor", toggleCursorCallback);
+		console.command("quit", quitCallback);
 
-		console.Bind(GLFW_KEY_T, "toggle_cursor");
-		console.Bind(GLFW_KEY_ESCAPE, "quit");
+		console.bind(GLFW_KEY_T, "toggle_cursor");
+		console.bind(GLFW_KEY_ESCAPE, "quit");
+		IG_CORE_INFO("Input Initialized");
 	}
 
 	void onKey(int key, int scancode, int action, int mods)
@@ -70,12 +72,12 @@ namespace Input
 		glfwSetInputMode(window, GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 	}
 
-	void toggle_cursor_callback(arg_list args)
+	void toggleCursorCallback(arg_list args)
 	{
 		Input::setCursorVisible(window, glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED);
 	}
 
-	void quit_callback(arg_list args)
+	void quitCallback(arg_list args)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
@@ -84,7 +86,7 @@ namespace Input
 	bool mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1] = { 0 };
 	double scrollX, scrollY = 0;
 	double mouseX, mouseY = 0;
-	GLFWwindow* window = NULL;
+	GLFWwindow* window = nullptr;
 
 	entt::sigh<void(int, int, int, int)> keySignal;
 	entt::sigh<void(int, int, int)> mouseSignal;

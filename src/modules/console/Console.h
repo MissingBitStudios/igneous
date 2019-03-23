@@ -5,19 +5,35 @@
 #include <unordered_map>
 #include <variant>
 
+#include "conVar.h"
 #include "../gui/gui.h"
+#include "../../util/log.h"
 
-#define RETURN_EXISTS(name) if (Exists(name)) { IG_CONSOLE_ERROR("A token already exists with the name: {}", name); return; }
-#define RETURN_INVALID(name, type) if (!IsValid(name)) { IG_CONSOLE_ERROR("{} name is invalid.", type); return; }
+#define RETURN_EXISTS(name) if (exists(name)) { IG_CONSOLE_ERROR("A token already exists with the name: {}", name); return; }
+#define RETURN_INVALID(name) if (!isValid(name)) { IG_CONSOLE_ERROR("Token name is invalid."); return; }
 
 typedef std::vector<std::string> arg_list;
 typedef void(*command_callback)(arg_list);
-typedef std::variant<bool, float, int, std::string> var_type;
+
+enum CF_enum
+{
+	CF_NONE = 0,
+	CF_TOGGLE = 1 << 0,
+	CF_ONOFF = 1 << 1
+};
+
+struct call
+{
+	std::string name;
+	arg_list args;
+	int flags = CF_NONE;
+};
+typedef std::vector<call> call_sequence;
 
 class Console
 {
 public:
-	static Console& GetInstance();
+	static Console& getInstance();
 
 	const ImColor RED = ImColor(255, 0, 0);
 	const ImColor GREEN = ImColor(0, 255, 0);
@@ -37,56 +53,45 @@ public:
 		off
 	};
 
-	void Alias(std::string alias, std::string exe);
-	bool AliasExists(std::string alias);
-	void Bind(int key, std::string command);
-	bool BindExists(int key);
-	void Clear();
-	bool CommandExists(std::string command);
-	void Execute(std::string input, bool record = false);
-	bool Exists(std::string name);
-	template <typename type>
-	inline type Get(std::string variable)
-	{
-		static_assert(std::holds_alternative<type>(var_type), "type must be a var_type");
-		RETURN_INVALID(variable, "Variable");
-
-		if (VariableExists(variable))
-		{
-			return std::get<type>(variables.at(variable));
-		}
-		else
-		{
-			std::cout << "Unrecognized variable: " << variable << "\n";
-			return NULL;
-		}
-	}
-	bool IsValid(std::string name);
-	static void OnKey(int key, int scancode, int action, int mods);
-	void Output(std::string contents, level_enum level);
-	void Register(std::string command, command_callback callback);
-	void Remove(std::string command);
-	void Render();
-	void Run(std::string command, arg_list args = {});
-	void RunBind(int key);
-	void Set(std::string variable, var_type value);
-	int TextEditCallback(ImGuiInputTextCallbackData* data);
-	static int TextEditCallbackStub(ImGuiInputTextCallbackData* data);
-	void Unbind(int key);
-	void Unset(std::string variable);
-	bool VariableExists(std::string variable);
+	void alias(const std::string& alias, const std::string& exe);
+	bool aliasExists(const std::string& alias) const;
+	void bind(int key, const std::string& exe);
+	bool bindExists(int key) const;
+	void clear();
+	void command(const std::string& command, command_callback callback);
+	bool commandExists(const std::string& command) const;
+	void execute(call_sequence calls, bool positive = true) const;
+	void execute(const std::string& input, bool record = false, bool positive = true);
+	bool exists(const std::string& name) const;
+	static call_sequence parse(std::string input);
+	void printInfo() const;
+	ConVar* get(const std::string& variable) const;
+	bool isValid(const std::string& name) const;
+	static void onKey(int key, int scancode, int action, int mods);
+	void remove(const std::string& name);
+	void render();
+	void run(const std::string& command, arg_list args = {}) const;
+	void runBind(int key, bool positive = true) const;
+	int textEditCallback(ImGuiInputTextCallbackData* data);
+	static int textEditCallbackStub(ImGuiInputTextCallbackData* data);
+	void unbind(int key);
+	static std::string unparse(call_sequence calls);
+	ConVar* variable(const std::string& variable, const std::string& defaultValue);
+	bool variableExists(const std::string& variable) const;
+	void write(const std::string& contents, level_enum level);
 
 	Console(Console const&) = delete;
 	void operator=(Console const&) = delete;
 private:
 	Console();
-	~Console();
+	~Console() {}
 
-	static void alias_callback(arg_list args);
-	static void bind_callback(arg_list args);
-	static void clear_callback(arg_list args);
-	static void print_callback(arg_list args);
-	static void unbind_callback(arg_list args);
+	static void aliasCallback(arg_list args);
+	static void bindCallback(arg_list args);
+	static void clearCallback(arg_list args);
+	static void helpCallback(arg_list args);
+	static void printCallback(arg_list args);
+	static void unbindCallback(arg_list args);
 
 	struct line
 	{
@@ -97,16 +102,19 @@ private:
 	const unsigned int max_lines = 100;
 	bool scrollToBottom = false;
 
-	const unsigned int max_history = 100;
+	static const unsigned int max_history = 100;
 	int history_index = -1;
+	static const unsigned int max_input = 256;
 	std::string input;
 	std::string editing;
 
-	std::unordered_map<std::string, std::string> aliases;
-	std::unordered_map<int, std::string> binds;
+	std::unordered_map<std::string, call_sequence> aliases;
+	std::unordered_map<int, call_sequence> binds;
 	std::unordered_map<std::string, command_callback> commands;
 	std::unordered_map<level_enum, ImColor> colors;
 	std::deque<std::string> history;
 	std::deque<line> lines;
-	std::unordered_map<std::string, var_type> variables;
+	std::unordered_map<std::string, ConVar*> variables;
+
+	ConVar* consoleVar;
 };

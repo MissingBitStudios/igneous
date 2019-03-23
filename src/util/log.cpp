@@ -24,7 +24,7 @@ Log::Log()
 	//Console logger
 	consoleLogger = spdlog::stdout_color_mt("CONSOLE");
 	auto con_sink = std::make_shared<console_sink<std::mutex>>();
-	con_sink->set_pattern("%^%v%$");
+	con_sink->set_pattern("%v");
 	consoleLogger->sinks().push_back(con_sink);
 	consoleLogger->set_level(spdlog::level::trace);
 }

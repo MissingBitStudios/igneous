@@ -82,7 +82,7 @@ We use [SemVer](http://semver.org/spec/v2.0.0.html) for versioning. For the vers
 
 ## Authors
 
-* **ProWolf** - *Initial work, Rendering* - [ProWolf](https://github.com/prowolf)
+* **ProWolf** - *Initial work, Rendering, Console, Audio* - [ProWolf](https://github.com/prowolf)
 * **pcguy123** - *ECS, Documentation* - [pcguy123](https://github.com/pcguy123)
 
 See also the list of [contributors](https://github.com/prowolf/Igneous/graphs/contributors) who participated in this project.

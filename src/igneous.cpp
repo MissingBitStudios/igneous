@@ -57,7 +57,7 @@ class Engine : public bigg::Application
 		gui::cherryTheme();
 		sky = new SkySystem;
 
-		console = &Console::GetInstance();
+		console = &Console::getInstance();
 
 		IG_CORE_INFO("-----Version Info-----");
 		IG_CORE_INFO("Igneous Version: {}", IGNEOUS_VERSION);
@@ -154,7 +154,7 @@ class Engine : public bigg::Application
 		sky->update(dt);
 
 		ImGui::ShowDemoWindow();
-		console->Render();
+		console->render();
 
 		ImGui::Begin("Audio Test");
 		if (ImGui::Button("bell"))
