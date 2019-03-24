@@ -7,7 +7,7 @@
 class Scripting
 {
 public:
-	Scripting(void** _argv);
+	Scripting(int _argc, char** _argv);
 	~Scripting();
 
 	void update(float dt);
@@ -17,6 +17,7 @@ private:
 	MonoImage* image;
 	MonoClass* mainClass;
 	MonoMethod* updateMethod;
+	MonoMethod* shutdownMethod;
 
 	static void ConsoleWriteLine(MonoString* output, Console::level_enum level = Console::trace);
 };

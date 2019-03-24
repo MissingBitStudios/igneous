@@ -130,7 +130,7 @@ class Engine : public bigg::Application
 
 		IG_CONSOLE_INFO("Engine Initialized!");
 
-		scripting = new Scripting((void**)_argv);
+		scripting = new Scripting(_argc, _argv);
 	}
 
 	//Input callbacks

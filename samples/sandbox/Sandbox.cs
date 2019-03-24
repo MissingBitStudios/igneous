@@ -7,8 +7,8 @@ namespace sandbox
     {
         static void Main(string[] args)
         {
-            // Display the number of command line arguments:
             Igneous.Console.WriteLine("Hello from C#!", LogLevel.Info);
+            Igneous.Console.WriteLine(String.Format("args = [{0}]", String.Join(",", args)), LogLevel.Info);
         }
 
         static void Update(float dt)
