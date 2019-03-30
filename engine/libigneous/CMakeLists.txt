@@ -6,6 +6,8 @@ include(CSharpUtilities)
 
 add_library(libigneous SHARED
 	Console.cs
+	Events.cs
+	Input.cs
 )
 
 set_property(TARGET libigneous PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.7.1")
@@ -16,6 +18,6 @@ set_property(TARGET libigneous PROPERTY VS_DOTNET_REFERENCES
 
 target_compile_options(libigneous PRIVATE "/langversion:6")
 set_target_properties(libigneous PROPERTIES
-	FOLDER "engine"
-	RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}"
+	FOLDER "igneous/engine"
+	RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin"
 )

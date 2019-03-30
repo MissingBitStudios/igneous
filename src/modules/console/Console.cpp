@@ -58,7 +58,7 @@ bool Console::aliasExists(const std::string& name) const
 	return aliases.count(name);
 }
 
-void Console::aliasCallback(arg_list args)
+void Console::aliasCallback(const std::string& name, const arg_list& args)
 {
 	Console& cmd = getInstance();
 	if (args.size() >= 2)
@@ -81,7 +81,7 @@ bool Console::bindExists(int key) const
 	return binds.count(key);
 }
 
-void Console::bindCallback(arg_list args)
+void Console::bindCallback(const std::string& name, const arg_list& args)
 {
 	if (args.size() >= 2)
 	{
@@ -99,7 +99,7 @@ void Console::clear()
 	lines.clear();
 }
 
-void Console::clearCallback(arg_list args)
+void Console::clearCallback(const std::string& name, const arg_list& args)
 {
 	Console& cmd = getInstance();
 	cmd.clear();
@@ -224,7 +224,7 @@ ConVar* Console::get(const std::string& variable) const
 	}
 }
 
-void Console::helpCallback(arg_list args)
+void Console::helpCallback(const std::string& name, const arg_list& args)
 {
 	Console& cmd = getInstance();
 	cmd.printInfo();
@@ -305,7 +305,7 @@ call_sequence Console::parse(std::string input)
 	return seq;
 }
 
-void Console::printCallback(arg_list args)
+void Console::printCallback(const std::string& name, const arg_list& args)
 {
 	if (args.size() > 0)
 	{
@@ -362,7 +362,8 @@ void Console::remove(const std::string& name)
 void Console::render()
 {
 	if (!*consoleVar) return;
-	if (!ImGui::Begin("Console"))
+	static bool open;
+	if (!ImGui::Begin("Console", &open, ImVec2(ImGui::GetWindowSize().x * 0.5f, ImGui::GetWindowSize().y * 0.5f)))
 	{
 		// Early out if the window is collapsed, as an optimization.
 		ImGui::End();
@@ -415,7 +416,7 @@ void Console::run(const std::string& name, arg_list args) const
 	else if (commandExists(name))
 	{
 		command_callback callback = commands.at(name);
-		callback(args);
+		callback(name, args);
 	}
 	else
 	{
@@ -492,7 +493,7 @@ void Console::unbind(int key)
 	binds.erase(key);
 }
 
-void Console::unbindCallback(arg_list args)
+void Console::unbindCallback(const std::string& name, const arg_list& args)
 {
 	Console& cmd = getInstance();
 	cmd.unbind(std::stoi(args[0]));

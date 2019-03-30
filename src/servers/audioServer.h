@@ -27,7 +27,7 @@ private:
 	AudioServer();
 	~AudioServer();
 
-	static void playSoundCallback(arg_list args);
+	static void playSoundCallback(const std::string& name, const arg_list& args);
 
 	const char* ALErrorToString(ALCenum error);
 

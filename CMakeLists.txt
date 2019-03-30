@@ -28,8 +28,8 @@ file(GLOB_RECURSE IGNEOUS_SOURCES
   ${CMAKE_SOURCE_DIR}/shaders/*.sc
 )
 
-file(COPY res/ DESTINATION ${CMAKE_BINARY_DIR}/res)
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/capture)
+file(COPY res/ DESTINATION ${CMAKE_BINARY_DIR}/bin/res)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/capture)
 
 add_executable(${CMAKE_PROJECT_NAME} ${IGNEOUS_SOURCES})
 
@@ -43,5 +43,10 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 add_subdirectory(engine)
 add_subdirectory(samples)
 add_dependencies(igneous sandbox libigneous)
+set_target_properties(igneous PROPERTIES
+	FOLDER "igneous/engine"
+	RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin"
+)
+set_property(TARGET igneous PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${CMAKE_PROJECT_NAME})

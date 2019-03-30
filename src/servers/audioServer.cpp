@@ -91,7 +91,7 @@ void AudioServer::playSound(ALuint buffer)
 	alSourcePlay(source);
 }
 
-void AudioServer::playSoundCallback(arg_list args)
+void AudioServer::playSoundCallback(const std::string& name, const arg_list& args)
 {
 	if (args.size() > 0)
 	{

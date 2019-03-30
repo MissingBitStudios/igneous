@@ -17,6 +17,6 @@ set_property(TARGET sandbox PROPERTY VS_DOTNET_REFERENCES
 target_compile_options(sandbox PRIVATE "/langversion:6")
 target_link_libraries(sandbox SHARED libigneous)
 set_target_properties(sandbox PROPERTIES
-	FOLDER "samples"
-	RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}"
+	FOLDER "igneous/samples"
+	RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin"
 )

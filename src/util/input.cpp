@@ -86,7 +86,7 @@ namespace Input
 		glfwSetInputMode(window, GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 	}
 
-	void quitCallback(arg_list args)
+	void quitCallback(const std::string& name, const arg_list& args)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}

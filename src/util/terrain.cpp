@@ -10,9 +10,9 @@ namespace Terrain
 
 		Model* model = new Model();
 
-		for (unsigned int x = 0; x < xSize; x++)
+		for (int x = 0; x < xSize; x++)
 		{
-			for (unsigned int z = 0; z < zSize; z++)
+			for (int z = 0; z < zSize; z++)
 			{
 				model->meshes.push_back(tile(seed, x, z));
 			}
@@ -27,15 +27,15 @@ namespace Terrain
 		std::vector<uint16_t> indices;
 		std::vector<bgfx::TextureHandle> textures;
 
-		float r = noise.GetValue(x, z) / 4 + 0.75f;
+		float r = noise.GetValue((float)x, (float)z) / 4 + 0.75f;
 
 		for (int xx = 0; xx < 2; xx++)
 		{
 			for (int zz = 0; zz < 2; zz++)
 			{
 				Vertex vertex = { 0.0f };
-				vertex.pos_x = xx * 5 + x * 5;
-				vertex.pos_z = zz * 5 + z * 5;
+				vertex.pos_x = (float)xx * 5 + (float)x * 5;
+				vertex.pos_z = (float)zz * 5 + (float)z * 5;
 				vertex.pos_y = noise.GetValue(vertex.pos_x, vertex.pos_z);
 				// colors
 				vertex.col_r = 0.25f * r;

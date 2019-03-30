@@ -13,7 +13,7 @@
 #define RETURN_INVALID(name) if (!isValid(name)) { IG_CONSOLE_ERROR("Token name is invalid."); return; }
 
 typedef std::vector<std::string> arg_list;
-typedef void(*command_callback)(arg_list);
+typedef void(*command_callback)(const std::string&, const arg_list&);
 
 enum CF_enum
 {
@@ -87,12 +87,12 @@ private:
 	Console();
 	~Console() {}
 
-	static void aliasCallback(arg_list args);
-	static void bindCallback(arg_list args);
-	static void clearCallback(arg_list args);
-	static void helpCallback(arg_list args);
-	static void printCallback(arg_list args);
-	static void unbindCallback(arg_list args);
+	static void aliasCallback(const std::string& name, const arg_list& args);
+	static void bindCallback(const std::string& name, const arg_list& args);
+	static void clearCallback(const std::string& name, const arg_list& args);
+	static void helpCallback(const std::string& name, const arg_list& args);
+	static void printCallback(const std::string& name, const arg_list& args);
+	static void unbindCallback(const std::string& name, const arg_list& args);
 
 	struct line
 	{
