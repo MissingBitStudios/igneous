@@ -1,5 +1,6 @@
 # igneous
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/519736a44c2f4815abaa0f5494056391)](https://app.codacy.com/app/prowolf/igneous?utm_source=github.com&utm_medium=referral&utm_content=MissingBitStudios/igneous&utm_campaign=Badge_Grade_Dashboard)
 [![GitHub tag](https://img.shields.io/github/tag/MissingBitStudios/igneous.svg)](https://github.com/MissingBitStudios/igneous/releases)
 [![GitHub stars](https://img.shields.io/github/stars/MissingBitStudios/igneous.svg)](https://github.com/MissingBitStudios/igneous/stargazers)
 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/MissingBitStudios/igneous.svg)
