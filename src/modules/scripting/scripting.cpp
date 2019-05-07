@@ -7,22 +7,26 @@
 #include "../../util/input.h"
 #include "../../util/log.h"
 
-Scripting::Scripting(int _argc, char** _argv)
+Scripting::Scripting(char* path, int _argc, char** _argv)
 {
 	//Configure mono
 	mono_config_parse(NULL);
 	mono_set_dirs("mono\\lib", "mono\\etc");
 
 	//Init the domain
-	domain = mono_jit_init("sandbox.exe");
+	domain = mono_jit_init(path);
 
 	//Add internal calls
 	mono_add_internal_call("Igneous.Console::WriteLine", consoleWriteLine);
+	mono_add_internal_call("Igneous.Console::AddAlias", consoleAddAlias);
+	mono_add_internal_call("Igneous.Console::Bind", consoleBind);
 	mono_add_internal_call("Igneous.Console::AddCommandInternal", consoleAddCommand);
 	mono_add_internal_call("Igneous.Console::Execute", consoleExecute);
+	mono_add_internal_call("Igneous.Console::Remove", consoleRemove);
+	mono_add_internal_call("Igneous.Console::Unbind", consoleUnbind);
 
 	//Open the assembly
-	assembly = mono_domain_assembly_open(domain, "sandbox.exe");
+	assembly = mono_domain_assembly_open(domain, path);
 	if (!assembly)
 		IG_CORE_CRITICAL("Could not load the exe!");
 	MonoAssembly* libAssembly = mono_domain_assembly_open(domain, "libigneous.dll");
@@ -136,22 +140,14 @@ void Scripting::commandCallback(const std::string& name, const arg_list& args)
 MonoMethod* Scripting::getSpecializedMethod(MonoMethod* genericMethod, MonoClass* klass)
 {
 	// find the MethodInfo class
-	MonoClass* methodInfoClass = mono_class_from_name(systemImage,
-		"System.Reflection",
-		"MonoMethod");
+	MonoClass* methodInfoClass = mono_class_from_name(systemImage, "System.Reflection", "MonoMethod");
 
 	// find the MethodInfo.MakeGenericMethod(Type[]) method
-	MonoMethod* makeGenericMethod = mono_class_get_method_from_name(methodInfoClass,
-		"MakeGenericMethod",
-		1);
-
-	MonoReflectionMethod* monoReflectionMethod = mono_method_get_object(domain,
-		genericMethod,
-		klass);
+	MonoMethod* makeGenericMethod = mono_class_get_method_from_name(methodInfoClass, "MakeGenericMethod", 1);
+	MonoReflectionMethod* monoReflectionMethod = mono_method_get_object(domain, genericMethod, klass);
 
 	MonoType* monoType = mono_class_get_type(klass);
-	MonoReflectionType* monoReflectionType = mono_type_get_object(domain,
-		monoType);
+	MonoReflectionType* monoReflectionType = mono_type_get_object(domain, monoType);
 
 	// create an array of Types, that will be the argument to MethodInfo.MakeGenericMethod(Type[])
 	MonoObject* exception = NULL;
@@ -160,7 +156,6 @@ MonoMethod* Scripting::getSpecializedMethod(MonoMethod* genericMethod, MonoClass
 	void* makeGenArgs[] = { a };
 
 	MonoObject* methodInfo = mono_runtime_invoke(makeGenericMethod, monoReflectionMethod, makeGenArgs, &exception);
-
 	MonoClass* monoGenericMethodClass = mono_object_get_class(methodInfo);
 
 	// MethodHandle property of MethodInfo object
@@ -175,6 +170,15 @@ MonoMethod* Scripting::getSpecializedMethod(MonoMethod* genericMethod, MonoClass
 
 //Internal calls
 
+void Scripting::consoleAddAlias(MonoString* name, MonoString* exe)
+{
+	char* n = mono_string_to_utf8(exe);
+	char* e = mono_string_to_utf8(exe);
+	console->alias(n, e);
+	mono_free(e);
+	mono_free(n);
+}
+
 void Scripting::consoleAddCommand(MonoString* name)
 {
 	char* n = mono_string_to_utf8(name);
@@ -182,11 +186,30 @@ void Scripting::consoleAddCommand(MonoString* name)
 	mono_free(n);
 }
 
+void Scripting::consoleBind(int key, MonoString* exe)
+{
+	char* e = mono_string_to_utf8(exe);
+	console->bind(key, e);
+	mono_free(e);
+}
+
 void Scripting::consoleExecute(MonoString* exe, bool record, bool positive)
 {
 	char* e = mono_string_to_utf8(exe);
 	console->execute(e, record, positive);
 	mono_free(e);
+}
+
+void Scripting::consoleRemove(MonoString* name)
+{
+	char* n = mono_string_to_utf8(name);
+	console->remove(n);
+	mono_free(n);
+}
+
+void Scripting::consoleUnbind(int key)
+{
+	console->unbind(key);
 }
 
 void Scripting::consoleWriteLine(MonoString* output, Console::level_enum level)
@@ -211,7 +234,6 @@ void Scripting::onKey(int key, int scancode, int action, int mods)
 
 void Scripting::onMouseButton(int button, int action, int mods)
 {
-
 	MonoArray* argsObjectArray = mono_array_new(domain, mono_get_object_class(), 3);
 	mono_array_set(argsObjectArray, MonoObject*, 0, mono_value_box(domain, mono_get_int32_class(), &button));
 	mono_array_set(argsObjectArray, MonoObject*, 1, mono_value_box(domain, mono_get_int32_class(), &action));

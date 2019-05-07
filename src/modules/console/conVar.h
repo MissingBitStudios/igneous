@@ -1,9 +1,10 @@
 #pragma once
 
 #include <iosfwd>
+#include <stdexcept>
 #include <string>
 
-typedef void(*convar_callback)(std::string, std::string);
+typedef void(*convar_callback)(const std::string&, const std::string&);
 
 class ConVar
 {

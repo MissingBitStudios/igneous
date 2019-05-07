@@ -7,8 +7,13 @@ set(MONO_SEARCH_PATHS
   /opt
   /usr/bin
   /usr/local/bin
-  C:\\Program Files\ (x86)
 )
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  list(APPEND MONO_SEARCH_PATHS "C:\\Program Files")
+else()
+  list(APPEND MONO_SEARCH_PATHS "C:\\Program Files (x86)")
+endif()
 
 find_path(MONO_INCLUDE_DIR mono/jit/jit.h
   HINTS
@@ -48,6 +53,6 @@ if(NOT EXISTS ${CMAKE_BINARY_DIR}/bin/mono-2.0-sgen.dll)
 	file(COPY ${MONO_LIBRARY_DIR} DESTINATION ${CMAKE_BINARY_DIR}/bin/mono)
 	file(COPY ${MONO_LIBRARY_DIR}/../etc DESTINATION ${CMAKE_BINARY_DIR}/bin/mono)
 	message("Done copying mono files!")
-endif(NOT EXISTS ${CMAKE_BINARY_DIR}/mono-2.0-sgen.dll)
+endif(NOT EXISTS ${CMAKE_BINARY_DIR}/bin/mono-2.0-sgen.dll)
 
 mark_as_advanced(MONO_LIBRARY MONO_INCLUDE_DIR)

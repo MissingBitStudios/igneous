@@ -21,7 +21,7 @@ RendererServer::RendererServer()
 	SplashVertex::init();
 
 	bgfx::ProgramHandle splashProgram = loadProgram("vs_splash", "fs_splash");
-	bgfx::UniformHandle s_splash = bgfx::createUniform("s_splash", bgfx::UniformType::Int1);
+	bgfx::UniformHandle s_splash = bgfx::createUniform("s_splash", bgfx::UniformType::Sampler);
 	bgfx::TextureHandle splashTexture = loadTexture("res/textures/splash.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP, false);
 
 	bgfx::setVertexBuffer(0, bgfx::createVertexBuffer(bgfx::makeRef(s_splashVertices, sizeof(s_splashVertices)), SplashVertex::ms_decl));
@@ -88,7 +88,7 @@ bgfx::TextureHandle RendererServer::loadTexture(const char* _filePath, uint32_t 
 		IG_CORE_INFO("Loading texture: {}", _filePath);
 		int width, height;
 		stbi_uc* data = stbi_load(_filePath, &width, &height, 0, 4);
-		const bgfx::Memory* mem = bgfx::copy(data, width * height * sizeof(stbi_uc*));
+		const bgfx::Memory* mem = bgfx::copy(data, width * height * 4);
 		if (nullptr != mem)
 		{
 			handle = bgfx::createTexture2D((uint16_t)width, (uint16_t)height, false, 1, bgfx::TextureFormat::RGBA8, _flags, mem);

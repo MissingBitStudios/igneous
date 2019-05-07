@@ -35,8 +35,10 @@ class Engine : public bigg::Application
 {
 	void initialize(int _argc, char** _argv)
 	{
+		if (_argc < 2)
+			IG_CORE_CRITICAL("No exe provided");
+		char* path = _argv[1];
 		IG_CORE_INFO("Setting window title and icon");
-		glfwSetWindowTitle(mWindow, "Igneous");
 		GLFWimage images[3];
 		images[0].pixels = stbi_load("res/icons/icon16.png", &images[0].width, &images[0].height, 0, 4);
 		images[1].pixels = stbi_load("res/icons/icon32.png", &images[1].width, &images[1].height, 0, 4);
@@ -130,7 +132,7 @@ class Engine : public bigg::Application
 
 		IG_CONSOLE_INFO("Engine Initialized!");
 
-		scripting = new Scripting(_argc, _argv);
+		scripting = new Scripting(path, _argc, _argv);
 	}
 
 	//Input callbacks
@@ -198,6 +200,9 @@ class Engine : public bigg::Application
 		delete sky;
 		return 0;
 	}
+public:
+	Engine()
+		: bigg::Application("Igneous") {}
 private:
 	uint32_t mReset = BGFX_RESET_NONE;
 	entt::registry<> registry;

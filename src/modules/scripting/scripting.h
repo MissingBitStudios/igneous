@@ -1,7 +1,5 @@
 #pragma once
 
-#include <map>
-
 #include <mono/jit/jit.h>
 
 #include "../console/console.h"
@@ -9,7 +7,7 @@
 class Scripting
 {
 public:
-	Scripting(int _argc, char** _argv);
+	Scripting(char* path, int _argc, char** _argv);
 	~Scripting();
 
 	void update(float dt);
@@ -33,8 +31,12 @@ private:
 
 	//Internal calls
 	static void consoleWriteLine(MonoString* output, Console::level_enum level = Console::trace);
+	static void consoleAddAlias(MonoString* name, MonoString* exe);
 	static void consoleAddCommand(MonoString* name);
+	static void consoleBind(int key, MonoString* exe);
 	static void consoleExecute(MonoString* exe, bool record = false, bool positive = true);
+	static void consoleRemove(MonoString* name);
+	static void consoleUnbind(int key);
 
 	//Callbacks
 	static void onKey(int key, int scancode, int action, int mods);

@@ -12,6 +12,7 @@ project(igneous VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CSharp_FLAGS "/langversion:latest")
 
 add_subdirectory(dependencies)
 
@@ -41,12 +42,18 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 add_subdirectory(engine)
-add_subdirectory(samples)
+
+option(IGNEOUS_SAMPLES "Build samples." ON )
+if(IGNEOUS_SAMPLES)
+  add_subdirectory(samples)
+endif(IGNEOUS_SAMPLES)
+
 add_dependencies(igneous sandbox libigneous)
 set_target_properties(igneous PROPERTIES
 	FOLDER "igneous/engine"
 	RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin"
 )
 set_property(TARGET igneous PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set_property(TARGET igneous PROPERTY VS_DEBUGGER_COMMAND_ARGUMENTS "sandbox.exe")
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${CMAKE_PROJECT_NAME})

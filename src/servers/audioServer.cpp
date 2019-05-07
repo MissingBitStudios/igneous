@@ -59,9 +59,8 @@ ALuint AudioServer::loadSound(const char* fileName) {
 	int channels;
 	int sampleRate;
 	ALshort* output;
-	ALsizei size;
 	int len = stb_vorbis_decode_filename(fileName, &channels, &sampleRate, &output);
-	int width = sizeof(*output);
+	int width = sizeof(ALshort);
 	ALenum format = 0;
 	if (width == 1)
 	{
@@ -77,7 +76,7 @@ ALuint AudioServer::loadSound(const char* fileName) {
 		else if (channels == 2)
 			format = AL_FORMAT_STEREO16;
 	}
-	size = len * channels * sizeof(ALshort);
+	ALsizei size = len * channels * width;
 	alBufferData(buffer, format, output, size, sampleRate);
 	return buffer;
 }

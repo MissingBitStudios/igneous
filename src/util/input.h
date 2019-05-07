@@ -15,7 +15,7 @@ namespace Input
 {
 	void Init(GLFWwindow* window);
 
-	void cursorVisibleCallback(std::string oldValue, std::string newValue);
+	void cursorVisibleCallback(const std::string& oldValue, const std::string& newValue);
 	void onKey(int key, int scancode, int action, int mods);
 	void onMouseButton(int button, int action, int mods);
 	void onScroll(double xoffset, double yoffset);

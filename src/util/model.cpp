@@ -158,14 +158,11 @@ Model::~Model()
 	}
 }
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint16_t> indices, std::vector<bgfx::TextureHandle> textures)
+Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<uint16_t> _indices, std::vector<bgfx::TextureHandle> _textures)
+	: vertices(_vertices), indices(_indices), textures(_textures)
 {
-	this->vertices = vertices;
-	this->indices = indices;
-	this->textures = textures;
-
-	vbh = bgfx::createVertexBuffer(bgfx::makeRef(&this->vertices[0], this->vertices.size() * sizeof(Vertex)), Vertex::ms_decl);
-	ibh = bgfx::createIndexBuffer(bgfx::makeRef(&this->indices[0], this->indices.size() * sizeof(uint16_t)));
+	vbh = bgfx::createVertexBuffer(bgfx::makeRef(&vertices[0], vertices.size() * sizeof(Vertex)), Vertex::ms_decl);
+	ibh = bgfx::createIndexBuffer(bgfx::makeRef(&indices[0], indices.size() * sizeof(uint16_t)));
 }
 
 Mesh::~Mesh()

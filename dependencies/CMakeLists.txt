@@ -16,21 +16,29 @@ set(BUILD_BULLET2_DEMOS OFF CACHE INTERNAL "")
 set(BUILD_UNIT_TESTS OFF CACHE INTERNAL "")
 add_subdirectory(bullet)
 
+# Discord.Net
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/Discord RPC DotNet" DESTINATION ${CMAKE_BINARY_DIR}/bin)
+set(DISCORD_PATH "${CMAKE_BINARY_DIR}/bin/Discord RPC DotNet/Discord RPC DotNet.dll" CACHE INTERNAL "")
+
 # entt
 set(BUILD_TESTING OFF CACHE INTERNAL "")
 add_subdirectory(entt)
 
+# Facepunch.Steamworks
+file(COPY ${CMAKE_CURRENT_LIST_DIR}/Facepunch.Steamworks DESTINATION ${CMAKE_BINARY_DIR}/bin)
+set(STEAMWORKS_PATH ${CMAKE_BINARY_DIR}/bin/Facepunch.Steamworks/Facepunch.Steamworks.dll CACHE INTERNAL "")
+
+# fastnoise
+include(${CMAKE_SOURCE_DIR}/cmake/UseFastnoise.cmake)
+
 # mono
 include(${CMAKE_SOURCE_DIR}/cmake/FindMono.cmake)
 
-# stb
-include(${CMAKE_SOURCE_DIR}/cmake/UseFastnoise.cmake)
+# openal
+include(FindOpenAL)
 
 # pcil
 add_subdirectory(pcil)
-
-# openal
-include(FindOpenAL)
 
 # raknet
 set(RAKNET_ENABLE_SAMPLES OFF CACHE INTERNAL "")

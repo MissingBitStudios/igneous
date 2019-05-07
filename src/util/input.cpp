@@ -18,7 +18,7 @@ namespace Input
 		IG_CORE_INFO("Input Initialized");
 	}
 
-	void cursorVisibleCallback(std::string oldValue, std::string newValue)
+	void cursorVisibleCallback(const std::string& oldValue, const std::string& newValue)
 	{
 		bool visible = false;
 		try {

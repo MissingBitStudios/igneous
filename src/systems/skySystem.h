@@ -35,7 +35,6 @@ private:
 
 	float m_time;
 	float m_timeScale;
-	int64_t m_timeOffset;
 
 	float m_turbidity;
 };

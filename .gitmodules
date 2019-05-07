@@ -19,9 +19,9 @@
 [submodule "pcil"]
 	path = dependencies/pcil
 	url = https://github.com/prowolf/pcil.git
-[submodule "bigg"]
-	path = dependencies/bigg
-	url = https://github.com/prowolf/bigg.git
 [submodule "dependencies/fastnoise"]
 	path = dependencies/fastnoise
 	url = https://github.com/Auburns/FastNoise.git
+[submodule "dependencies/bigg"]
+	path = dependencies/bigg
+	url = https://github.com/JoshuaBrookover/bigg.git

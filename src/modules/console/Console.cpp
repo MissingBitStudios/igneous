@@ -193,15 +193,18 @@ void Console::execute(const std::string& input, bool record, bool positive)
 		IG_CONSOLE_TRACE("] {}", input);
 	}
 
-	execute(parse(input), positive);
-
-	if (record && input.size() > 0 && ((history.size() > 0 && input != history[0]) || history.size() == 0))
+	if (input.size() > 0)
 	{
-		if (history.size() >= max_history)
+		execute(parse(input), positive);
+
+		if (record && ((history.size() > 0 && input != history[0]) || history.size() == 0))
 		{
-			history.pop_back();
+			if (history.size() >= max_history)
+			{
+				history.pop_back();
+			}
+			history.push_front(input);
 		}
-		history.push_front(input);
 	}
 }
 
@@ -363,7 +366,7 @@ void Console::render()
 {
 	if (!*consoleVar) return;
 	static bool open;
-	if (!ImGui::Begin("Console", &open, ImVec2(ImGui::GetWindowSize().x * 0.5f, ImGui::GetWindowSize().y * 0.5f)))
+	if (!ImGui::Begin("Console", &open, ImVec2(ImGui::GetWindowSize().x * 0.5f, ImGui::GetWindowSize().y * 0.5f)) || ImGui::IsWindowAppearing())
 	{
 		// Early out if the window is collapsed, as an optimization.
 		ImGui::End();

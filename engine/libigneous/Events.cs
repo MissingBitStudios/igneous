@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace Igneous
 {
-    public class Events
+    public static class Events
     {   
         private static Dictionary<Type, List<Delegate>> eventCallbacks = new Dictionary<Type, List<Delegate>>();
 
@@ -17,7 +16,7 @@ namespace Igneous
             }
 			else
 			{
-                eventCallbacks.Add(typeof(T), new List<Delegate>() { callback });
+                eventCallbacks.Add(typeof(T), new List<Delegate>{ callback });
 			}
         }
 

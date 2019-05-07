@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Igneous
 {
-    public class Console
+    public static class Console
     {
         public delegate void CommandCallback(string cmd, string[] args);
         public delegate void VariableCallback(string oldValue, string newValue);
@@ -25,6 +25,7 @@ namespace Igneous
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern public static void AddAlias(string name, string exe);
 
+
         public static void AddCommand(string name, CommandCallback callback)
         {
             commands.Add(name, callback);
@@ -40,6 +41,9 @@ namespace Igneous
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern public static void AddVariable(string name, string defaultValue, string initialValue, VariableCallback callback = null);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void Bind(int key, string exe);
+
         private static void RunCommandCallback(string name, string[] args)
         {
             CommandCallback callback;
@@ -54,6 +58,9 @@ namespace Igneous
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern public static void Remove(string name);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void Unbind(int key);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern public static void WriteLine(string output, LogLevel level = LogLevel.Trace);

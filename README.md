@@ -1,14 +1,17 @@
 # igneous
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/519736a44c2f4815abaa0f5494056391)](https://app.codacy.com/app/prowolf/igneous?utm_source=github.com&utm_medium=referral&utm_content=MissingBitStudios/igneous&utm_campaign=Badge_Grade_Dashboard)
 [![GitHub tag](https://img.shields.io/github/tag/MissingBitStudios/igneous.svg)](https://github.com/MissingBitStudios/igneous/releases)
-[![GitHub stars](https://img.shields.io/github/stars/MissingBitStudios/igneous.svg)](https://github.com/MissingBitStudios/igneous/stargazers)
-![GitHub repo size in bytes](https://img.shields.io/github/repo-size/MissingBitStudios/igneous.svg)
+[![Build Status](https://travis-ci.org/MissingBitStudios/igneous.svg?branch=master)](https://travis-ci.org/MissingBitStudios/igneous)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/519736a44c2f4815abaa0f5494056391)](https://app.codacy.com/app/prowolf/igneous?utm_source=github.com&utm_medium=referral&utm_content=MissingBitStudios/igneous&utm_campaign=Badge_Grade_Dashboard)
 [![GitHub license](https://img.shields.io/badge/license-CC%20BY--NC--SA-green.svg)](https://github.com/MissingBitStudios/igneous/blob/master/LICENSE.md)
 [![Join the chat at https://discord.gg/CCUwTar](https://img.shields.io/badge/chat-on%20discord-mediumpurple.svg)](https://discord.gg/CCUwTar)
 [![Join the chat at https://gitter.im/MissingBitStudios/igneous](https://badges.gitter.im/MissingBitStudios/igneous.svg)](https://gitter.im/MissingBitStudios/igneous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Igneous is an open source game engine written in C++.
+
+![Sponza]()
+
+![Barn]()
 
 ## Getting Started
 
@@ -22,13 +25,13 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Environment Variables
 
-The install directories for the OpenAL SDK and for Mono should be added as environment variables in your system. This is not necessary, but is a safeguard in the case that your system cannot find the install directories in one of the default search paths.
+The install directories for the OpenAL SDK and Mono should be added as environment variables in your system. This is not necessary, but is a safeguard in case CMake cannot find the install directories in one of the default search paths.
 
-The OpenAL variable should be named 'OPENALDIR' exactly as written here without the quotes. The Mono variable should be named 'MONO_ROOT' exactly as written here without the quotes.
+The OpenAL variable should be named `OPENALDIR`. The Mono variable should be named `MONO_ROOT`.
 
 ### Checkout
 
-```
+```sh
 git clone https://github.com/MissingBitStudios/igneous.git
 cd igneous
 git submodule update --init --recursive
@@ -36,21 +39,19 @@ git submodule update --init --recursive
 
 ### Build
 
-```
+```sh
 mkdir build
 cd build
 cmake ..
+cmake --build .
 ```
 
 ### Update
 
-```
-cd igneous
+```sh
 git pull
 git submodule sync
 git submodule update --init --recursive
-cd build
-cmake ..
 ```
 
 ## Built With
@@ -79,14 +80,14 @@ All notable changes to this project will be documented in [CHANGELOG.md](CHANGEL
 
 ## Versioning
 
-We use [SemVer](http://semver.org/spec/v2.0.0.html) for versioning. For the versions available, see the [releases page](https://github.com/prowolf/Igneous/releases). 
+We use [SemVer](http://semver.org/spec/v2.0.0.html) for versioning. For the versions available, see the [releases page](https://github.com/MissingBitStudios/igneous/releases). 
 
 ## Authors
 
 * **ProWolf** - *Initial work, Rendering, Scripting, Console, Audio, Events* - [ProWolf](https://github.com/prowolf)
 * **pcguy123** - *ECS, Documentation* - [pcguy123](https://github.com/pcguy123)
 
-See also the list of [contributors](https://github.com/prowolf/Igneous/graphs/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/MissingBitStudios/igneous/graphs/contributors) who participated in this project.
 
 ## License
 

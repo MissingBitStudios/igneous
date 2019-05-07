@@ -10,7 +10,7 @@ namespace RendererSystem
 {
 	void render(entt::registry<> &registry, bgfx::TextureHandle handle)
 	{
-		bgfx::UniformHandle s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Int1);
+		bgfx::UniformHandle s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Sampler);
 		registry.view<ModelComponent, Transformation>().each([s_tex, handle](const auto, auto &model, auto &transformation)
 		{
 			for (Mesh* mesh : model.model->meshes)

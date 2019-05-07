@@ -1,10 +1,14 @@
 ﻿using Igneous;
-using System.Runtime.InteropServices;
+using Facepunch.Steamworks;
+using Discord.RPC;
 
 namespace Sandbox
 {
+
     public class Sandbox
     {
+        private static Client SteamworksClient;
+
         private delegate void TestEvent(string t);
 
         static void Main(string[] args)
@@ -17,15 +21,31 @@ namespace Sandbox
 
             Events.Add<Input.KeyEvent>(KeyCallback);
             Events.Add<TestEvent>(TestEventCallback);
+
+            DiscordEventHandler discordEventHandler = new DiscordEventHandler();
+            DiscordRPC.Init("424302031822520320", ref discordEventHandler, true, "480");
+
+            DiscordPresence presence = new DiscordPresence();
+            presence.details = "Jazz weeb";
+            presence.state = ":3c:";
+            presence.largeImageKey = "icon-large";
+            presence.smallImageKey = "icon-small";
+
+            DiscordRPC.UpdatePresence(ref presence);
+
+            SteamworksClient = new Client(480);
         }
 
         static void Update(float dt)
         {
+            SteamworksClient.Update();
             //Events.Call<TestEvent>(dt.ToString() + " test");
         }
 
         static void Shutdown()
         {
+            DiscordRPC.Shutdown();
+            SteamworksClient.Dispose();
             Console.WriteLine("Goodbye from C#!", Console.LogLevel.Info);
         }
 
