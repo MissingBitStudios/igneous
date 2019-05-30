@@ -21,6 +21,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 * CMake
 * Mono
+* OpenAL Redistributable
 * OpenAL SDK
 
 ### Environment Variables

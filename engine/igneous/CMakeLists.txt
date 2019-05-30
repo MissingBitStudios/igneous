@@ -27,6 +27,8 @@ target_include_directories(igneous PRIVATE
   ${IGNEOUS_INCLUDES}
 )
 
+target_compile_options(libigneous PRIVATE "/langversion:7.3")
+
 add_dependencies(igneous sandbox libigneous)
 
 set_target_properties(igneous PROPERTIES

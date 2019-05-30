@@ -1,6 +1,6 @@
 assimp 4.1.0
 bullet 2.87
-entt 3.x.y-WIP
+entt 3.0.0
 fastnoise 0.4
 pcil 1.0.0
 spdlog 1.2.1

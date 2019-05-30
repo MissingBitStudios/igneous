@@ -205,7 +205,7 @@ public:
 		: bigg::Application("Igneous") {}
 private:
 	uint32_t mReset = BGFX_RESET_NONE;
-	entt::registry<> registry;
+	entt::registry registry;
 	AudioServer* audio;
 	bgfx::TextureHandle handle;
 	SkySystem* sky;

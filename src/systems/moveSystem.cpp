@@ -11,7 +11,7 @@
 
 namespace MoveSystem
 {
-	void update(float dt, entt::registry<> &registry)
+	void update(float dt, entt::registry &registry)
 	{
 		time += dt;
 

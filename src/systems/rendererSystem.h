@@ -5,5 +5,5 @@
 
 namespace RendererSystem
 {
-	void render(entt::registry<> &registry, bgfx::TextureHandle handle);
+	void render(entt::registry &registry, bgfx::TextureHandle handle);
 }

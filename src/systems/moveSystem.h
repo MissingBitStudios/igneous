@@ -4,7 +4,7 @@
 
 namespace MoveSystem
 {
-	void update(float dt, entt::registry<> &registry);
+	void update(float dt, entt::registry &registry);
 
 	void onKey(int key, int scancode, int action, int mods);
 
