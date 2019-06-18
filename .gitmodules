@@ -25,3 +25,6 @@
 [submodule "dependencies/raknet"]
 	path = dependencies/raknet
 	url = https://github.com/prowolf/RakNet.git
+[submodule "dependencies/googletest"]
+	path = dependencies/googletest
+	url = https://github.com/google/googletest.git

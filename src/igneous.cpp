@@ -61,6 +61,7 @@ class Engine : public bigg::Application
 		sky = new SkySystem;
 
 		console = &Console::getInstance();
+		console->runFile("startup.cmd");
 
 		IG_CORE_INFO("-----Version Info-----");
 		IG_CORE_INFO("Igneous Version: {}", IGNEOUS_VERSION);

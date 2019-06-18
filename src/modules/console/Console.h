@@ -72,6 +72,7 @@ public:
 	void render();
 	void run(const std::string& command, arg_list args = {}) const;
 	void runBind(int key, bool positive = true) const;
+	void runFile(const std::string& filePath);
 	int textEditCallback(ImGuiInputTextCallbackData* data);
 	static int textEditCallbackStub(ImGuiInputTextCallbackData* data);
 	void unbind(int key);
@@ -92,6 +93,7 @@ private:
 	static void clearCallback(const std::string& name, const arg_list& args);
 	static void helpCallback(const std::string& name, const arg_list& args);
 	static void printCallback(const std::string& name, const arg_list& args);
+	static void runFileCallback(const std::string& name, const arg_list& args);
 	static void unbindCallback(const std::string& name, const arg_list& args);
 
 	struct line

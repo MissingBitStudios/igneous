@@ -1,6 +1,7 @@
 #include "console.h"
 
 #include <cctype>
+#include <fstream>
 #include <regex>
 #include <sstream>
 
@@ -14,6 +15,7 @@ Console::Console()
 	command("clear", clearCallback);
 	command("help", helpCallback);
 	command("print", printCallback);
+	command("run_file", runFileCallback);
 	command("unbind", unbindCallback);
 
 	consoleVar = variable("console", "0");
@@ -432,6 +434,30 @@ void Console::runBind(int key, bool positive) const
 	if (bindExists(key))
 	{
 		execute(binds.at(key), positive);
+	}
+}
+
+void Console::runFile(const std::string& filePath)
+{
+	std::ifstream file(filePath);
+	if (file.is_open()) {
+		for (std::string line; getline(file, line);) {
+			execute(line);
+		}
+		file.close();
+	}
+	else
+	{
+		IG_CONSOLE_ERROR("Could not open file: {}", filePath);
+	}
+}
+
+void Console::runFileCallback(const std::string& name, const arg_list& args)
+{
+	if (args.size() >= 1)
+	{
+		Console& cmd = getInstance();
+		cmd.runFile(args[0]);
 	}
 }
 
