@@ -16,9 +16,6 @@
 [submodule "pcil"]
 	path = dependencies/pcil
 	url = https://github.com/prowolf/pcil.git
-[submodule "dependencies/fastnoise"]
-	path = dependencies/fastnoise
-	url = https://github.com/Auburns/FastNoise.git
 [submodule "dependencies/bigg"]
 	path = dependencies/bigg
 	url = https://github.com/JoshuaBrookover/bigg.git
@@ -28,3 +25,6 @@
 [submodule "dependencies/googletest"]
 	path = dependencies/googletest
 	url = https://github.com/google/googletest.git
+[submodule "dependencies/fastnoisesimd"]
+	path = dependencies/fastnoisesimd
+	url = https://github.com/Auburns/FastNoiseSIMD.git

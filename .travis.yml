@@ -5,41 +5,28 @@ git:
 
 addons:
   apt:
-    sources:
-    - sourceline: 'deb https://download.mono-project.com/repo/ubuntu stable-xenial main'
-      key_url: 'https://download.mono-project.com/repo/xamarin.gpg'
     packages:
     - libopenal-dev
     - libgl1-mesa-dev
-    - mono-devel
     - xorg-dev
 
 matrix:
   include:
   - name: "Visual Studio 2017"
     os: windows
-    env:
-      - MONO_ROOT="C:\\Program Files\\Mono"
-      - OPENALDIR="C:\\Program Files (x86)\\OpenAL 1.1 SDK"
     before_script:
-      - choco install mono openal openalsdk dotnetfx
+      - choco install openal openalsdk
 
   - name: "Linux gcc"
     os: linux
     dist: xenial
     compiler: gcc
-    env:
-      - MONO_ROOT="/usr/bin/mono"
-      - OPENALDIR="/usr/lib/libopenal"
 
   - name: "macOS Xcode 10"
     os: osx
     osx_image: xcode10
-    env:
-      - MONO_ROOT="/Library/Frameworks/Mono.framework/Versions/Current/bin/mono"
-      - OPENALDIR="/usr/lib/libopenal"
     before_script:
-      - brew install openal-soft mono
+      - brew install openal-soft
 
 script:
   - mkdir build && cd build

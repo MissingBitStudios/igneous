@@ -20,15 +20,14 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 * CMake
-* Mono
 * OpenAL Redistributable
 * OpenAL SDK
 
 ### Environment Variables
 
-The install directories for the OpenAL SDK and Mono should be added as environment variables in your system. This is not necessary, but is a safeguard in case CMake cannot find the install directories in one of the default search paths.
+The install directory for the OpenAL SDK should be added as environment variables in your system. This is not necessary, but is a safeguard in case CMake cannot find the install directory in one of the default search paths.
 
-The OpenAL variable should be named `OPENALDIR`. The Mono variable should be named `MONO_ROOT`.
+The OpenAL variable should be named `OPENALDIR`.
 
 ### Checkout
 
@@ -65,7 +64,6 @@ git submodule update --init --recursive
 * [GLFW](https://github.com/glfw/glfw) - [Website](http://www.glfw.org/)
 * [GLM](https://github.com/g-truc/glm) - [Website](https://glm.g-truc.net/)
 * [Dear ImGui](https://github.com/ocornut/imgui)
-* [Mono](https://github.com/mono/mono) - [Website](https://www.mono-project.com/)
 * [OpenAL](https://www.openal.org/)
 * [RakNet](https://github.com/facebookarchive/RakNet) - [Website](http://www.raknet.net/)
 * [spdlog](https://github.com/gabime/spdlog)

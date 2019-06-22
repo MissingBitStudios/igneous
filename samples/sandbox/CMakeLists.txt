@@ -1,44 +1,29 @@
-cmake_minimum_required(VERSION 3.8)
-
-project(sandbox VERSION 0.1.0 LANGUAGES CSharp)
-
-include(CSharpUtilities)
-
 add_executable(sandbox
-	Sandbox.cs
+	src/sandbox.cpp
+	shaders/fs_splash.sc
+	shaders/vs_splash.sc
+	shaders/vs_bunny.sc
+	shaders/fs_bunny.sc
+	shaders/vs_sky.sc
+	shaders/fs_sky.sc
+	shaders/vs_cubes.sc
+	shaders/fs_cubes.sc
 )
 
-set_property(TARGET sandbox PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.7.2")
+target_link_libraries(sandbox igneous)
 
-set_property(TARGET sandbox PROPERTY VS_DOTNET_REFERENCES
-	"Microsoft.CSharp"
-	"PresentationCore"
-	"PresentationFramework"
-	"System"
-	"System.Core"
-	"System.Data"
-	"System.Data.DataSetExtensions"
-	"System.IO"
-	"System.IO.Pipes"
-	"System.Net.Http"
-	"System.Xaml"
-	"System.Xml"
-	"System.Xml.Linq"
-	"WindowsBase"
+add_custom_command(TARGET sandbox POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/res
 )
 
-set_property(TARGET sandbox PROPERTY 
-	VS_DOTNET_REFERENCE_STEAMWORKS ${STEAMWORKS_PATH}
-)
+add_shader(shaders/vs_splash.sc VERTEX   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
+add_shader(shaders/fs_splash.sc FRAGMENT OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
+add_shader(shaders/vs_bunny.sc VERTEX   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
+add_shader(shaders/fs_bunny.sc FRAGMENT OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
+add_shader(shaders/vs_sky.sc VERTEX   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
+add_shader(shaders/fs_sky.sc FRAGMENT OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
+add_shader(shaders/vs_cubes.sc VERTEX   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
+add_shader(shaders/fs_cubes.sc FRAGMENT OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders DX11_MODEL 5_0 GLSL 130)
 
-set_property(TARGET sandbox PROPERTY 
-	VS_DOTNET_REFERENCE_DISCORD ${DISCORD_PATH}
-)
-
-set(CMAKE_CSharp_FLAGS "/langversion:7.3")
-
-target_link_libraries(sandbox SHARED libigneous)
-set_target_properties(sandbox PROPERTIES
-	FOLDER "igneous/samples"
-	RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin"
-)
+set_target_properties(sandbox PROPERTIES FOLDER "igneous/samples")
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT sandbox)

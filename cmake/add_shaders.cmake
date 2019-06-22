@@ -1,8 +1,0 @@
-file(GLOB_RECURSE shaders "${CMAKE_SOURCE_DIR}/shaders/*.sc")
-foreach(shader ${shaders})
-  if(${shader} MATCHES "/vs_[^/]+\\.sc$")
-    add_shader(${shader} VERTEX OUTPUT ${CMAKE_BINARY_DIR}/bin/shaders DX11_MODEL 5_0 GLSL 130)
-  elseif(${shader} MATCHES "/fs_[^/]+\\.sc$")
-    add_shader(${shader} FRAGMENT OUTPUT ${CMAKE_BINARY_DIR}/bin/shaders DX11_MODEL 5_0 GLSL 130)
-  endif(${shader} MATCHES "/vs_[^/]+\\.sc$")
-endforeach(shader)

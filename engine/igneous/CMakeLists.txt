@@ -1,41 +1,66 @@
-cmake_minimum_required(VERSION 3.8)
-
-project(igneous VERSION 0.1.0 LANGUAGES CXX)
-
-include(cmake/add_shaders.cmake)
+add_library(igneous STATIC
+	audio/audio.cpp
+	audio/audio.hpp
+	console/console.cpp
+	console/console.hpp
+	console/console_sink.hpp
+	console/conVar.hpp
+	core/debug.hpp
+	core/game.hpp
+	core/igneous.cpp
+	core/input.cpp
+	core/input.hpp
+	core/log.cpp
+	core/log.hpp
+	core/version.hpp.in
+	ecs/components/cubeComponent.hpp
+	ecs/components/modelComponent.hpp
+	ecs/components/transformationComponent.hpp
+	ecs/systems/captureSystem.cpp
+	ecs/systems/captureSystem.hpp
+	ecs/systems/moveSystem.cpp
+	ecs/systems/moveSystem.hpp
+	ecs/systems/rendererSystem.cpp
+	ecs/systems/rendererSystem.hpp
+	ecs/systems/sky/dynamicValueController.cpp
+	ecs/systems/sky/dynamicValueController.hpp
+	ecs/systems/sky/proceduralSky.cpp
+	ecs/systems/sky/proceduralSky.hpp
+	ecs/systems/sky/sunController.cpp
+	ecs/systems/sky/sunController.hpp
+	ecs/systems/skySystem.cpp
+	ecs/systems/skySystem.hpp
+	gui/gui.cpp
+	gui/gui.hpp
+	igneous.hpp
+	physics/physics.cpp
+	physics/physics.hpp
+	renderer/aviwriter.hpp
+	renderer/camera.hpp
+	renderer/capture.cpp
+	renderer/capture.hpp
+	renderer/fpsCamera.cpp
+	renderer/fpsCamera.hpp
+	renderer/model.cpp
+	renderer/model.hpp
+	renderer/renderer.cpp
+	renderer/renderer.hpp
+	renderer/scene.cpp
+	renderer/scene.hpp
+)
 
 configure_file (
-  "${CMAKE_SOURCE_DIR}/version.h.in"
-  "${CMAKE_BINARY_DIR}/version.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/core/version.hpp.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/core/version.hpp"
+	@ONLY
 )
 
-file(GLOB_RECURSE IGNEOUS_SOURCES
-  ${CMAKE_SOURCE_DIR}/src/*.cpp
-  ${CMAKE_SOURCE_DIR}/src/*.h
-  ${CMAKE_SOURCE_DIR}/shaders/*.sc
+target_link_libraries(igneous PUBLIC ${IGNEOUS_LIBRARIES})
+
+target_include_directories(igneous PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}
+	${IGNEOUS_INCLUDES}
 )
 
-file(COPY res/ DESTINATION ${CMAKE_BINARY_DIR}/bin/res)
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/capture)
-
-add_executable(igneous ${IGNEOUS_SOURCES})
-
-target_link_libraries(igneous ${IGNEOUS_LIBRARIES})
-
-target_include_directories(igneous PRIVATE
-  ${CMAKE_BINARY_DIR}/src
-  ${IGNEOUS_INCLUDES}
-)
-
-target_compile_options(libigneous PRIVATE "/langversion:7.3")
-
-add_dependencies(igneous sandbox libigneous)
-
-set_target_properties(igneous PROPERTIES
-	FOLDER "igneous/engine"
-	RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin"
-)
-
-set_property(TARGET igneous PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT igneous)
+set_target_properties(igneous PROPERTIES FOLDER "igneous/engine")
