@@ -88,11 +88,14 @@ void Engine::onReset()
 
 void Engine::update(float dt)
 {
+	//Update
 	physics->step(dt);
-	bgfx::touch(0);
-	console->render();
-
 	game->update(dt);
+
+	//Render
+	bgfx::touch(0);
+	game->render();
+	console->render();
 }
 
 int Engine::shutdown()

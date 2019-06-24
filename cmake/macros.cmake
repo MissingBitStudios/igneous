@@ -60,15 +60,24 @@ macro(add_asset_shaders ARG_TARGET)
 
   file(WRITE ${ARG_HEADER})
 
-  add_custom_command(TARGET ${ARG_TARGET}
-    PRE_BUILD
-    ${ASSET_COMMANDS}
-    COMMAND "$<TARGET_FILE:bin2c>" ${ARG_HEADER} ${ASSET_FILES}
-    DEPENDS
-    shaderc
-    DEPENDS
-    bin2c
-  )
+  if(MSVC)
+    add_custom_command(TARGET ${ARG_TARGET}
+      PRE_BUILD
+      ${ASSET_COMMANDS}
+      COMMAND "$<TARGET_FILE:bin2c>" ${ARG_HEADER} ${ASSET_FILES}
+      DEPENDS shaderc
+      DEPENDS bin2c
+    )
+  else()
+    add_custom_target(
+      ${ARG_TARGET}_assets
+      ${ASSET_COMMANDS}
+      COMMAND "$<TARGET_FILE:bin2c>" ${ARG_HEADER} ${ASSET_FILES}
+      DEPENDS shaderc
+      DEPENDS bin2c
+    )
+    add_dependencies(${ARG_TARGET} ${ARG_TARGET}_assets)
+  endif()
 endmacro()
 
 macro(copy_directory ARG_TARGET ARG_ORIGIN_DIR ARG_DESTINATION_DIR)

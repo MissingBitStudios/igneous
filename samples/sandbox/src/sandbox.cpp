@@ -12,6 +12,11 @@ class Sandbox : public Game
 		IG_CLIENT_INFO("updated");
 	}
 
+	void render()
+	{
+		IG_CLIENT_INFO("render");
+	}
+
 	void shutdown()
 	{
 		IG_CLIENT_INFO("shutdown");
