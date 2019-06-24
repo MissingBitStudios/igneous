@@ -1,3 +1,10 @@
+# suppress library warnings
+if(MSVC)
+  add_definitions(/W0)
+else()
+  add_definitions(-Wno-everything)
+endif()
+
 # assimp
 set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")
 set(ASSIMP_BUILD_TESTS OFF CACHE INTERNAL "")
@@ -23,7 +30,7 @@ add_subdirectory(entt)
 find_package(OpenAL REQUIRED)
 if(OPENAL_FOUND)
 	message("OpenAL FOUND")
-endif(OPENAL_FOUND)
+endif()
 
 # raknet
 set(RAKNET_ENABLE_SAMPLES OFF CACHE INTERNAL "")

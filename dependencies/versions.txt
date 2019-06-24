@@ -1,6 +1,5 @@
 assimp 4.1.0
 bullet 2.87
 entt 3.0.0
-fastnoise 0.4
 googletest 1.8.1
 spdlog 1.2.1

@@ -24,6 +24,8 @@ option(IGNEOUS_TOOLS   "Build tools."     ON)
 
 add_subdirectory(dependencies)
 
+include(cmake/macros.cmake)
+
 if(IGNEOUS_EDITOR)
   add_subdirectory(engine/editor)
 endif(IGNEOUS_EDITOR)
