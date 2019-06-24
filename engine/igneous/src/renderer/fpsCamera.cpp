@@ -1,11 +1,23 @@
 #include "renderer/fpsCamera.hpp"
 
-#include <bigg.hpp>
-#include <bgfx/bgfx.h>
-
 void FPSCamera::update(float dt)
 {
-	//move
+	double dx = Input::mouseX - last_x;
+	double dy = Input::mouseY - last_y;
+	pitch -= 0.2 * dy * dt;
+	yaw += 0.2 * dx * dt;
+
+	// keeps the camera from turning upside down
+	if (pitch > 1.5)
+		pitch = 1.5;
+	if (pitch < -1.5)
+		pitch = -1.5;
+
+	// create the rotation matrix
+	glm::mat4 rot = glm::rotate((float)pitch, right);
+	rot = glm::rotate(rot, (float)yaw, up);
+
+	// changes the position vector
 	float speed = 5.0f;
 	if (Input::keys[GLFW_KEY_LEFT_SHIFT]) speed = 10.0f;
 	glm::vec3 mv;
@@ -15,19 +27,13 @@ void FPSCamera::update(float dt)
 	if (Input::keys[GLFW_KEY_D]) mv += right * speed *  dt;
 	if (Input::keys[GLFW_KEY_SPACE]) mv -= up * speed *  dt;
 	if (Input::keys[GLFW_KEY_LEFT_CONTROL]) mv -= -up * speed *  dt;
-	view = glm::translate(glm::mat4(), mv) * view;
+	glm::vec4 dv(mv, 0);
+	dv = dv * rot;
+	pos += glm::vec3(dv);
 
-	//rotate
-	double dx = Input::mouseX - last_x;
-	double dy = Input::mouseY - last_y;
+	// applies the translation and rotation to the view matrix
+	view = rot * glm::translate(glm::mat4(), pos) * glm::lookAt(glm::vec3(), glm::vec3() + forward, up);
 
-	glm::quat yaw((float)dx * dt, glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::quat pitch((float)dy * dt, glm::vec3(1.0f, 0.0f, 0.0f));
-	glm::quat tot = pitch * yaw;
-	view[2] = tot * view[2] * glm::inverse(tot);
-
-	if (Input::keys[GLFW_KEY_Q]) view = glm::rotate(glm::radians(-5.0f) * speed *  dt, glm::vec3(0.0f, 0.0f, 1.0f)) * view;
-	if (Input::keys[GLFW_KEY_E]) view = glm::rotate(glm::radians(5.0f) * speed *  dt, glm::vec3(0.0f, 0.0f, 1.0f)) * view;
 	last_x = Input::mouseX;
 	last_y = Input::mouseY;
 }
