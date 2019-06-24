@@ -8,7 +8,6 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - clang-6.0
     - g++-9
     - gcc-9
     - libopenal-dev
@@ -29,7 +28,10 @@ matrix:
     os: linux
     dist: xenial
     compiler: gcc
-    
+    before_script:
+      - export CC=gcc-9
+      - export CXX=g++-9
+
   - name: "Linux clang"
     os: linux
     dist: xenial
