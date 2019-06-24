@@ -24,7 +24,7 @@ protected:
 	void sink_it_(const spdlog::details::log_msg& msg) override
 	{
 		fmt::memory_buffer formatted;
-		sink::formatter_->format(msg, formatted);
+		spdlog::sinks::sink::formatter_->format(msg, formatted);
 		Console::getInstance().write(fmt::to_string(formatted), levels[msg.level]);
 	}
 

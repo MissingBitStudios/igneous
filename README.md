@@ -25,7 +25,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Environment Variables
 
-The install directory for the OpenAL SDK should be added as environment variables in your system. This is not necessary, but is a safeguard in case CMake cannot find the install directory in one of the default search paths.
+The install directory for the OpenAL SDK should be added as an environment variable in your system. This is not necessary, but is a safeguard in case CMake cannot find the install directory in one of the default search paths.
 
 The OpenAL variable should be named `OPENALDIR`.
 

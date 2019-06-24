@@ -1,7 +1,6 @@
 #include "renderer/renderer.hpp"
 
 #include <bigg.hpp>
-#include <pcil/pcil.hpp>
 #include <stb_image.h>
 
 #include "core/log.hpp"
@@ -65,7 +64,7 @@ std::string Renderer::getGpuInfo()
 	for (uint8_t i = 0; i < caps->numGPUs; i++)
 	{
 		isSelected = caps->deviceId == caps->gpu[i].deviceId ? "(Selected)" : "          ";
-		gpuInfo += "GPU[" + std::to_string(i) + "]" + isSelected + "| Vendor: " + std::to_string(caps->gpu[i].vendorId) + " \"" + pcil::vendorLookup(caps->gpu[i].vendorId) + "\" | Device ID: " + std::to_string(caps->gpu[i].deviceId) + " \"" + pcil::deviceLookup(caps->gpu[i].vendorId, caps->gpu[i].deviceId) + "\"";
+		gpuInfo += "GPU[" + std::to_string(i) + "]" + isSelected + "| Vendor ID: " + std::to_string(caps->gpu[i].vendorId) + " | Device ID: " + std::to_string(caps->gpu[i].deviceId);
 		gpuInfo += i < caps->numGPUs - 1 ? "\n" : "";
 	}
 
@@ -129,6 +128,7 @@ bgfx::ProgramHandle Renderer::loadProgram(const char* vs, const char* fs)
 	case bgfx::RendererType::Direct3D12: shaderPath = "shaders/dx11/";  break;
 	case bgfx::RendererType::Gnm:                                       break;
 	case bgfx::RendererType::Metal:      shaderPath = "shaders/metal/"; break;
+	case bgfx::RendererType::Nvn:                                       break;
 	case bgfx::RendererType::OpenGL:     shaderPath = "shaders/glsl/";  break;
 	case bgfx::RendererType::OpenGLES:   shaderPath = "shaders/essl/";  break;
 	case bgfx::RendererType::Vulkan:                                    break;

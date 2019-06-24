@@ -1,6 +1,7 @@
 #include "console/console.hpp"
 
 #include <cctype>
+#include <cstring>
 #include <fstream>
 #include <regex>
 #include <sstream>
@@ -94,10 +95,6 @@ void Console::bindCallback(const std::string& name, const arg_list& args)
 
 void Console::clear()
 {
-	for (line l : lines)
-	{
-		delete l.contents;
-	}
 	lines.clear();
 }
 
@@ -379,7 +376,7 @@ void Console::render()
 	for (line l : lines)
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, (ImVec4)l.color);
-		ImGui::TextUnformatted(l.contents);
+		ImGui::TextUnformatted(l.contents.c_str());
 		ImGui::PopStyleColor();
 	}
 	if (scrollToBottom)
@@ -392,7 +389,7 @@ void Console::render()
 	ImGui::Separator();
 	ImGui::PushItemWidth(-50.0f);
 	static char buf[max_input];
-	strcpy_s(buf, max_input, input.c_str());
+	std::strcpy(buf, input.c_str());
 	bool exe = ImGui::InputText("##input", buf, max_input, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackHistory, &textEditCallbackStub);
 	ImGui::SetItemDefaultFocus();
 	input = buf;
@@ -573,5 +570,5 @@ void Console::write(const std::string& contents, level_enum level)
 	{
 		lines.pop_front();
 	}
-	lines.push_back(line{ colors[level], _strdup(contents.c_str()) });
+	lines.push_back(line{ colors[level], contents });
 }

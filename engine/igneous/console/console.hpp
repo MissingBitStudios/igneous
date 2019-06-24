@@ -3,7 +3,6 @@
 #include <deque>
 #include <string>
 #include <unordered_map>
-#include <variant>
 
 #include "console/conVar.hpp"
 #include "gui/gui.hpp"
@@ -50,7 +49,8 @@ public:
 		warn,
 		err,
 		critical,
-		off
+		off,
+		NUM_LEVELS
 	};
 
 	void alias(const std::string& name, const std::string& exe);
@@ -99,7 +99,7 @@ private:
 	struct line
 	{
 		ImColor color;
-		const char* contents;
+		std::string contents;
 	};
 
 	const unsigned int max_lines = 100;
@@ -114,7 +114,7 @@ private:
 	std::unordered_map<std::string, call_sequence> aliases;
 	std::unordered_map<int, call_sequence> binds;
 	std::unordered_map<std::string, command_callback> commands;
-	std::unordered_map<level_enum, ImColor> colors;
+	ImColor colors[level_enum::NUM_LEVELS];
 	std::deque<std::string> history;
 	std::deque<line> lines;
 	std::unordered_map<std::string, ConVar*> variables;

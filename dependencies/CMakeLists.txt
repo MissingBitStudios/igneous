@@ -12,23 +12,18 @@ set(BUILD_CPU_DEMOS OFF CACHE INTERNAL "")
 set(BUILD_OPENGL3_DEMOS OFF CACHE INTERNAL "")
 set(BUILD_BULLET2_DEMOS OFF CACHE INTERNAL "")
 set(BUILD_UNIT_TESTS OFF CACHE INTERNAL "")
+set(BUILD_EXTRAS OFF CACHE INTERNAL "")
 add_subdirectory(bullet)
 
 # entt
 set(BUILD_TESTING OFF CACHE INTERNAL "")
 add_subdirectory(entt)
 
-# fastnoisesimd
-include(fastnoisesimd.cmake)
-
 # openal
 find_package(OpenAL REQUIRED)
 if(OPENAL_FOUND)
 	message("OpenAL FOUND")
 endif(OPENAL_FOUND)
-
-# pcil
-add_subdirectory(pcil)
 
 # raknet
 set(RAKNET_ENABLE_SAMPLES OFF CACHE INTERNAL "")
@@ -39,20 +34,19 @@ add_subdirectory(raknet)
 add_subdirectory(spdlog)
 
 # stb
-include(stb.cmake)
+add_subdirectory(stb)
 
 # set libraries list
 set(IGNEOUS_LIBRARIES
   assimp
   bigg
+  BulletDynamics
+  BulletCollision
   LinearMath
   Bullet3Common
   BulletInverseDynamics
-  BulletCollision
-  BulletDynamics
   BulletSoftBody
   EnTT
-  pcil
   ${OPENAL_LIBRARY}
   ${RAKNET_COMMON_LIBS}
   spdlog

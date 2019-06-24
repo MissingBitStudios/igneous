@@ -5,15 +5,23 @@ git:
 
 addons:
   apt:
+    sources:
+    - ubuntu-toolchain-r-test
     packages:
+    - clang-6.0
+    - g++-9
+    - gcc-9
     - libopenal-dev
     - libgl1-mesa-dev
+    - libstdc++-8-dev
     - xorg-dev
 
 matrix:
   include:
   - name: "Visual Studio 2017"
     os: windows
+    env:
+      - OPENALDIR="C:\\Program Files (x86)\\OpenAL 1.1 SDK"
     before_script:
       - choco install openal openalsdk
 
@@ -21,6 +29,11 @@ matrix:
     os: linux
     dist: xenial
     compiler: gcc
+    
+  - name: "Linux clang"
+    os: linux
+    dist: xenial
+    compiler: clang
 
   - name: "macOS Xcode 10"
     os: osx

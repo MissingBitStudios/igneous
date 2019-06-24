@@ -7,15 +7,9 @@
 [submodule "dependencies/entt"]
 	path = dependencies/entt
 	url = https://github.com/skypjack/entt.git
-[submodule "dependencies/stb"]
-	path = dependencies/stb
-	url = https://github.com/nothings/stb.git
 [submodule "dependencies/spdlog"]
 	path = dependencies/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "pcil"]
-	path = dependencies/pcil
-	url = https://github.com/prowolf/pcil.git
 [submodule "dependencies/bigg"]
 	path = dependencies/bigg
 	url = https://github.com/JoshuaBrookover/bigg.git
@@ -25,6 +19,6 @@
 [submodule "dependencies/googletest"]
 	path = dependencies/googletest
 	url = https://github.com/google/googletest.git
-[submodule "dependencies/fastnoisesimd"]
-	path = dependencies/fastnoisesimd
-	url = https://github.com/Auburns/FastNoiseSIMD.git
+[submodule "dependencies/stb/stb"]
+	path = dependencies/stb/stb
+	url = https://github.com/nothings/stb.git
