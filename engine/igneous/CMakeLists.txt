@@ -1,65 +1,74 @@
 add_library(igneous STATIC
-	audio/audio.cpp
-	audio/audio.hpp
-	console/console.cpp
-	console/console.hpp
-	console/console_sink.hpp
-	console/conVar.hpp
-	core/debug.hpp
-	core/game.hpp
-	core/igneous.cpp
-	core/input.cpp
-	core/input.hpp
-	core/log.cpp
-	core/log.hpp
-	core/version.hpp.in
-	ecs/components/cubeComponent.hpp
-	ecs/components/modelComponent.hpp
-	ecs/components/transformationComponent.hpp
-	ecs/systems/captureSystem.cpp
-	ecs/systems/captureSystem.hpp
-	ecs/systems/moveSystem.cpp
-	ecs/systems/moveSystem.hpp
-	ecs/systems/rendererSystem.cpp
-	ecs/systems/rendererSystem.hpp
-	ecs/systems/sky/dynamicValueController.cpp
-	ecs/systems/sky/dynamicValueController.hpp
-	ecs/systems/sky/proceduralSky.cpp
-	ecs/systems/sky/proceduralSky.hpp
-	ecs/systems/sky/sunController.cpp
-	ecs/systems/sky/sunController.hpp
-	ecs/systems/skySystem.cpp
-	ecs/systems/skySystem.hpp
-	gui/gui.cpp
-	gui/gui.hpp
-	igneous.hpp
-	physics/physics.cpp
-	physics/physics.hpp
-	renderer/aviwriter.hpp
-	renderer/camera.hpp
-	renderer/capture.cpp
-	renderer/capture.hpp
-	renderer/fpsCamera.cpp
-	renderer/fpsCamera.hpp
-	renderer/model.cpp
-	renderer/model.hpp
-	renderer/renderer.cpp
-	renderer/renderer.hpp
-	renderer/scene.cpp
-	renderer/scene.hpp
+	src/audio/audio.cpp
+	src/audio/audio.hpp
+	src/console/console.cpp
+	src/console/console.hpp
+	src/console/console_sink.hpp
+	src/console/conVar.hpp
+	src/core/debug.hpp
+	src/core/game.hpp
+	src/core/igneous.cpp
+	src/core/input.cpp
+	src/core/input.hpp
+	src/core/log.cpp
+	src/core/log.hpp
+	src/core/version.hpp.in
+	src/ecs/components/cubeComponent.hpp
+	src/ecs/components/modelComponent.hpp
+	src/ecs/components/transformationComponent.hpp
+	src/ecs/systems/captureSystem.cpp
+	src/ecs/systems/captureSystem.hpp
+	src/ecs/systems/moveSystem.cpp
+	src/ecs/systems/moveSystem.hpp
+	src/ecs/systems/rendererSystem.cpp
+	src/ecs/systems/rendererSystem.hpp
+	src/ecs/systems/sky/dynamicValueController.cpp
+	src/ecs/systems/sky/dynamicValueController.hpp
+	src/ecs/systems/sky/proceduralSky.cpp
+	src/ecs/systems/sky/proceduralSky.hpp
+	src/ecs/systems/sky/sunController.cpp
+	src/ecs/systems/sky/sunController.hpp
+	src/ecs/systems/skySystem.cpp
+	src/ecs/systems/skySystem.hpp
+	src/gui/gui.cpp
+	src/gui/gui.hpp
+	src/igneous.hpp
+	src/physics/physics.cpp
+	src/physics/physics.hpp
+	src/renderer/aviwriter.hpp
+	src/renderer/camera.hpp
+	src/renderer/capture.cpp
+	src/renderer/capture.hpp
+	src/renderer/fpsCamera.cpp
+	src/renderer/fpsCamera.hpp
+	src/renderer/model.cpp
+	src/renderer/model.hpp
+	src/renderer/renderer.cpp
+	src/renderer/renderer.hpp
+	src/renderer/scene.cpp
+	src/renderer/scene.hpp
+	src/renderer/splash_shaders.hpp
+)
+
+add_asset_shaders(igneous
+	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders
+	HEADER ${CMAKE_CURRENT_BINARY_DIR}/src/renderer/igneous_assets.h
+	SHADERS
+	shaders/fs_splash.sc
+	shaders/vs_splash.sc
 )
 
 configure_file (
-	"${CMAKE_CURRENT_SOURCE_DIR}/core/version.hpp.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/core/version.hpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/core/version.hpp.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/src/core/version.hpp"
 	@ONLY
 )
 
 target_link_libraries(igneous PUBLIC ${IGNEOUS_LIBRARIES})
 
 target_include_directories(igneous PUBLIC
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/src
+	${CMAKE_CURRENT_BINARY_DIR}/src
 	${IGNEOUS_INCLUDES}
 )
 

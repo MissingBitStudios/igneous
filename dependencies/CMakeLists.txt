@@ -1,8 +1,8 @@
 # suppress library warnings
 if(MSVC)
-  add_definitions(/W0)
+  add_compile_options(/W0)
 else()
-  add_definitions(-Wno-everything)
+  add_compile_options(-w)
 endif()
 
 # assimp
@@ -11,7 +11,8 @@ set(ASSIMP_BUILD_TESTS OFF CACHE INTERNAL "")
 add_subdirectory(assimp)
 
 # bigg
-set(BIGG_EXAMPLES OFF CACHE INTERNAL "")
+set(BIGG_EXAMPLES  OFF CACHE INTERNAL "")
+set(BIGG_ASSET_GEN ON  CACHE INTERNAL "")
 add_subdirectory(bigg)
 
 # bullet

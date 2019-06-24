@@ -4,6 +4,7 @@
 #include <stb_image.h>
 
 #include "core/log.hpp"
+#include "renderer/splash_shaders.hpp"
 
 Renderer::Renderer()
 {
@@ -19,7 +20,10 @@ Renderer::Renderer()
 
 	SplashVertex::init();
 
-	bgfx::ProgramHandle splashProgram = loadProgram("vs_splash", "fs_splash");
+	bgfx::ShaderHandle fs = bgfx::createShader(bgfx::makeRef(fs_splash(), fs_splash_len()));
+	bgfx::ShaderHandle vs = bgfx::createShader(bgfx::makeRef(vs_splash(), vs_splash_len()));
+	bgfx::ProgramHandle splashProgram = bgfx::createProgram(vs, fs, true);
+
 	bgfx::UniformHandle s_splash = bgfx::createUniform("s_splash", bgfx::UniformType::Sampler);
 	bgfx::TextureHandle splashTexture = loadTexture("res/textures/splash.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP, false);
 
