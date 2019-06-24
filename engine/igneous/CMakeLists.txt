@@ -52,7 +52,7 @@ add_library(igneous STATIC
 
 add_asset_shaders(igneous
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders
-	HEADER ${CMAKE_CURRENT_BINARY_DIR}/src/renderer/igneous_assets.h
+	HEADER src/renderer/igneous_assets.h
 	SHADERS
 	shaders/fs_splash.sc
 	shaders/vs_splash.sc

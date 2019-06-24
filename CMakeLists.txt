@@ -17,10 +17,11 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(IGNEOUS_EDITOR  "Build editor."    ON)
-option(IGNEOUS_SAMPLES "Build samples."   ON)
-option(IGNEOUS_TESTS   "Build tests."     ON)
-option(IGNEOUS_TOOLS   "Build tools."     ON)
+option(IGNEOUS_EDITOR      "Build editor."     ON)
+option(IGNEOUS_SAMPLES     "Build samples."    ON)
+option(IGNEOUS_TESTS       "Build tests."      ON)
+option(IGNEOUS_TOOLS       "Build tools."      ON)
+option(IGNEOUS_ASSET_GEN   "Build assets."     OFF)
 
 add_subdirectory(dependencies)
 
