@@ -35,8 +35,10 @@ add_library(igneous STATIC
 	src/igneous.hpp
 	src/physics/physics.cpp
 	src/physics/physics.hpp
+	src/renderer/asset_shaders.hpp
 	src/renderer/aviwriter.hpp
 	src/renderer/camera.hpp
+	src/renderer/camera.cpp
 	src/renderer/capture.cpp
 	src/renderer/capture.hpp
 	src/renderer/fpsCamera.cpp

@@ -65,6 +65,8 @@ void Engine::initialize(int _argc, char** _argv)
 	reset(mReset);
 
 	Input::setCursorVisible(mWindow, false);
+	Input::width = getWidth();
+	Input::height = getHeight();
 
 	IG_CORE_INFO("Initializing game");
 	game->initialize(_argc, _argv);
@@ -79,10 +81,11 @@ void Engine::onMouseButton(int button, int action, int mods) { Input::onMouseBut
 void Engine::onScroll(double xoffset, double yoffset) { Input::onScroll(xoffset, yoffset); }
 void Engine::onCursorPos(double xpos, double ypos) { Input::onCursorPos(xpos, ypos); }
 void Engine::onCursorEnter(int entered) { Input::onCursorEnter(entered); }
+void Engine::onWindowSize(int width, int height) { Input::width = width; Input::height = height; }
 
 void Engine::onReset()
 {
-	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xc0c0c0ff, 1.0f, 0);
+	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x008080ff, 1.0f, 0);
 	bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
 }
 
@@ -93,6 +96,7 @@ void Engine::update(float dt)
 	game->update(dt);
 
 	//Render
+	bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
 	bgfx::touch(0);
 	game->render();
 	console->render();

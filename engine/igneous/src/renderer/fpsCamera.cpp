@@ -1,39 +1,38 @@
 #include "renderer/fpsCamera.hpp"
 
-void FPSCamera::update(float dt)
+#include <algorithm>
+
+void FPSCamera::update(const float dt)
 {
-	double dx = Input::mouseX - last_x;
-	double dy = Input::mouseY - last_y;
-	pitch -= 0.2 * dy * dt;
-	yaw += 0.2 * dx * dt;
-
-	// keeps the camera from turning upside down
-	if (pitch > 1.5)
-		pitch = 1.5;
-	if (pitch < -1.5)
-		pitch = -1.5;
-
-	// create the rotation matrix
-	glm::mat4 rot = glm::rotate((float)pitch, right);
-	rot = glm::rotate(rot, (float)yaw, up);
-
-	// changes the position vector
 	float speed = 5.0f;
 	if (Input::keys[GLFW_KEY_LEFT_SHIFT]) speed = 10.0f;
+
+	//Rotate
+	glm::vec3 ro;
+	//Pitch
+	if (Input::keys[GLFW_KEY_UP]) ro.x += speed * dt;
+	if (Input::keys[GLFW_KEY_DOWN]) ro.x -= speed * dt;
+	//Yaw
+	if (Input::keys[GLFW_KEY_LEFT]) ro.y += speed * dt;
+	if (Input::keys[GLFW_KEY_RIGHT]) ro.y -= speed * dt;
+	//Roll
+	if (Input::keys[GLFW_KEY_Q]) ro.z += speed * dt;
+	if (Input::keys[GLFW_KEY_E]) ro.z -= speed * dt;
+	rotate(ro);
+
+	//Clamp pitch
+	rotation.x = std::clamp(rotation.x, glm::radians(-90.0f), glm::radians(90.0f));
+
+	//Translate
 	glm::vec3 mv;
+	//Z
 	if (Input::keys[GLFW_KEY_W]) mv += forward * speed * dt;
-	if (Input::keys[GLFW_KEY_A]) mv += -right * speed *  dt;
-	if (Input::keys[GLFW_KEY_S]) mv += -forward * speed *  dt;
-	if (Input::keys[GLFW_KEY_D]) mv += right * speed *  dt;
-	if (Input::keys[GLFW_KEY_SPACE]) mv -= up * speed *  dt;
-	if (Input::keys[GLFW_KEY_LEFT_CONTROL]) mv -= -up * speed *  dt;
-	glm::vec4 dv(mv, 0);
-	dv = dv * rot;
-	pos += glm::vec3(dv);
-
-	// applies the translation and rotation to the view matrix
-	view = rot * glm::translate(glm::mat4(), pos) * glm::lookAt(glm::vec3(), glm::vec3() + forward, up);
-
-	last_x = Input::mouseX;
-	last_y = Input::mouseY;
+	if (Input::keys[GLFW_KEY_S]) mv -= forward * speed * dt;
+	//X
+	if (Input::keys[GLFW_KEY_A]) mv += left * speed *  dt;
+	if (Input::keys[GLFW_KEY_D]) mv -= left * speed *  dt;
+	//Y
+	if (Input::keys[GLFW_KEY_SPACE]) mv += up * speed *  dt;
+	if (Input::keys[GLFW_KEY_LEFT_CONTROL]) mv -= up * speed *  dt;
+	translate(mv);
 }

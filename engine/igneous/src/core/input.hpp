@@ -29,6 +29,8 @@ namespace Input
 	extern bool mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1];
 	extern double scrollX, scrollY;
 	extern double mouseX, mouseY;
+	extern int width;
+	extern int height;
 	extern GLFWwindow* window;
 
 	extern entt::sigh<void(int, int, int, int)> keySignal;

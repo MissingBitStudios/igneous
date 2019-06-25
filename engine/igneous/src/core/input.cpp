@@ -95,6 +95,7 @@ namespace Input
 	bool mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1] = { 0 };
 	double scrollX, scrollY = 0;
 	double mouseX, mouseY = 0;
+	int width, height = 0;
 	GLFWwindow* window = nullptr;
 
 	entt::sigh<void(int, int, int, int)> keySignal;

@@ -31,6 +31,7 @@ class Engine : public bigg::Application
 	void onScroll(double xoffset, double yoffset);
 	void onCursorPos(double xpos, double ypos);
 	void onCursorEnter(int entered);
+	void onWindowSize(int width, int height);
 
 	void onReset();
 	void update(float dt);
