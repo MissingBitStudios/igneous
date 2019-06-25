@@ -20,7 +20,7 @@ class Sandbox : public Game
 		registry.assign<ModelComponent>(entity, barn, polyShader);
 		registry.assign<Transformation>(entity, glm::mat4());
 
-		camera = new FPSCamera();
+		camera = new FPSCamera(glm::vec3(0.0f, 5.0f, 15.0f));
 	}
 
 	void update(float dt)
@@ -33,6 +33,8 @@ class Sandbox : public Game
 	{
 		camera->use(Input::width, Input::height);
 		RendererSystem::render(registry, handle);
+
+		ImGui::ShowDemoWindow();
 	}
 
 	void shutdown()

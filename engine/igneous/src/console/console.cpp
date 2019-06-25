@@ -364,8 +364,7 @@ void Console::remove(const std::string& name)
 void Console::render()
 {
 	if (!*consoleVar) return;
-	static bool open;
-	if (!ImGui::Begin("Console", &open, ImVec2(ImGui::GetWindowSize().x * 0.5f, ImGui::GetWindowSize().y * 0.5f)) || ImGui::IsWindowAppearing())
+	if (!ImGui::Begin("Console", NULL, ImVec2(ImGui::GetWindowSize().x * 0.5f, ImGui::GetWindowSize().y * 0.5f)) || ImGui::IsWindowAppearing())
 	{
 		// Early out if the window is collapsed, as an optimization.
 		ImGui::End();

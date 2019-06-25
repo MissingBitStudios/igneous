@@ -15,8 +15,8 @@ void FPSCamera::update(const float dt)
 
 	//Rotate
 	glm::vec3 ro;
-	ro.x += dy * speed * dt;
-	ro.y += dx * speed * dt;
+	ro.x += (float)dy * dt;
+	ro.y += (float)dx * dt;
 
 	//Pitch
 	if (Input::keys[GLFW_KEY_UP]) ro.x -= speed * dt;
