@@ -1,6 +1,8 @@
 #include "renderer/camera.hpp"
 
-#include <bigg.hpp>
+#include <bgfx/bgfx.h>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 void Camera::use(const uint32_t width, const uint32_t height)
 {
@@ -16,23 +18,28 @@ glm::mat4 Camera::getView() const
 
 glm::mat4 Camera::getProjection(const float aspectRatio) const
 {
-	return bigg::perspective(glm::radians(60.0f), aspectRatio, 0.1f, 100.0f);
+	return glm::perspective(glm::radians(60.0f), aspectRatio, 0.1f, 100.0f);
 }
 
 glm::mat4 Camera::getRotation() const
 {
-	glm::mat4 rot = glm::rotate(-rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	rot = glm::rotate(rot, -rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	rot = glm::rotate(rot, -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-	return rot;
+	glm::quat yaw = glm::angleAxis(rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::quat pitch = glm::angleAxis(rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	glm::quat roll = glm::angleAxis(rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	return glm::mat4(roll * pitch * yaw);
 }
 
-void Camera::translate(const glm::vec3& ds)
+void Camera::translateLocal(const glm::vec3& ds)
 {
 	position += glm::vec3(glm::vec4(ds, 0) * getRotation());
 }
 
-void Camera::rotate(const glm::vec3& dw)
+void Camera::translateGlobal(const glm::vec3& ds)
+{
+	position += ds;
+}
+
+void Camera::rotateLocal(const glm::vec3& dw)
 {
 	rotation += dw;
 }

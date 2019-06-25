@@ -1,8 +1,6 @@
 #pragma once
 
-#include <bgfx/bgfx.h>
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
 
 class Camera
 {
@@ -17,8 +15,10 @@ public:
 	glm::mat4 getProjection(const float aspectRatio) const;
 	glm::mat4 getRotation() const;
 
-	void translate(const glm::vec3& ds);
-	void rotate(const glm::vec3& dw);
+	void translateLocal(const glm::vec3& ds);
+	void translateGlobal(const glm::vec3& ds);
+
+	void rotateLocal(const glm::vec3& dw);
 protected:
 	static const glm::vec3 forward;
 	static const glm::vec3 up;

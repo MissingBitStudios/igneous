@@ -4,7 +4,6 @@
 #include <glm/gtx/transform.hpp>
 
 #include "renderer/camera.hpp"
-#include "core/input.hpp"
 
 class FPSCamera : public Camera
 {
@@ -14,4 +13,7 @@ public:
 	~FPSCamera() {}
 
 	void update(const float dt);
+private:
+	double last_x = 0;
+	double last_y = 0;
 };
