@@ -9,16 +9,19 @@ public:
 		: position(pos), rotation(rot) {}
 	virtual ~Camera() {}
 
-	virtual void update(const float dt) {};
-	void use(const uint32_t width, const uint32_t height);
-	glm::mat4 getView() const;
-	glm::mat4 getProjection(const float aspectRatio) const;
-	glm::mat4 getRotation() const;
+	virtual void update(float dt) {};
+	void use(const uint32_t width, const uint32_t height) const;
+	glm::mat4 getViewMatrix() const;
+	glm::mat4 getProjectionMatrix(const float aspectRatio) const;
+	glm::mat4 getRotationMatrix() const;
 
+	const glm::vec3& getPosition() const;
 	void translateLocal(const glm::vec3& ds);
 	void translateGlobal(const glm::vec3& ds);
 
+	const glm::vec3& getRotation() const;
 	void rotateLocal(const glm::vec3& dw);
+	void rotateGlobal(const glm::vec3& dw);
 protected:
 	static const glm::vec3 forward;
 	static const glm::vec3 up;

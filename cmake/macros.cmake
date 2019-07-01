@@ -67,7 +67,7 @@ macro(add_asset_shaders ARG_TARGET)
     endif()
 
     add_custom_target(
-      ${ARG_TARGET}_assets
+      ${ARG_TARGET}_assets ALL
       ${ASSET_COMMANDS}
       COMMAND "$<TARGET_FILE:bin2c>" ${ARG_HEADER} ${ASSET_FILES}
       DEPENDS shaderc

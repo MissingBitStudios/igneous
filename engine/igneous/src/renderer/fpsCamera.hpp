@@ -13,6 +13,7 @@ public:
 	~FPSCamera() {}
 
 	void update(const float dt);
+	void translateLocal(const glm::vec3& ds);
 private:
 	double last_x = 0;
 	double last_y = 0;

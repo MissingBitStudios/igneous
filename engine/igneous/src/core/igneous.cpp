@@ -14,14 +14,16 @@
 void Engine::initialize(int _argc, char** _argv)
 {
 	IG_CORE_INFO("Setting window title and icon");
-	GLFWimage images[3];
+	GLFWimage images[4];
 	images[0].pixels = stbi_load("res/icons/icon16.png", &images[0].width, &images[0].height, 0, 4);
 	images[1].pixels = stbi_load("res/icons/icon32.png", &images[1].width, &images[1].height, 0, 4);
 	images[2].pixels = stbi_load("res/icons/icon48.png", &images[2].width, &images[2].height, 0, 4);
-	glfwSetWindowIcon(mWindow, 3, images);
+	images[3].pixels = stbi_load("res/icons/icon256.png", &images[3].width, &images[3].height, 0, 4);
+	glfwSetWindowIcon(mWindow, 4, images);
 	stbi_image_free(images[0].pixels);
 	stbi_image_free(images[1].pixels);
 	stbi_image_free(images[2].pixels);
+	stbi_image_free(images[3].pixels);
 	IG_CORE_INFO("Window title and icon set");
 
 	Input::Init(mWindow);
@@ -31,8 +33,6 @@ void Engine::initialize(int _argc, char** _argv)
 	audio = &Audio::getInstance();
 	physics = &Physics::getInstance();
 	IG_CORE_INFO("Servers Initialized");
-
-	gui::cherryTheme();
 
 	console = &Console::getInstance();
 	console->runFile("startup.cmd");
@@ -96,7 +96,6 @@ void Engine::update(float dt)
 	game->update(dt);
 
 	//Render
-	bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
 	bgfx::touch(0);
 	game->render();
 	console->render();

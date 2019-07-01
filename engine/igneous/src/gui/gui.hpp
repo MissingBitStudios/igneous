@@ -4,5 +4,11 @@
 
 namespace gui
 {
-	void cherryTheme();
+	enum Theme
+	{
+		CHERRY,
+		NUM_THEMES
+	};
+
+	void setTheme(Theme theme);
 }

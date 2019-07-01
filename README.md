@@ -2,8 +2,7 @@
 
 [![GitHub tag](https://img.shields.io/github/tag/MissingBitStudios/igneous.svg)](https://github.com/MissingBitStudios/igneous/releases)
 [![Build Status](https://travis-ci.org/MissingBitStudios/igneous.svg?branch=master)](https://travis-ci.org/MissingBitStudios/igneous)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/519736a44c2f4815abaa0f5494056391)](https://app.codacy.com/app/prowolf/igneous?utm_source=github.com&utm_medium=referral&utm_content=MissingBitStudios/igneous&utm_campaign=Badge_Grade_Dashboard)
-[![GitHub license](https://img.shields.io/badge/license-CC%20BY--NC--SA-green.svg)](https://github.com/MissingBitStudios/igneous/blob/master/LICENSE.md)
+[![GitHub license](https://img.shields.io/badge/license-CC%20BY%204.0-green.svg)](https://github.com/MissingBitStudios/igneous/blob/master/LICENSE.md)
 [![Join the chat at https://discord.gg/CCUwTar](https://img.shields.io/badge/chat-on%20discord-mediumpurple.svg)](https://discord.gg/CCUwTar)
 [![Join the chat at https://gitter.im/MissingBitStudios/igneous](https://badges.gitter.im/MissingBitStudios/igneous.svg)](https://gitter.im/MissingBitStudios/igneous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -90,7 +89,7 @@ See also the list of [contributors](https://github.com/MissingBitStudios/igneous
 
 ## License
 
-This project is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License (CC BY-NC-SA) - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the Creative Commons Attribution 4.0 International Public License (CC BY 4.0) - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgements
 

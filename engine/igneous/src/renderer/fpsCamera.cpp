@@ -1,6 +1,7 @@
 #include "renderer/fpsCamera.hpp"
 
 #include <algorithm>
+#include <glm/gtx/euler_angles.hpp>
 
 #include "core/input.hpp"
 
@@ -15,18 +16,15 @@ void FPSCamera::update(const float dt)
 
 	//Rotate
 	glm::vec3 ro;
-	ro.x += (float)dy * dt;
-	ro.y += (float)dx * dt;
 
 	//Pitch
+	ro.x += (float)dy * dt;
 	if (Input::keys[GLFW_KEY_UP]) ro.x -= speed * dt;
 	if (Input::keys[GLFW_KEY_DOWN]) ro.x += speed * dt;
 	//Yaw
+	ro.y += (float)dx * dt;
 	if (Input::keys[GLFW_KEY_LEFT]) ro.y -= speed * dt;
 	if (Input::keys[GLFW_KEY_RIGHT]) ro.y += speed * dt;
-	//Roll
-	if (Input::keys[GLFW_KEY_Q]) ro.z -= speed * dt;
-	if (Input::keys[GLFW_KEY_E]) ro.z += speed * dt;
 	rotateLocal(ro);
 
 	//Clamp pitch
@@ -49,4 +47,9 @@ void FPSCamera::update(const float dt)
 
 	last_x = Input::mouseX;
 	last_y = Input::mouseY;
+}
+
+void FPSCamera::translateLocal(const glm::vec3& ds)
+{
+	position += glm::vec3(glm::vec4(ds, 0) * glm::eulerAngleY(rotation.y));
 }

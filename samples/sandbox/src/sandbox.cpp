@@ -6,6 +6,8 @@ class Sandbox : public Game
 	{
 		Renderer& renderer = Renderer::getInstance();
 
+		gui::setTheme(gui::Theme::CHERRY);
+
 		Vertex::init();
 
 		sky = new SkySystem;
