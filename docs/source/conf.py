@@ -223,3 +223,5 @@ def setup(app):
 
     # Add hook for building doxygen when needed
     app.connect("builder-inited", generate_doxygen)
+
+    app.add_css_file('style.css')
