@@ -2,7 +2,7 @@
 
 [![GitHub tag](https://img.shields.io/github/tag/MissingBitStudios/igneous.svg)](https://github.com/MissingBitStudios/igneous/releases)
 [![Build Status](https://travis-ci.org/MissingBitStudios/igneous.svg?branch=master)](https://travis-ci.org/MissingBitStudios/igneous)
-[![GitHub license](https://img.shields.io/badge/license-CC%20BY%204.0-green.svg)](https://github.com/MissingBitStudios/igneous/blob/master/LICENSE.md)
+[![Documentation Status](https://readthedocs.org/projects/igneous/badge/?version=latest)](https://igneous.readthedocs.io/en/latest/?badge=latest)
 [![Join the chat at https://discord.gg/CCUwTar](https://img.shields.io/badge/chat-on%20discord-mediumpurple.svg)](https://discord.gg/CCUwTar)
 [![Join the chat at https://gitter.im/MissingBitStudios/igneous](https://badges.gitter.im/MissingBitStudios/igneous.svg)](https://gitter.im/MissingBitStudios/igneous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 

@@ -17,21 +17,26 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(IGNEOUS_EDITOR      "Build editor."     ON)
-option(IGNEOUS_SAMPLES     "Build samples."    ON)
-option(IGNEOUS_TESTS       "Build tests."      ON)
-option(IGNEOUS_TOOLS       "Build tools."      ON)
-option(IGNEOUS_ASSET_GEN   "Build assets."     OFF)
+option(IGNEOUS_ASSET_GEN   "Build assets."        OFF)
+option(IGNEOUS_DOCS        "Build documentation." OFF)
+option(IGNEOUS_EDITOR      "Build editor."        ON)
+option(IGNEOUS_SAMPLES     "Build samples."       ON)
+option(IGNEOUS_TESTS       "Build tests."         ON)
+option(IGNEOUS_TOOLS       "Build tools."         ON)
 
 add_subdirectory(dependencies)
 
 include(cmake/macros.cmake)
 
+if(IGNEOUS_DOCS)
+  add_subdirectory(docs)
+endif(IGNEOUS_DOCS)
+
 if(IGNEOUS_EDITOR)
-  add_subdirectory(engine/editor)
+  add_subdirectory(editor)
 endif(IGNEOUS_EDITOR)
 
-add_subdirectory(engine/igneous)
+add_subdirectory(igneous)
 
 if(IGNEOUS_SAMPLES)
   add_subdirectory(samples)
@@ -42,5 +47,5 @@ if(IGNEOUS_TESTS)
 endif(IGNEOUS_TESTS)
 
 if(IGNEOUS_TOOLS)
-  add_subdirectory(engine/tools)
+  add_subdirectory(tools)
 endif(IGNEOUS_TOOLS)

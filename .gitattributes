@@ -2,4 +2,5 @@
 *.in linguist-language=CMake
 *.sc linguist-language=Shader C
 *.sh linguist-language=Shader C
-res/* linguist-vendored
+docs/* linguist-vendored
+samples/sandbox/res/* linguist-vendored

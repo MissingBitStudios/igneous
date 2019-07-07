@@ -1,0 +1,5 @@
+GUI
+===
+
+.. doxygennamespace:: gui
+   :members:
