@@ -65,12 +65,13 @@ ConVar& ConVar::operator=(const std::string& strValue)
 
 std::ostream& operator<<(std::ostream& os, const ConVar& conVar)
 {
-	return os << std::to_string(conVar.value);
+	return os << conVar.value;
 }
 
 std::istream& operator>>(std::istream& is, ConVar& conVar)
 {
-	return is >> std::to_string(conVar.value);
+	//TODO: When ConVar supports string make this write to the string
+	return is;// >> conVar.value;
 }
 
 bool ConVar::operator!() const

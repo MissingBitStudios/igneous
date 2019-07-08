@@ -57,7 +57,6 @@ public:
 	bool isValid(const std::string& name) const;
 	static void onKey(int key, int scancode, int action, int mods);
 	void remove(const std::string& name);
-	void render();
 	void run(const std::string& command, arg_list args = {});
 	void runBind(int key, bool positive = true);
 	void runFile(const std::string& filePath);
