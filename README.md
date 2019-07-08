@@ -8,9 +8,7 @@
 
 Igneous is an open source game engine written in C++.
 
-![Sponza]()
-
-![Barn]()
+![Barn](docs/source/img/barn.png)
 
 ## Getting Started
 
