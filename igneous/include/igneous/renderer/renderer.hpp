@@ -5,6 +5,7 @@
 
 #include <bgfx/bgfx.h>
 
+namespace igneous {
 class Renderer
 {
 public:
@@ -21,3 +22,4 @@ public:
 	Renderer(Renderer const&) = delete;
 	void operator=(Renderer const&) = delete;
 };
+} // end namespace igneous

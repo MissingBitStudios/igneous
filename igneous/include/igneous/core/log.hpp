@@ -5,6 +5,7 @@
 
 #include "core/debug.hpp"
 
+namespace igneous {
 class Log
 {
 public:
@@ -63,3 +64,4 @@ private:
 #define IG_CONSOLE_ERROR(...)  Log::getInstance().getConsoleLogger()->error(__VA_ARGS__)
 #define IG_CONSOLE_CRITICAL(...)  {Log::getInstance().getConsoleLogger()->critical(__VA_ARGS__); abort();}
 #define IG_CONSOLE_LOG(msg, level)  Log::getInstance().getConsoleLogger()->log((spdlog::level::level_enum)level, msg)
+} // end namespace igneous

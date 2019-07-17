@@ -5,6 +5,7 @@
 
 #include "camera.hpp"
 
+namespace igneous {
 class FPSCamera : public Camera
 {
 public:
@@ -18,3 +19,4 @@ private:
 	double last_x = 0;
 	double last_y = 0;
 };
+} // end namespace igneous

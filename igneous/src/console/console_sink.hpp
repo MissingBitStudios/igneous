@@ -6,6 +6,7 @@
 
 #include "console/console.hpp"
 
+namespace igneous {
 template<typename Mutex>
 class console_sink : public spdlog::sinks::base_sink <Mutex>
 {
@@ -32,3 +33,4 @@ protected:
 
 	std::unordered_map<spdlog::level::level_enum, Console::level_enum> levels;
 };
+} // end namespace igneous

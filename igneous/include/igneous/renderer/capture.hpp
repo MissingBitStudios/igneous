@@ -7,6 +7,7 @@
 #include <bx/bx.h>
 #include <bx/allocator.h>
 
+namespace igneous {
 class Allocator : public bx::AllocatorI
 {
 public:
@@ -58,3 +59,4 @@ struct CaptureCallback : public bgfx::CallbackI
 	static bx::FileReaderI* s_fileReader;
 	static bx::FileWriterI* s_fileWriter;
 };
+} // end namespace igneous

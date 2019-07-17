@@ -4,6 +4,7 @@
 
 #include "core/log.hpp"
 
+namespace igneous {
 namespace Input
 {
 	void Init(GLFWwindow* win)
@@ -98,3 +99,4 @@ namespace Input
 	entt::sigh<void(double, double)> cursorPosSignal;
 	entt::sigh<void(int)> cursorEnterSignal;
 }
+} // end namespace igneous

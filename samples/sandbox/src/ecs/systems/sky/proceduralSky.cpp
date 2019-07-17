@@ -4,6 +4,8 @@
 
 #include <igneous/renderer/renderer.hpp>
 
+using namespace igneous;
+
 void ProceduralSky::init(int verticalCount, int horizontalCount)
 {
 	ScreenPosVertex::init();

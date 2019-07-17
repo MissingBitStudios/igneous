@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+namespace igneous {
 typedef std::vector<std::string> arg_list;
 typedef void(*command_callback)(const std::string&, const arg_list&);
 
@@ -70,3 +71,4 @@ public:
 	Console(Console const&) = delete;
 	void operator=(Console const&) = delete;
 };
+} // end namespace igneous

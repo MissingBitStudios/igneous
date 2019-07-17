@@ -19,6 +19,7 @@
 #include "ecs/systems/captureSystem.hpp"
 #include "renderer/model.hpp"
 
+namespace igneous {
 Engine::Engine(Game* game)
 	: bigg::Application("Igneous"), game(game) {}
 
@@ -123,3 +124,4 @@ int Engine::shutdown()
 	renderer->cleanUp();
 	return 0;
 }
+} // end namespace igneous

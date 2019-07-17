@@ -1,5 +1,6 @@
 #pragma once
 
+namespace igneous {
 class Game
 {
 public:
@@ -8,3 +9,4 @@ public:
 	virtual void render() {}
 	virtual void shutdown() {}
 };
+} // end namespace igneous

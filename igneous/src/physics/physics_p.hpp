@@ -2,6 +2,7 @@
 
 #include <btBulletDynamicsCommon.h>
 
+namespace igneous {
 class Physics
 {
 public:
@@ -21,3 +22,4 @@ private:
 	btSequentialImpulseConstraintSolver* solver;
 	btDiscreteDynamicsWorld* dynamicsWorld;
 };
+} // end namespace igneous

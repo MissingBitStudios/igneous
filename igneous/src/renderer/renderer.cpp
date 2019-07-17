@@ -9,6 +9,7 @@
 #include "core/log.hpp"
 #include "renderer/splash_shaders.hpp"
 
+namespace igneous {
 Renderer::Renderer()
 {
 	IG_CORE_INFO("Initializing Renderer");
@@ -171,3 +172,4 @@ Renderer::~Renderer()
 }
 
 bgfx::VertexDecl Renderer::SplashVertex::ms_decl;
+} // end namespace igneous

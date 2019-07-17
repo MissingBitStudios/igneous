@@ -1,5 +1,6 @@
 #pragma once
 
+namespace igneous {
 namespace gui
 {
 	/*! Themes to use with `setTheme(Theme theme)` */
@@ -17,3 +18,4 @@ namespace gui
 	*/
 	void setTheme(Theme theme);
 }
+} // end namespace igneous

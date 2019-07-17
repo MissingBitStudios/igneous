@@ -7,6 +7,7 @@
 #include <inttypes.h>
 #include <string>
 
+namespace igneous {
 void savePng(const char* _filePath, uint32_t _width, uint32_t _height, uint32_t _srcPitch, const void* _src, bimg::TextureFormat::Enum _format, bool _yflip)
 {
 	bx::FileWriter writer;
@@ -174,3 +175,4 @@ AviWriter* CaptureCallback::m_writer;
 bx::AllocatorI* CaptureCallback::allocator = new Allocator;
 bx::FileReaderI* CaptureCallback::s_fileReader = NULL;
 bx::FileWriterI* CaptureCallback::s_fileWriter = NULL;
+} // end namespace igneous

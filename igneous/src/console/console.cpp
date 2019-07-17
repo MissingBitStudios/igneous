@@ -9,6 +9,7 @@
 #include "core/input.hpp"
 #include "core/log.hpp"
 
+namespace igneous {
 Console::Console() : consoleVar(variable("console", 0))
 {
 	IG_CORE_INFO("Initializing Console");
@@ -569,3 +570,4 @@ void Console::write(const std::string& contents, level_enum level)
 	}
 	lines.push_back(line{ colors[level], contents });
 }
+} // end namespace igneous

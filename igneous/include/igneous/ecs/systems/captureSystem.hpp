@@ -3,6 +3,7 @@
 #include <bgfx/bgfx.h>
 #include <GLFW/glfw3.h>
 
+namespace igneous {
 namespace CaptureSystem
 {
 	void screenshot();
@@ -13,3 +14,4 @@ namespace CaptureSystem
 
 	extern bool capture;
 }
+} // end namespace igneous

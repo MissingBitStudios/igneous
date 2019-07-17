@@ -8,6 +8,7 @@
 
 #include "console/console_sink.hpp"
 
+namespace igneous {
 Log::Log()
 {
 	spdlog::set_pattern("[%T][%n]%^[%l]%$: %v");
@@ -39,3 +40,4 @@ Log& Log::getInstance() {
 	static Log instance;
 	return instance;
 }
+} // end namespace igneous

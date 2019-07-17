@@ -3,6 +3,7 @@
 #include <istream>
 #include <ostream>
 
+namespace igneous {
 ConVar::ConVar()
 	: callback(nullptr), name("convar"), defaultValue(0.0f), value(0.0f) {};
 
@@ -93,3 +94,4 @@ ConVar::operator int() const
 {
 	return (int)value;
 }
+} // end namespace igneous

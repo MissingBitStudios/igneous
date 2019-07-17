@@ -5,6 +5,7 @@
 
 #include "core/log.hpp"
 
+namespace igneous {
 Audio::Audio()
 {
 	IG_CORE_INFO("Initializing Audio");
@@ -128,3 +129,4 @@ Audio::~Audio()
 	alcCloseDevice(device);
 	IG_CORE_INFO("Audio Shutdown");
 }
+} // end namespace igneous

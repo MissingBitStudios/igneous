@@ -22,9 +22,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Environment Variables
 
-The install directory for the OpenAL SDK should be added as an environment variable in your system. This is not necessary, but is a safeguard in case CMake cannot find the install directory in one of the default search paths.
-
-The OpenAL variable should be named `OPENALDIR`.
+The install directory for the OpenAL SDK should be added as an environment variable named `OPENALDIR` in your system. This is not necessary, but is a safeguard in case CMake cannot find the install directory in one of the default search paths.
 
 ### Checkout
 
@@ -87,7 +85,7 @@ See also the list of [contributors](https://github.com/MissingBitStudios/igneous
 
 ## License
 
-This project is licensed under the Creative Commons Attribution 4.0 International Public License (CC BY 4.0) - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the Creative Commons Attribution 4.0 International Public License (CC-BY-4.0) - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgements
 

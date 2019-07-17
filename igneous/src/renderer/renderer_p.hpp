@@ -5,6 +5,7 @@
 
 #include <bgfx/bgfx.h>
 
+namespace igneous {
 class Renderer
 {
 public:
@@ -44,3 +45,4 @@ private:
 		static bgfx::VertexDecl ms_decl;
 	};
 };
+} // end namespace igneous

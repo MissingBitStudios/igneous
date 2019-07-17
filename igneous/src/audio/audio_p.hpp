@@ -8,6 +8,7 @@
 
 #include "console/console_p.hpp"
 
+namespace igneous {
 class Audio
 {
 public:
@@ -38,3 +39,4 @@ private:
 	ALCdevice* device;
 	ALCcontext* context;
 };
+} // end namespace igneous

@@ -5,6 +5,7 @@
 #include "core/log.hpp"
 #include "renderer/renderer.hpp"
 
+namespace igneous {
 bgfx::VertexDecl Vertex::ms_decl;
 
 Model::Model(const char* path)
@@ -170,3 +171,4 @@ Mesh::~Mesh()
 	bgfx::destroy(vbh);
 	bgfx::destroy(ibh);
 }
+} // end namespace igneous

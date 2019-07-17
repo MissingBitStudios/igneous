@@ -8,6 +8,7 @@
 
 #include <bx/readerwriter.h>
 
+namespace igneous {
 // Simple AVI writer. VideoLAN and VirtualDub can decode it.
 // Needs some bits to get jiggled to work with other players. But it's good
 // enough for an example.
@@ -226,5 +227,5 @@ struct AviWriter
 	uint32_t m_height;
 	bool m_yflip;
 };
-
+} // end namespace igneous
 #endif // AVIWRITER_H_HEADER_GUARD

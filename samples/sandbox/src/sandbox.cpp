@@ -15,6 +15,8 @@
 
 #include "ecs/systems/skySystem.hpp"
 
+using namespace igneous;
+
 class Sandbox : public Game
 {
 	void initialize(int _argc, char** _argv)

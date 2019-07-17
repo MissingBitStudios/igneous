@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+namespace igneous {
 class Camera
 {
 public:
@@ -41,3 +42,4 @@ private:
 	glm::vec3 position;
 	glm::quat rotation;
 };
+} // end namespace igneous

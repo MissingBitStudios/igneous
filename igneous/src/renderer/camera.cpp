@@ -6,6 +6,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
+namespace igneous {
 void Camera::use(const uint32_t width, const uint32_t height) const
 {
 	glm::mat4 view = getViewMatrix();
@@ -91,3 +92,4 @@ glm::quat Camera::vecToQuat(const glm::vec3& vec)
 const glm::vec3 Camera::forward = glm::vec3(0.0f, 0.0f, -1.0f);
 const glm::vec3 Camera::up = glm::vec3(0.0f, 1.0f, 0.0f);
 const glm::vec3 Camera::left = glm::vec3(-1.0f, 0.0f, 0.0f);
+} // end namespace igneous

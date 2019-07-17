@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 
+namespace igneous {
 namespace gui
 {
 	void cherryTheme() {
@@ -97,3 +98,4 @@ namespace gui
 		}
 	}
 }
+} // end namespace igneous

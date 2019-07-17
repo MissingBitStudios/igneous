@@ -3,6 +3,7 @@
 #include <al.h>
 #include <alc.h>
 
+namespace igneous {
 class Audio
 {
 public:
@@ -20,3 +21,4 @@ public:
 	Audio(Audio const&) = delete;
 	void operator=(Audio const&) = delete;
 };
+} // end namespace igneous

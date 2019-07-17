@@ -2,6 +2,7 @@
 
 #include <bgfx/bgfx.h>
 
+namespace igneous {
 #define _getShader(name)                                             \
 static const unsigned char* name()                                   \
 {                                                                    \
@@ -39,3 +40,4 @@ static const int name##_len()                                        \
 	}                                                                \
 	return 0;                                                        \
 }
+} // end namespace igneous

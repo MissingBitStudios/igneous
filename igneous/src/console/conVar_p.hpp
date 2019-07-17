@@ -3,6 +3,7 @@
 #include <iosfwd>
 #include <string>
 
+namespace igneous {
 typedef void(*convar_callback)(float, float);
 
 class ConVar
@@ -36,3 +37,4 @@ private:
 	float value;
 	float defaultValue;
 };
+} // end namespace igneous

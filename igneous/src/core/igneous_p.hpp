@@ -6,6 +6,7 @@
 #include "console/console_p.hpp"
 #include "renderer/renderer_p.hpp"
 
+namespace igneous {
 class Engine : public bigg::Application
 {
 	void initialize(int _argc, char** _argv);
@@ -29,3 +30,4 @@ private:
 	Console* console;
 	Renderer* renderer;
 };
+} // end namespace igneous

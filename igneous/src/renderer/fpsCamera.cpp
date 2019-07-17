@@ -6,6 +6,7 @@
 #include "core/input.hpp"
 #include "core/log.hpp"
 
+namespace igneous {
 void FPSCamera::update(const float dt)
 {
 	float speed = 5.0f;
@@ -55,3 +56,4 @@ void FPSCamera::translateLocal(const glm::vec3& ds)
 {
 	translateGlobal(glm::rotate(ds, getYaw(), up));
 }
+} // end namespace igneous

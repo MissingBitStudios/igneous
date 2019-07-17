@@ -5,6 +5,7 @@
 
 #include "console/console_p.hpp"
 
+namespace igneous {
 #define IN_KEY_SINK(callback) Input::keySignal.sink().connect<callback>()
 #define IN_MOUSE_SINK(callback) Input::mouseSignal.sink().connect<callback>()
 #define IN_SCROLL_SINK(callback) Input::scrollSignal.sink().connect<callback>()
@@ -259,3 +260,4 @@ namespace Input
 #define IG_JOYSTICK_15 GLFW_JOYSTICK_15
 #define IG_JOYSTICK_16 GLFW_JOYSTICK_16
 #define IG_JOYSTICK_LAST IG_JOYSTICK_LAST
+} // end namespace igneous

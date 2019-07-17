@@ -7,6 +7,7 @@
 #include "ecs/components/transformationComponent.hpp"
 #include "renderer/renderer.hpp"
 
+namespace igneous {
 namespace RendererSystem
 {
 	bgfx::TextureHandle checkerBoard;
@@ -54,3 +55,4 @@ namespace RendererSystem
 		bgfx::destroy(checkerBoard);
 	}
 }
+} // end namespace igneous

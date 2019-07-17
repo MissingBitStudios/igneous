@@ -1,5 +1,6 @@
 #pragma once
 
+namespace igneous {
 class Physics
 {
 public:
@@ -10,3 +11,4 @@ public:
 	Physics(Physics const&) = delete;
 	void operator=(Physics const&) = delete;
 };
+} // end namespace igneous

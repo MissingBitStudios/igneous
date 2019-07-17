@@ -8,6 +8,7 @@
 #include <assimp/postprocess.h>
 #include <bgfx/bgfx.h>
 
+namespace igneous {
 struct Vertex
 {
 	float pos_x;
@@ -72,3 +73,4 @@ private:
 
 	std::string directory;
 };
+} // end namespace igneous

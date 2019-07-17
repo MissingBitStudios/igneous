@@ -2,6 +2,7 @@
 
 #include "core/log.hpp"
 
+namespace igneous {
 Physics::Physics()
 {
 	IG_CORE_INFO("Initializing Physics");
@@ -43,3 +44,4 @@ Physics::~Physics()
 	delete dispatcher;
 	delete collisionConfiguration;
 }
+} // end namespace igneous

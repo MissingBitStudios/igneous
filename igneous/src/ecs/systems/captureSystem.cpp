@@ -2,6 +2,7 @@
 
 #include "core/log.hpp"
 
+namespace igneous {
 namespace CaptureSystem
 {
 	void screenshot()
@@ -36,3 +37,4 @@ namespace CaptureSystem
 
 	bool capture = false;
 }
+} // end namespace igneous

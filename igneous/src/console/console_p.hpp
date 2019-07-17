@@ -9,6 +9,7 @@
 
 #include <imgui.h>
 
+namespace igneous {
 #define RETURN_EXISTS(name) if (exists(name)) { IG_CONSOLE_ERROR("A token already exists with the name: {}", name); return; }
 #define RETURN_INVALID(name) if (!isValid(name)) { IG_CONSOLE_ERROR("Token name is invalid."); return; }
 
@@ -124,3 +125,4 @@ private:
 
 	ConVar& consoleVar;
 };
+} // end namespace igneous
