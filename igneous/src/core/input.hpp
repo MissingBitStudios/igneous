@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <entt/entt.hpp>
 
-#include "console/console_p.hpp"
+#include "console/console.hpp"
 
 namespace igneous {
 #define IN_KEY_SINK(callback) Input::keySignal.sink().connect<callback>()

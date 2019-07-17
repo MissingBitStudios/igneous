@@ -3,8 +3,8 @@
 #include <bigg.hpp>
 
 #include "core/game.hpp"
-#include "console/console_p.hpp"
-#include "renderer/renderer_p.hpp"
+#include "console/console.hpp"
+#include "renderer/renderer.hpp"
 
 namespace igneous {
 class Engine : public bigg::Application

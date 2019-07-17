@@ -1,4 +1,4 @@
-#include "console/conVar_p.hpp"
+#include "console/conVar.hpp"
 
 #include <istream>
 #include <ostream>

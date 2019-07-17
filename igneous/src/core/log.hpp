@@ -27,6 +27,7 @@ private:
 #endif
 	std::shared_ptr<spdlog::logger> consoleLogger;
 };
+} // end namespace igneous
 
 #if IG_DEBUG
 #define IG_CORE_TRACE(...)    Log::getInstance().getCoreLogger()->trace(__VA_ARGS__)
@@ -64,4 +65,3 @@ private:
 #define IG_CONSOLE_ERROR(...)  Log::getInstance().getConsoleLogger()->error(__VA_ARGS__)
 #define IG_CONSOLE_CRITICAL(...)  {Log::getInstance().getConsoleLogger()->critical(__VA_ARGS__); abort();}
 #define IG_CONSOLE_LOG(msg, level)  Log::getInstance().getConsoleLogger()->log((spdlog::level::level_enum)level, msg)
-} // end namespace igneous

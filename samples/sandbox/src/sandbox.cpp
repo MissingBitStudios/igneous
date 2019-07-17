@@ -1,14 +1,4 @@
-#include <igneous/core/igneous.hpp>
-#include <igneous/core/game.hpp>
-#include <igneous/renderer/renderer.hpp>
-#include <igneous/gui/gui.hpp>
-#include <igneous/renderer/model.hpp>
-#include <igneous/ecs/components/modelComponent.hpp>
-#include <igneous/ecs/components/transformationComponent.hpp>
-#include <igneous/renderer/camera.hpp>
-#include <igneous/renderer/fpsCamera.hpp>
-#include <igneous/ecs/systems/rendererSystem.hpp>
-#include <igneous/core/input.hpp>
+#include <igneous/igneous.hpp>
 
 #include <entt/entt.hpp>
 #include <glm/gtc/matrix_transform.hpp>

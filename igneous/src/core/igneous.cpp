@@ -1,4 +1,4 @@
-#include "core/igneous_p.hpp"
+#include "core/igneous.hpp"
 
 #include <assimp/version.h>
 #include <bigg.hpp>
@@ -15,7 +15,7 @@
 #include "core/input.hpp"
 #include "ecs/systems/rendererSystem.hpp"
 #include "core/version.hpp"
-#include "audio/audio_p.hpp"
+#include "audio/audio.hpp"
 #include "ecs/systems/captureSystem.hpp"
 #include "renderer/model.hpp"
 

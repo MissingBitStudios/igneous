@@ -2,10 +2,17 @@
 
 #include "console/conVar.hpp"
 
+#include <deque>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
+#include <imgui.h>
+
 namespace igneous {
+#define RETURN_EXISTS(name) if (exists(name)) { IG_CONSOLE_ERROR("A token already exists with the name: {}", name); return; }
+#define RETURN_INVALID(name) if (!isValid(name)) { IG_CONSOLE_ERROR("Token name is invalid."); return; }
+
 typedef std::vector<std::string> arg_list;
 typedef void(*command_callback)(const std::string&, const arg_list&);
 
@@ -29,6 +36,13 @@ class Console
 {
 public:
 	static Console& getInstance();
+
+	const ImColor RED = ImColor(255, 0, 0);
+	const ImColor GREEN = ImColor(0, 255, 0);
+	const ImColor BLUE = ImColor(0, 0, 255);
+	const ImColor CYAN = ImColor(0, 255, 255);
+	const ImColor WHITE = ImColor(255, 255, 255);
+	const ImColor YELLOW = ImColor(255, 255, 0);
 
 	enum level_enum
 	{
@@ -58,6 +72,7 @@ public:
 	bool isValid(const std::string& name) const;
 	static void onKey(int key, int scancode, int action, int mods);
 	void remove(const std::string& name);
+	void render();
 	void run(const std::string& command, arg_list args = {});
 	void runBind(int key, bool positive = true);
 	void runFile(const std::string& filePath);
@@ -70,5 +85,44 @@ public:
 
 	Console(Console const&) = delete;
 	void operator=(Console const&) = delete;
+private:
+	Console();
+	~Console() {}
+
+	int textEditCallback(ImGuiInputTextCallbackData* data);
+	static int textEditCallbackStub(ImGuiInputTextCallbackData* data);
+
+	static void aliasCallback(const std::string& name, const arg_list& args);
+	static void bindCallback(const std::string& name, const arg_list& args);
+	static void clearCallback(const std::string& name, const arg_list& args);
+	static void helpCallback(const std::string& name, const arg_list& args);
+	static void printCallback(const std::string& name, const arg_list& args);
+	static void runFileCallback(const std::string& name, const arg_list& args);
+	static void unbindCallback(const std::string& name, const arg_list& args);
+
+	struct line
+	{
+		ImColor color;
+		std::string contents;
+	};
+
+	const unsigned int max_lines = 100;
+	bool scrollToBottom = false;
+
+	static const unsigned int max_history = 100;
+	int history_index = -1;
+	static const unsigned int max_input = 256;
+	std::string input;
+	std::string editing;
+
+	std::unordered_map<std::string, call_sequence> aliases;
+	std::unordered_map<int, call_sequence> binds;
+	std::unordered_map<std::string, command_callback> commands;
+	ImColor colors[level_enum::NUM_LEVELS];
+	std::deque<std::string> history;
+	std::deque<line> lines;
+	std::unordered_map<std::string, ConVar> variables;
+
+	ConVar& consoleVar;
 };
 } // end namespace igneous

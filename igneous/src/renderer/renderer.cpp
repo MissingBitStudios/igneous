@@ -1,4 +1,4 @@
-#include "renderer/renderer_p.hpp"
+#include "renderer/renderer.hpp"
 
 #include <bigg.hpp>
 #include <stb_image.h>

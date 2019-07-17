@@ -1,5 +1,9 @@
 #pragma once
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include <bgfx/bgfx.h>
 #include <bx/file.h>
 #include <bx/string.h>
@@ -8,21 +12,19 @@
 #include <bx/allocator.h>
 
 namespace igneous {
-class Allocator : public bx::AllocatorI
+class Renderer
 {
 public:
-	void* realloc(void* _ptr, size_t _size, size_t _align, const char* _file, uint32_t _line)
-	{
-		if (_size == 0)
-		{
-			free(_ptr);
-			return nullptr;
-		}
-		else
-		{
-			return malloc(_size);
-		}
-	}
+	static Renderer& getInstance();
+
+	std::string getSupportedRenderers();
+	std::string getGpuInfo();
+
+	bgfx::TextureHandle loadTexture(const char* _filePath, uint32_t _flags = 0, bool track = true);
+	bgfx::ProgramHandle loadProgram(const char* vs, const char* fs);
+
+	Renderer(Renderer const&) = delete;
+	void operator=(Renderer const&) = delete;
 };
 
 struct CaptureCallback : public bgfx::CallbackI
@@ -58,5 +60,62 @@ struct CaptureCallback : public bgfx::CallbackI
 	static bx::AllocatorI* allocator;
 	static bx::FileReaderI* s_fileReader;
 	static bx::FileWriterI* s_fileWriter;
+};
+
+struct Vertex
+{
+	float pos_x;
+	float pos_y;
+	float pos_z;
+	float norm_x;
+	float norm_y;
+	float norm_z;
+	float tex_x;
+	float tex_y;
+	float col_r;
+	float col_g;
+	float col_b;
+	float col_a;
+	float tan_x;
+	float tan_y;
+	float tan_z;
+	float bi_x;
+	float bi_y;
+	float bi_z;
+	static void init()
+	{
+		ms_decl
+			.begin()
+			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float)
+			.end();
+	}
+	static bgfx::VertexDecl ms_decl;
+};
+
+class Mesh
+{
+public:
+	Mesh(std::vector<Vertex> vertices, std::vector<uint16_t> indices, std::vector<bgfx::TextureHandle> textures);
+	~Mesh();
+
+	bgfx::VertexBufferHandle vbh;
+	bgfx::IndexBufferHandle ibh;
+	std::vector<bgfx::TextureHandle> textures;
+};
+
+class Model
+{
+public:
+	Model(const char* path);
+	Model();
+	~Model();
+
+	std::vector<Mesh*> meshes;
+	std::string directory;
 };
 } // end namespace igneous

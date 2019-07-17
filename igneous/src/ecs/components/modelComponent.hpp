@@ -2,7 +2,7 @@
 
 #include <bgfx/bgfx.h>
 
-#include "../../renderer/model.hpp"
+#include "renderer/model.hpp"
 
 namespace igneous {
 struct ModelComponent

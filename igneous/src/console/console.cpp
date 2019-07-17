@@ -1,4 +1,4 @@
-#include "console/console_p.hpp"
+#include "console/console.hpp"
 
 #include <cctype>
 #include <cstring>

@@ -62,15 +62,14 @@ class Model
 {
 public:
 	Model(const char* path);
-	Model() {}
+	Model();
 	~Model();
 
 	std::vector<Mesh*> meshes;
+	std::string directory;
 private:
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh* processMesh(aiMesh *mesh, const aiScene *scene);
 	std::vector<bgfx::TextureHandle> loadMaterialTextures(aiMaterial *mat, aiTextureType type);
-
-	std::string directory;
 };
 } // end namespace igneous

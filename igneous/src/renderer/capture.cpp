@@ -1,4 +1,4 @@
-#include "renderer/capture_p.hpp"
+#include "renderer/capture.hpp"
 
 #include "renderer/aviwriter.hpp"
 
