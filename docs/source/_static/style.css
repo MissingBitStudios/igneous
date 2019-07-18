@@ -1,3 +1,7 @@
 .pre {
     color: #ff6205;
 }
+
+.wy-side-nav-search input[type="text"] {
+    border-color: transparent;
+}

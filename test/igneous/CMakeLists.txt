@@ -1,1 +1,4 @@
-setup_test(consoleTest SOURCES consoleTest.cpp)
+setup_test(igneous_test
+	SOURCES
+	console.cpp
+)

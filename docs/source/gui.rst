@@ -1,5 +1,5 @@
 GUI
 ===
 
-.. doxygennamespace:: gui
+.. doxygennamespace:: igneous::gui
    :members:
