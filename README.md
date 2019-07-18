@@ -3,8 +3,8 @@
 [![GitHub tag](https://img.shields.io/github/tag/MissingBitStudios/igneous.svg)](https://github.com/MissingBitStudios/igneous/releases)
 [![Build Status](https://travis-ci.org/MissingBitStudios/igneous.svg?branch=master)](https://travis-ci.org/MissingBitStudios/igneous)
 [![Documentation Status](https://readthedocs.org/projects/igneous/badge/?version=latest)](https://igneous.readthedocs.io/en/latest/?badge=latest)
-[![Join the chat at https://discord.gg/CCUwTar](https://img.shields.io/badge/chat-on%20discord-mediumpurple.svg)](https://discord.gg/CCUwTar)
-[![Join the chat at https://gitter.im/MissingBitStudios/igneous](https://badges.gitter.im/MissingBitStudios/igneous.svg)](https://gitter.im/MissingBitStudios/igneous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://discord.gg/CCUwTar](https://img.shields.io/badge/chat-on_discord-mediumpurple.svg)](https://discord.gg/CCUwTar)
+[![Join the chat at https://www.reddit.com/r/igneous/](https://img.shields.io/badge/chat-on_reddit-FF4500.svg)](https://www.reddit.com/r/igneous/)
 
 Igneous is an open source game engine written in C++.
 
@@ -78,8 +78,8 @@ We use [SemVer](http://semver.org/spec/v2.0.0.html) for versioning. For the vers
 
 ## Authors
 
-* **ProWolf** - *Initial work, Rendering, Scripting, Console, Audio, Events* - [ProWolf](https://github.com/prowolf)
-* **pcguy123** - *ECS, Documentation* - [pcguy123](https://github.com/pcguy123)
+* [ProWolf](https://github.com/prowolf)
+* [pcguy123](https://github.com/pcguy123)
 
 See also the list of [contributors](https://github.com/MissingBitStudios/igneous/graphs/contributors) who participated in this project.
 
