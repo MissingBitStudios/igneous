@@ -43,6 +43,7 @@ if(IGNEOUS_SAMPLES)
 endif()
 
 if(IGNEOUS_TESTS)
+  enable_testing()
   add_subdirectory(test)
 endif()
 

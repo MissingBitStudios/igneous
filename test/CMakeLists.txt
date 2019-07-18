@@ -1,5 +1,3 @@
-enable_testing()
-
 macro(setup_test ARG_NAME)
     cmake_parse_arguments(ARG "" "" "SOURCES" ${ARGN})
 
