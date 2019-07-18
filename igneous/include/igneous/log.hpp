@@ -12,18 +12,12 @@ public:
 	static Log& getInstance();
 
 #if IG_DEBUG
-	inline std::shared_ptr<spdlog::logger>& getClientLogger() { return clientLogger; }
+	std::shared_ptr<spdlog::logger>& getClientLogger();
 #endif
-	inline std::shared_ptr<spdlog::logger>& getConsoleLogger() { return consoleLogger; }
+	std::shared_ptr<spdlog::logger>& getConsoleLogger();
 
 	Log(Log const&) = delete;
 	void operator=(Log const&) = delete;
-private:
-	Log();
-#if IG_DEBUG
-	std::shared_ptr<spdlog::logger> clientLogger;
-#endif
-	std::shared_ptr<spdlog::logger> consoleLogger;
 };
 } // end namespace igneous
 

@@ -6,7 +6,7 @@ endif()
 
 if (POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
-endif (POLICY CMP0048)
+endif()
 
 project(igneous VERSION 0.1.0 LANGUAGES CXX)
 
@@ -30,22 +30,22 @@ include(cmake/macros.cmake)
 
 if(IGNEOUS_DOCS)
   add_subdirectory(docs)
-endif(IGNEOUS_DOCS)
+endif()
 
 if(IGNEOUS_EDITOR)
   add_subdirectory(editor)
-endif(IGNEOUS_EDITOR)
+endif()
 
 add_subdirectory(igneous)
 
 if(IGNEOUS_SAMPLES)
   add_subdirectory(samples)
-endif(IGNEOUS_SAMPLES)
+endif()
 
 if(IGNEOUS_TESTS)
   add_subdirectory(test)
-endif(IGNEOUS_TESTS)
+endif()
 
 if(IGNEOUS_TOOLS)
   add_subdirectory(tools)
-endif(IGNEOUS_TOOLS)
+endif()

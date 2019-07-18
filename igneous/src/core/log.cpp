@@ -40,4 +40,16 @@ Log& Log::getInstance() {
 	static Log instance;
 	return instance;
 }
+
+std::shared_ptr<spdlog::logger>& Log::getCoreLogger() {
+	return coreLogger;
+}
+
+std::shared_ptr<spdlog::logger>& Log::getClientLogger() {
+	return clientLogger;
+}
+
+std::shared_ptr<spdlog::logger>& Log::getConsoleLogger() {
+	return consoleLogger;
+}
 } // end namespace igneous

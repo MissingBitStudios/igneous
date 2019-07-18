@@ -27,6 +27,13 @@ add_subdirectory(bullet)
 set(BUILD_TESTING OFF CACHE INTERNAL "")
 add_subdirectory(entt)
 
+if(IGNEOUS_TESTS)
+	set(gtest_force_shared_crt  ON CACHE INTERNAL "")
+	set(BUILD_GMOCK             OFF CACHE INTERNAL "")
+	set(INSTALL_GTEST           OFF CACHE INTERNAL "")
+	add_subdirectory(googletest)
+endif()
+
 # openal
 find_package(OpenAL REQUIRED)
 if(OPENAL_FOUND)

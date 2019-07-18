@@ -70,17 +70,8 @@ add_asset_shaders(igneous
 	shaders/vs_splash.sc
 )
 
-configure_file (
-	"${CMAKE_CURRENT_SOURCE_DIR}/src/core/version.hpp.in"
-	"${CMAKE_CURRENT_SOURCE_DIR}/src/core/version.hpp"
-	@ONLY
-)
-
-configure_file (
-	"${CMAKE_CURRENT_SOURCE_DIR}/src/core/version.hpp.in"
-	"${CMAKE_CURRENT_SOURCE_DIR}/include/igneous/version.hpp"
-	@ONLY
-)
+configure_file (src/core/version.hpp.in src/core/version.hpp @ONLY)
+configure_file (src/core/version.hpp.in include/igneous/version.hpp @ONLY)
 
 target_link_libraries(igneous PUBLIC ${IGNEOUS_LIBRARIES})
 target_include_directories(igneous PUBLIC ${IGNEOUS_INCLUDES})
