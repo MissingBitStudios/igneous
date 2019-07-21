@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include <al.h>
 #include <alc.h>
 
@@ -13,7 +16,10 @@ namespace igneous {
 		const char* getVendor();
 		const char* getRenderer();
 		const char* getExtensions();
-		const char* getDevices();
+		std::vector<std::string> getDevices();
+		std::string getDefaultDevice();
+		std::string getSelectedDevice();
+		void setDevice(std::string specifier);
 		void setListenerData(float x, float y, float z);
 		ALuint loadSound(const char* fileName);
 		void playSound(ALuint buffer);

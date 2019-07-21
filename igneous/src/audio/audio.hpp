@@ -2,6 +2,7 @@
 
 #include <deque>
 #include <string>
+#include <vector>
 
 #include <al.h>
 #include <alc.h>
@@ -18,7 +19,10 @@ public:
 	const char* getVendor();
 	const char* getRenderer();
 	const char* getExtensions();
-	const char* getDevices();
+	std::vector<std::string> getDevices();
+	std::string getDefaultDevice();
+	std::string getSelectedDevice();
+	void setDevice(std::string specifier);
 	void setListenerData(float x, float y, float z);
 	ALuint loadSound(const char* fileName);
 	void playSound(ALuint buffer);
@@ -38,5 +42,7 @@ private:
 
 	ALCdevice* device;
 	ALCcontext* context;
+
+	int DEVICE_SPECIFIER, DEFAULT_DEVICE_SPECIFIER;
 };
 } // end namespace igneous

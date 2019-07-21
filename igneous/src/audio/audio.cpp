@@ -10,8 +10,7 @@ Audio::Audio()
 {
 	IG_CORE_INFO("Initializing Audio");
 	// Initialize Open AL quit with error if it fails
-	const ALCchar* deviceName = alcGetString(0, ALC_DEVICE_SPECIFIER);
-	device = alcOpenDevice(deviceName);
+	device = alcOpenDevice(NULL);
 	if (device)
 	{
 		context = alcCreateContext(device, NULL); // create context
@@ -19,18 +18,30 @@ Audio::Audio()
 		{
 			if (!alcMakeContextCurrent(context))
 			{
-				IG_CORE_ERROR("OpenAL failed to make context current! Error: {}", ALErrorToString(alGetError()));
+				IG_CORE_CRITICAL("OpenAL failed to make context current! Error: {}", ALErrorToString(alGetError()));
 			}
 		}
 		else
 		{
-			IG_CORE_ERROR("OpenAL failed to create a context! Error: {}", ALErrorToString(alGetError()));
+			IG_CORE_CRITICAL("OpenAL failed to create a context! Error: {}", ALErrorToString(alGetError()));
 		}
 	}
 	else
 	{
-		IG_CORE_ERROR("OpenAL failed to open a device! Error: {}", ALErrorToString(alGetError()));
+		IG_CORE_CRITICAL("OpenAL failed to open a device! Error: {}", ALErrorToString(alGetError()));
 	}
+
+	if (alcIsExtensionPresent(NULL, "ALC_enumeration_EXT") == AL_TRUE && alcIsExtensionPresent(NULL, "ALC_enumerate_all_EXT") == AL_TRUE)
+	{
+		DEVICE_SPECIFIER = ALC_ALL_DEVICES_SPECIFIER;
+		DEFAULT_DEVICE_SPECIFIER = ALC_DEFAULT_ALL_DEVICES_SPECIFIER;
+	}
+	else
+	{
+		DEVICE_SPECIFIER = ALC_DEVICE_SPECIFIER;
+		DEFAULT_DEVICE_SPECIFIER = ALC_DEFAULT_DEVICE_SPECIFIER;
+	}
+
 	IG_CORE_INFO("Audio Initialized");
 
 	Console& console = Console::getInstance();
@@ -46,7 +57,42 @@ const char* Audio::getVersion() { return alGetString(AL_VERSION); }
 const char* Audio::getVendor() { return alGetString(AL_VENDOR); }
 const char* Audio::getRenderer() { return alGetString(AL_RENDERER); }
 const char* Audio::getExtensions() { return alGetString(AL_EXTENSIONS); }
-const char* Audio::getDevices() { return alcGetString(NULL, ALC_DEVICE_SPECIFIER); }
+
+std::vector<std::string> Audio::getDevices()
+{
+	std::vector<std::string> deviceSpecifiers;
+	const ALCchar* devices = alcGetString(NULL, DEVICE_SPECIFIER);
+	const ALCchar* device = devices, * next = devices + 1;
+	size_t len = 0;
+
+	while (device && *device != '\0' && next && *next != '\0') {
+		deviceSpecifiers.push_back(device);
+		len = strlen(device);
+		device += (len + 1);
+		next += (len + 2);
+	}
+
+	return deviceSpecifiers;
+}
+
+std::string Audio::getDefaultDevice()
+{
+	return alcGetString(NULL, DEFAULT_DEVICE_SPECIFIER);
+}
+
+std::string Audio::getSelectedDevice()
+{
+	return alcGetString(device, DEVICE_SPECIFIER);
+}
+
+void Audio::setDevice(std::string specifier)
+{
+	device = alcOpenDevice(specifier.c_str());
+	if (!device)
+	{
+		IG_CORE_CRITICAL("OpenAL failed to open a device! Error: {}", ALErrorToString(alGetError()));
+	}
+}
 
 void Audio::setListenerData(float x, float y, float z) {
 	alListener3f(AL_POSITION, x, y, z);

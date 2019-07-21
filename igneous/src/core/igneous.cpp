@@ -70,7 +70,14 @@ void Engine::initialize(int _argc, char** _argv)
 	IG_CORE_INFO("-----OpenAL Info-----");
 	IG_CORE_INFO("OpenAL Vendor: {}", audio->getVendor());
 	IG_CORE_INFO("OpenAL Renderer: {}", audio->getRenderer());
-	IG_CORE_INFO("OpenAL Devices: {}", audio->getDevices());
+	std::vector<std::string> devices = audio->getDevices();
+	std::string defaultDevice = audio->getDefaultDevice();
+	std::string selectedDevice = audio->getSelectedDevice();
+	IG_CORE_INFO("OpenAL Devices:");
+	for (std::string device : devices)
+	{
+		IG_CORE_INFO("	{}{}{}", device, device == defaultDevice ? "[Default]" : "", device == selectedDevice ? "[Selected]" : "");
+	}
 	IG_CORE_INFO("OpenAL Extensions: {}", audio->getExtensions());
 
 	IN_KEY_SINK(&CaptureSystem::onKey);

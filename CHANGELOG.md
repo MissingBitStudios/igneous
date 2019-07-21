@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 * License (Now CC-BY-4.0)
 
-## [0.1.0] - 2018-12-14
+## [0.1.0] - 2019-6-25
 ### Added
 * Markdown files.
 * CMake files.
