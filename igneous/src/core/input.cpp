@@ -28,15 +28,18 @@ namespace Input
 
 	void onKey(int key, int scancode, int action, int mods)
 	{
-		if (action == GLFW_PRESS)
+		if (key != GLFW_KEY_UNKNOWN)
 		{
-			keys[key] = true;
+			if (action == GLFW_PRESS)
+			{
+				keys[key] = true;
+			}
+			else if (action == GLFW_RELEASE)
+			{
+				keys[key] = false;
+			}
+			keySignal.publish(key, scancode, action, mods);
 		}
-		else if (action == GLFW_RELEASE)
-		{
-			keys[key] = false;
-		}
-		keySignal.publish(key, scancode, action, mods);
 	}
 	
 	void onMouseButton(int button, int action, int mods)

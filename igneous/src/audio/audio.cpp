@@ -42,6 +42,10 @@ Audio::Audio()
 		DEFAULT_DEVICE_SPECIFIER = ALC_DEFAULT_DEVICE_SPECIFIER;
 	}
 
+	ambient = new Source();
+	ambient->setRelative(true);
+	ambient->setVolume(500.0f);
+
 	IG_CORE_INFO("Audio Initialized");
 
 	Console& console = Console::getInstance();
@@ -80,12 +84,17 @@ std::string Audio::getDefaultDevice()
 	return alcGetString(NULL, DEFAULT_DEVICE_SPECIFIER);
 }
 
+Source* Audio::getAmbientSource()
+{
+	return ambient;
+}
+
 std::string Audio::getSelectedDevice()
 {
 	return alcGetString(device, DEVICE_SPECIFIER);
 }
 
-void Audio::setDevice(std::string specifier)
+void Audio::setDevice(const std::string& specifier)
 {
 	device = alcOpenDevice(specifier.c_str());
 	if (!device)
@@ -99,14 +108,19 @@ void Audio::setListenerData(float x, float y, float z) {
 	alListener3f(AL_VELOCITY, 0, 0, 0);
 }
 
-ALuint Audio::loadSound(const char* fileName) {
+ALuint Audio::loadSound(const std::string& fileName) {
+	if (buffers.count(fileName))
+	{
+		IG_CORE_INFO("Found sound: {}", fileName);
+		return buffers.at(fileName);
+	}
+	IG_CORE_INFO("Loading sound: {}", fileName);
 	ALuint buffer;
 	alGenBuffers(1, &buffer);
-	buffers.push_back(buffer);
-	int channels;
-	int sampleRate;
+	buffers[fileName] = buffer;
+	int channels, sampleRate;
 	ALshort* output;
-	int len = stb_vorbis_decode_filename(fileName, &channels, &sampleRate, &output);
+	int len = stb_vorbis_decode_filename(fileName.c_str(), &channels, &sampleRate, &output);
 	int width = sizeof(ALshort);
 	ALenum format = 0;
 	if (width == 1)
@@ -128,22 +142,13 @@ ALuint Audio::loadSound(const char* fileName) {
 	return buffer;
 }
 
-void Audio::playSound(ALuint buffer)
-{
-	ALuint source;
-	alGenSources(1, &source);
-	const ALuint buffers[1] = { buffer };
-	alSourceQueueBuffers(source, 1, buffers);
-	alSourcePlay(source);
-}
-
 void Audio::playSoundCallback(const std::string& name, const arg_list& args)
 {
 	if (args.size() > 0)
 	{
 		Audio& audio = getInstance();
 		std::string path = "res/audio/" + args[0] + ".ogg";
-		audio.playSound(audio.loadSound(path.c_str()));
+		audio.getAmbientSource()->play(audio.loadSound(path));
 	}
 }
 
@@ -165,10 +170,13 @@ const char* Audio::ALErrorToString(ALCenum error)
 Audio::~Audio()
 {
 	IG_CORE_INFO("Shutingdown Audio");
-	for (const ALuint buffer : buffers) {
-		alDeleteBuffers(1, &buffer);
-		buffers.pop_front();
+	for (auto itr = buffers.begin(); itr != buffers.end(); itr++)
+	{
+		alDeleteBuffers(1, &itr->second);
 	}
+	buffers.clear();
+
+	delete ambient;
 
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(context);

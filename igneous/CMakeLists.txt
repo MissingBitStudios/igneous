@@ -1,6 +1,10 @@
 set(SOURCE_FILES
 	src/audio/audio.cpp
 	src/audio/audio.hpp
+	src/audio/channel.cpp
+	src/audio/channel.hpp
+	src/audio/source.cpp
+	src/audio/source.hpp
 	src/console/console.cpp
 	src/console/console.hpp
 	src/console/console_sink.hpp
