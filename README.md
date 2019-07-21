@@ -49,6 +49,10 @@ git submodule sync
 git submodule update --init --recursive
 ```
 
+## Documentation
+
+The API reference and tutorials are available on https://igneous.readthedocs.io
+
 ## Built With
 
 * [Assimp](https://github.com/assimp/assimp) - [Website](http://assimp.sourceforge.net/)
