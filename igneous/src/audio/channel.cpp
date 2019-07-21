@@ -7,16 +7,16 @@ Channel::Channel(float volume)
 
 }
 
-void Channel::addSource(Source source)
+void Channel::addSource(Source* source)
 {
-	source.setVolume(volume);
+	source->setVolume(volume);
 	sources.push_back(source);
 }
 
-Source Channel::newSource()
+Source* Channel::newSource()
 {
-	Source source;
-	source.setVolume(volume);
+	Source* source = new Source();
+	source->setVolume(volume);
 	sources.push_back(source);
 	return source;
 }
@@ -24,13 +24,17 @@ Source Channel::newSource()
 void Channel::setVolume(float volume)
 {
 	this->volume = volume;
-	for (Source source : sources)
+	for (Source* source : sources)
 	{
-		source.setVolume(volume);
+		source->setVolume(volume);
 	}
 }
 
 Channel::~Channel()
 {
+	for (Source* source : sources)
+	{
+		delete source;
+	}
 }
 }

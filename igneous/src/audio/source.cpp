@@ -1,47 +1,82 @@
 #include "audio/source.hpp"
 
 namespace igneous {
-Source::Source(glm::vec3 position, glm::vec3 velocity, glm::vec3 orientation)
+Source::Source(glm::vec3 position, glm::vec3 velocity)
+	: position(position), velocity(velocity), relative(false), volume(100.0f)
 {
-	alGenSources(1, &id);
-	setOrientation(orientation);
-	setPosition(position);
-	setVelocity(velocity);
+
 }
 
 void Source::play(ALuint buffer)
 {
+	ALuint id = getFreeSource();
 	alSourcei(id, AL_BUFFER, buffer);
 	alSourcePlay(id);
 }
 
-void Source::setOrientation(glm::vec3 orientation)
+ALuint Source::getFreeSource()
 {
-	alSource3f(id, AL_ORIENTATION, orientation.x, orientation.y, orientation.z);
+	ALint state;
+	for (ALuint id : ids)
+	{
+		alGetSourcei(id, AL_SOURCE_STATE, &state);
+		if (state == AL_STOPPED)
+		{
+			return id;
+		}
+	}
+
+	ALuint id;
+	alGenSources(1, &id);
+	alSource3f(id, AL_POSITION, position.x, position.y, position.z);
+	alSourcei(id, AL_SOURCE_RELATIVE, relative);
+	alSource3f(id, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+	alSourcef(id, AL_GAIN, volume);
+	ids.push_back(id);
+	return id;
 }
 
 void Source::setPosition(glm::vec3 position)
 {
-	alSource3f(id, AL_POSITION, position.x, position.y, position.z);
+	this->position = position;
+	for (ALuint id : ids)
+	{
+		alSource3f(id, AL_POSITION, position.x, position.y, position.z);
+	}
 }
 
 void Source::setRelative(bool relative)
 {
-	alSourcei(id, AL_SOURCE_RELATIVE, relative);
+	this->relative = relative;
+	for (ALuint id : ids)
+	{
+		alSourcei(id, AL_SOURCE_RELATIVE, relative);
+	}
 }
 
 void Source::setVelocity(glm::vec3 velocity)
 {
-	alSource3f(id, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+	this->velocity = velocity;
+	for (ALuint id : ids)
+	{
+		alSource3f(id, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+	}
 }
 
 void Source::setVolume(float volume)
 {
-	alSourcef(id, AL_GAIN, volume);
+	this->volume = volume;
+	for (ALuint id : ids)
+	{
+		alSourcef(id, AL_GAIN, volume);
+	}
 }
 
 Source::~Source()
 {
-	alDeleteSources(1, &id);
+	if (ids.size() > 0)
+	{
+		alDeleteSources(ids.size(), &ids[0]);
+	}
 }
 }

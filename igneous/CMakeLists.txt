@@ -3,6 +3,7 @@ set(SOURCE_FILES
 	src/audio/audio.hpp
 	src/audio/channel.cpp
 	src/audio/channel.hpp
+	src/audio/listener.hpp
 	src/audio/source.cpp
 	src/audio/source.hpp
 	src/console/console.cpp

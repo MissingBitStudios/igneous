@@ -8,6 +8,7 @@
 #include <alc.h>
 
 #include "audio/source.hpp"
+#include "audio/listener.hpp"
 #include "console/console.hpp"
 
 namespace igneous {
@@ -25,7 +26,7 @@ public:
 	std::string getSelectedDevice();
 	Source* getAmbientSource();
 	void setDevice(const std::string& specifier);
-	void setListenerData(float x, float y, float z);
+	void setListener(const ListenerData& listener);
 	ALuint loadSound(const std::string& fileName);
 
 	Audio(Audio const&) = delete;

@@ -44,7 +44,6 @@ Audio::Audio()
 
 	ambient = new Source();
 	ambient->setRelative(true);
-	ambient->setVolume(500.0f);
 
 	IG_CORE_INFO("Audio Initialized");
 
@@ -103,12 +102,15 @@ void Audio::setDevice(const std::string& specifier)
 	}
 }
 
-void Audio::setListenerData(float x, float y, float z) {
-	alListener3f(AL_POSITION, x, y, z);
-	alListener3f(AL_VELOCITY, 0, 0, 0);
+void Audio::setListener(const ListenerData& listener)
+{
+	alListener3f(AL_POSITION, listener.position.x, listener.position.y, listener.position.z);
+	alListener3f(AL_VELOCITY, listener.velocity.x, listener.velocity.y, listener.velocity.z);
+	alListener3f(AL_ORIENTATION, listener.orientation.x, listener.orientation.y, listener.orientation.z);
 }
 
-ALuint Audio::loadSound(const std::string& fileName) {
+ALuint Audio::loadSound(const std::string& fileName)
+{
 	if (buffers.count(fileName))
 	{
 		IG_CORE_INFO("Found sound: {}", fileName);
