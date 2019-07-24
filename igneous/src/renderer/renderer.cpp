@@ -187,5 +187,5 @@ Renderer::~Renderer()
 }
 
 bgfx::VertexDecl Renderer::SplashVertex::ms_decl;
-bgfx::VertexDecl PolyVertex::ms_decl;
+bgfx::VertexDecl Vertex::ms_decl;
 } // end namespace igneous

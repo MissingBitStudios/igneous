@@ -54,7 +54,7 @@ void Camera::setPosition(const glm::vec3& pos)
 	position = pos;
 }
 
-const glm::vec3& Camera::getRotation() const
+glm::vec3 Camera::getRotation() const
 {
 	return glm::eulerAngles(rotation);
 }

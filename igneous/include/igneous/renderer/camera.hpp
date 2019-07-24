@@ -25,7 +25,7 @@ public:
 	const glm::vec3& getPosition() const;
 	void setPosition(const glm::vec3& pos);
 
-	const glm::vec3& getRotation() const;
+	glm::vec3 getRotation() const;
 	float getYaw() const;
 	float getPitch() const;
 	float getRoll() const;
