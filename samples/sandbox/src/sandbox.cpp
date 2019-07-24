@@ -19,7 +19,7 @@ class Sandbox : public Game
 
 		polyShader = renderer.loadProgram("vs_cubes", "fs_cubes");
 
-		barn = new Model("res/models/BigBarn/BigBarn.obj");
+		barn = renderer.loadModel<PolyVertex>("res/models/BigBarn/BigBarn.obj");
 
 		auto entity = registry.create();
 		registry.assign<ModelComponent>(entity, barn, polyShader);
@@ -45,7 +45,6 @@ class Sandbox : public Game
 	void shutdown()
 	{
 		bgfx::destroy(polyShader);
-		delete barn;
 		delete sky;
 		delete camera;
 	}
@@ -57,4 +56,4 @@ private:
 	Camera* camera;
 };
 
-IG_IMPLEMENT_MAIN(Sandbox)
+IG_IMPLEMENT_MAIN(Sandbox);

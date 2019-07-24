@@ -3,7 +3,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 
-#include "core/debug.hpp"
+#include "igneous/core/debug.hpp"
 
 namespace igneous {
 class Log

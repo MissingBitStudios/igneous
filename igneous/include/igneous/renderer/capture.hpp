@@ -5,7 +5,7 @@
 #include <bx/string.h>
 #include <bx/filepath.h>
 #include <bx/bx.h>
-#include "renderer/aviwriter.hpp"
+#include "igneous/renderer/aviwriter.hpp"
 #include <bx/allocator.h>
 
 namespace igneous {

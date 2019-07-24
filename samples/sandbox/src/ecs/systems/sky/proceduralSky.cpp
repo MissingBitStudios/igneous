@@ -2,7 +2,7 @@
 
 #include <bx/allocator.h>
 
-#include <igneous/renderer.hpp>
+#include <igneous/igneous.hpp>
 
 using namespace igneous;
 

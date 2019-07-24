@@ -54,7 +54,7 @@ void Model::processNode(aiNode *node, const aiScene *scene)
 Mesh* Model::processMesh(aiMesh *mesh, const aiScene *scene)
 {
 	// data to fill
-	std::vector<Vertex> vertices;
+	std::vector<PolyVertex> vertices;
 	std::vector<uint16_t> indices;
 	std::vector<bgfx::TextureHandle> textures;
 
@@ -65,54 +65,54 @@ Mesh* Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	// Walk through each of the mesh's vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
-		Vertex vertex = { 0.0f };
-		vertex.pos_x = mesh->mVertices[i].x;
-		vertex.pos_y = mesh->mVertices[i].y;
-		vertex.pos_z = mesh->mVertices[i].z;
+		VertexData vertex;
+		vertex.pos.x = mesh->mVertices[i].x;
+		vertex.pos.y = mesh->mVertices[i].y;
+		vertex.pos.z = mesh->mVertices[i].z;
 		// normals
 		if (mesh->mNormals) // does the mesh contain normals?
 		{
-			vertex.norm_x = mesh->mNormals[i].x;
-			vertex.norm_y = mesh->mNormals[i].y;
-			vertex.norm_z = mesh->mNormals[i].z;
+			vertex.norm.x = mesh->mNormals[i].x;
+			vertex.norm.y = mesh->mNormals[i].y;
+			vertex.norm.z = mesh->mNormals[i].z;
 		}
 		// texture coordinates
 		if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
 		{
-			vertex.tex_x = mesh->mTextureCoords[0][i].x;
-			vertex.tex_y = mesh->mTextureCoords[0][i].y;
+			vertex.tex.x = mesh->mTextureCoords[0][i].x;
+			vertex.tex.y = mesh->mTextureCoords[0][i].y;
 		}
 		// colors
 		if (hasMtlColor)
 		{
-			vertex.col_r = diffuse.r;
-			vertex.col_g = diffuse.g;
-			vertex.col_b = diffuse.b;
-			vertex.col_a = diffuse.a;
+			vertex.col.r = diffuse.r;
+			vertex.col.g = diffuse.g;
+			vertex.col.b = diffuse.b;
+			vertex.col.a = diffuse.a;
 		}
 		else if (mesh->mColors[0])
 		{
-			vertex.col_r = mesh->mColors[0][i].r;
-			vertex.col_g = mesh->mColors[0][i].g;
-			vertex.col_b = mesh->mColors[0][i].b;
-			vertex.col_a = mesh->mColors[0][i].a;
+			vertex.col.r = mesh->mColors[0][i].r;
+			vertex.col.g = mesh->mColors[0][i].g;
+			vertex.col.b = mesh->mColors[0][i].b;
+			vertex.col.a = mesh->mColors[0][i].a;
 		}
 		// tangent
 		if (mesh->mTangents) // does the mesh contain tangents?
 		{
-			vertex.tan_x = mesh->mTangents[i].x;
-			vertex.tan_y = mesh->mTangents[i].y;
-			vertex.tan_z = mesh->mTangents[i].z;
+			vertex.tan.x = mesh->mTangents[i].x;
+			vertex.tan.y = mesh->mTangents[i].y;
+			vertex.tan.z = mesh->mTangents[i].z;
 		}
 		// bitangent
 		if (mesh->mBitangents) // does the mesh contain bitangents?
 		{
-			vertex.bi_x = mesh->mBitangents[i].x;
-			vertex.bi_y = mesh->mBitangents[i].y;
-			vertex.bi_z = mesh->mBitangents[i].z;
+			vertex.bi.x = mesh->mBitangents[i].x;
+			vertex.bi.y = mesh->mBitangents[i].y;
+			vertex.bi.z = mesh->mBitangents[i].z;
 		}
 
-		vertices.push_back(vertex);
+		vertices.push_back(PolyVertex(vertex));
 	}
 	// now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -163,10 +163,10 @@ Model::~Model()
 	}
 }
 
-Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<uint16_t> _indices, std::vector<bgfx::TextureHandle> _textures)
+Mesh::Mesh(std::vector<PolyVertex> _vertices, std::vector<uint16_t> _indices, std::vector<bgfx::TextureHandle> _textures)
 	: vertices(_vertices), indices(_indices), textures(_textures)
 {
-	vbh = bgfx::createVertexBuffer(bgfx::makeRef(&vertices[0], (uint32_t)vertices.size() * sizeof(Vertex)), Vertex::ms_decl);
+	vbh = bgfx::createVertexBuffer(bgfx::makeRef(&vertices[0], (uint32_t)vertices.size() * sizeof(PolyVertex)), PolyVertex::ms_decl);
 	ibh = bgfx::createIndexBuffer(bgfx::makeRef(&indices[0], (uint32_t)indices.size() * sizeof(uint16_t)));
 }
 

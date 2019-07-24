@@ -1,4 +1,4 @@
-#include "core/log.hpp"
+#include "igneous/core/log.hpp"
 
 #include <mutex>
 
@@ -6,7 +6,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #endif
 
-#include "console/console_sink.hpp"
+#include "igneous/console/console_sink.hpp"
 
 namespace igneous {
 Log::Log()

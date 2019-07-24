@@ -1,6 +1,6 @@
 #pragma once
 
-#include "console/conVar.hpp"
+#include "igneous/console/conVar.hpp"
 
 #include <deque>
 #include <string>

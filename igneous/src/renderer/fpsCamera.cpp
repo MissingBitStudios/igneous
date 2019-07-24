@@ -1,10 +1,10 @@
-#include "renderer/fpsCamera.hpp"
+#include "igneous/renderer/fpsCamera.hpp"
 
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-#include "core/input.hpp"
-#include "core/log.hpp"
+#include "igneous/core/input.hpp"
+#include "igneous/core/log.hpp"
 
 namespace igneous {
 void FPSCamera::update(const float dt)

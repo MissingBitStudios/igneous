@@ -1,4 +1,4 @@
-#include "audio/source.hpp"
+#include "igneous/audio/source.hpp"
 
 namespace igneous {
 Source::Source(glm::vec3 position, glm::vec3 velocity)

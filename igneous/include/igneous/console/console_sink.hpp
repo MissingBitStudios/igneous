@@ -4,7 +4,7 @@
 
 #include <spdlog/sinks/base_sink.h>
 
-#include "console/console.hpp"
+#include "igneous/console/console.hpp"
 
 namespace igneous {
 template<typename Mutex>

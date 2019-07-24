@@ -7,9 +7,9 @@
 #include <al.h>
 #include <alc.h>
 
-#include "audio/source.hpp"
-#include "audio/listener.hpp"
-#include "console/console.hpp"
+#include "igneous/audio/source.hpp"
+#include "igneous/audio/listener.hpp"
+#include "igneous/console/console.hpp"
 
 namespace igneous {
 class Audio

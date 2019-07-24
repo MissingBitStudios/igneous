@@ -1,6 +1,6 @@
-#include "physics/physics.hpp"
+#include "igneous/physics/physics.hpp"
 
-#include "core/log.hpp"
+#include "igneous/core/log.hpp"
 
 namespace igneous {
 Physics::Physics()

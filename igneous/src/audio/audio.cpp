@@ -1,9 +1,9 @@
-#include "audio/audio.hpp"
+#include "igneous/audio/audio.hpp"
 
 #define STB_VORBIS_HEADER_ONLY
 #include "stb_vorbis.c"
 
-#include "core/log.hpp"
+#include "igneous/core/log.hpp"
 
 namespace igneous {
 Audio::Audio()

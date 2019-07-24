@@ -1,4 +1,4 @@
-#include "core/igneous.hpp"
+#include "igneous/core/igneous.hpp"
 
 #include <assimp/version.h>
 #include <bigg.hpp>
@@ -11,13 +11,13 @@
 #include <spdlog/version.h>
 #include <stb_image.h>
 
-#include "core/log.hpp"
-#include "core/input.hpp"
-#include "ecs/systems/rendererSystem.hpp"
-#include "core/version.hpp"
-#include "audio/audio.hpp"
-#include "ecs/systems/captureSystem.hpp"
-#include "renderer/model.hpp"
+#include "igneous/core/log.hpp"
+#include "igneous/core/input.hpp"
+#include "igneous/ecs/systems/rendererSystem.hpp"
+#include "igneous/core/version.hpp"
+#include "igneous/audio/audio.hpp"
+#include "igneous/ecs/systems/captureSystem.hpp"
+#include "igneous/renderer/model.hpp"
 
 namespace igneous {
 Engine::Engine(Game* game)
@@ -45,8 +45,6 @@ void Engine::initialize(int _argc, char** _argv)
 	Audio* audio = &Audio::getInstance();
 	RendererSystem::init();
 	IG_CORE_INFO("Servers Initialized");
-
-	Vertex::init();
 
 	console = &Console::getInstance();
 	console->runFile("startup.cmd");

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "renderer/igneous_assets.h"
+#include "igneous/renderer/igneous_assets.h"
 
-#include "renderer/asset_shaders.hpp"
+#include "igneous/renderer/asset_shaders.hpp"
 
 namespace igneous {
 _getShader(fs_splash);

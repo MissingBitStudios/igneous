@@ -1,6 +1,6 @@
-#include "ecs/systems/captureSystem.hpp"
+#include "igneous/ecs/systems/captureSystem.hpp"
 
-#include "core/log.hpp"
+#include "igneous/core/log.hpp"
 
 namespace igneous {
 namespace CaptureSystem

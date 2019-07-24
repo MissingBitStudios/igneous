@@ -1,8 +1,8 @@
-#include "core/input.hpp"
+#include "igneous/core/input.hpp"
 
 #include <imgui.h>
 
-#include "core/log.hpp"
+#include "igneous/core/log.hpp"
 
 namespace igneous {
 namespace Input

@@ -1,4 +1,4 @@
-#include "console/console.hpp"
+#include "igneous/console/console.hpp"
 
 #include <cctype>
 #include <cstring>
@@ -6,8 +6,8 @@
 #include <regex>
 #include <sstream>
 
-#include "core/input.hpp"
-#include "core/log.hpp"
+#include "igneous/core/input.hpp"
+#include "igneous/core/log.hpp"
 
 namespace igneous {
 Console::Console() : consoleVar(variable("console", 0))

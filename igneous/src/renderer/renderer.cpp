@@ -1,4 +1,4 @@
-#include "renderer/renderer.hpp"
+#include "igneous/renderer/renderer.hpp"
 
 #include <bigg.hpp>
 #include <stb_image.h>
@@ -6,8 +6,8 @@
 #include <bimg/bimg.h>
 #include <bx/file.h>
 
-#include "core/log.hpp"
-#include "renderer/splash_shaders.hpp"
+#include "igneous/core/log.hpp"
+#include "igneous/renderer/splash_shaders.hpp"
 
 namespace igneous {
 Renderer::Renderer()
@@ -40,6 +40,10 @@ Renderer::Renderer()
 	bgfx::destroy(splashTexture);
 	bgfx::destroy(s_splash);
 	bgfx::destroy(splashProgram);
+
+	Vertex::init();
+	PolyVertex::init();
+
 	IG_CORE_INFO("Renderer Initialized");
 }
 
@@ -79,22 +83,22 @@ std::string Renderer::getGpuInfo()
 	return gpuInfo;
 }
 
-bgfx::TextureHandle Renderer::loadTexture(const char* _filePath, uint32_t _flags, bool track)
+bgfx::TextureHandle Renderer::loadTexture(std::string path, uint32_t _flags, bool track)
 {
 	bgfx::TextureHandle handle = BGFX_INVALID_HANDLE;
 
-	IG_CORE_INFO("Searching for texture: {}", _filePath);
+	IG_CORE_INFO("Searching for texture: {}", path);
 
-	if (textures.count(_filePath))
+	if (textures.count(path))
 	{
-		IG_CORE_INFO("Found identical texture: {}", _filePath);
-		handle = textures.at(_filePath);
+		IG_CORE_INFO("Found identical texture: {}", path);
+		handle = textures.at(path);
 	}
 	else
 	{
-		IG_CORE_INFO("Loading texture: {}", _filePath);
+		IG_CORE_INFO("Loading texture: {}", path);
 		int width, height;
-		stbi_uc* data = stbi_load(_filePath, &width, &height, 0, 4);
+		stbi_uc* data = stbi_load(path.c_str(), &width, &height, 0, 4);
 		const bgfx::Memory* mem = bgfx::copy(data, width * height * 4);
 		if (nullptr != mem)
 		{
@@ -102,19 +106,19 @@ bgfx::TextureHandle Renderer::loadTexture(const char* _filePath, uint32_t _flags
 		}
 		else
 		{
-			IG_CORE_ERROR("Could not load texture: {}", _filePath);
+			IG_CORE_ERROR("Could not load texture: {}", path);
 		}
 		stbi_image_free(data);
 
 #if IG_DEBUG
 		if (bgfx::isValid(handle))
 		{
-			bgfx::setName(handle, _filePath);
+			bgfx::setName(handle, path.c_str());
 		}
 #endif
 		if (track)
 		{
-			textures.insert({ _filePath, handle });
+			textures[path] = handle;
 		}
 	}
 
@@ -162,6 +166,17 @@ void Renderer::cleanUp()
 		IG_CORE_INFO("Destroying texture: {}", it->first);
 		bgfx::destroy(it->second);
 	}
+
+	for (auto it = models.begin(); it != models.end(); ++it)
+	{
+		IG_CORE_INFO("Destroying model: {}", it->first);
+		for (Mesh mesh : it->second->meshes)
+		{
+			bgfx::destroy(mesh.vbh);
+			bgfx::destroy(mesh.ibh);
+		}
+		delete it->second;
+	}
 	IG_CORE_INFO("Renderer Cleaned up ");
 }
 
@@ -172,4 +187,5 @@ Renderer::~Renderer()
 }
 
 bgfx::VertexDecl Renderer::SplashVertex::ms_decl;
+bgfx::VertexDecl PolyVertex::ms_decl;
 } // end namespace igneous

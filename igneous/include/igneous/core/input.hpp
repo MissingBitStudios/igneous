@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <entt/entt.hpp>
 
+#include "igneous/console/console.hpp"
+
 namespace igneous {
 #define IN_KEY_SINK(callback) Input::keySignal.sink().connect<callback>()
 #define IN_MOUSE_SINK(callback) Input::mouseSignal.sink().connect<callback>()
@@ -14,6 +16,7 @@ namespace Input
 {
 	void Init(GLFWwindow* window);
 
+	void cursorVisibleCallback(float oldValue, float newValue);
 	void onKey(int key, int scancode, int action, int mods);
 	void onMouseButton(int button, int action, int mods);
 	void onScroll(double xoffset, double yoffset);
@@ -21,6 +24,7 @@ namespace Input
 	void onCursorEnter(int entered);
 	void setCursorPos(GLFWwindow* window, double xpos, double ypos);
 	void setCursorVisible(GLFWwindow* window, bool visible);
+	void quitCallback(const std::string& name, const arg_list& args);
 
 	extern bool keys[GLFW_KEY_LAST + 1];
 	extern bool mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1];

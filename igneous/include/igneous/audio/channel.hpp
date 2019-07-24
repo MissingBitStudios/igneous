@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "audio/source.hpp"
+#include "igneous/audio/source.hpp"
 
 namespace igneous {
 class Channel

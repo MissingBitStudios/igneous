@@ -1,6 +1,6 @@
-#include "renderer/capture.hpp"
+#include "igneous/renderer/capture.hpp"
 
-#include "renderer/aviwriter.hpp"
+#include "igneous/renderer/aviwriter.hpp"
 
 #include <bimg/bimg.h>
 #include <bx/debug.h>

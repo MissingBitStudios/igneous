@@ -1,4 +1,4 @@
-#include "audio/channel.hpp"
+#include "igneous/audio/channel.hpp"
 
 namespace igneous {
 Channel::Channel(float volume)

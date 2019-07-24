@@ -1,4 +1,4 @@
-#include "renderer/camera.hpp"
+#include "igneous/renderer/camera.hpp"
 
 #include <algorithm>
 
