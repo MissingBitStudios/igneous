@@ -7,7 +7,7 @@
 #include <bx/file.h>
 
 #include "igneous/core/log.hpp"
-#include "igneous/renderer/splash_shaders.hpp"
+#include "splash_shaders.hpp"
 
 namespace igneous {
 Renderer::Renderer()

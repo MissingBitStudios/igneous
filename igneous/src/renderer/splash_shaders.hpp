@@ -1,6 +1,6 @@
 #pragma once
 
-#include "igneous/renderer/igneous_assets.h"
+#include "igneous_assets.h"
 
 #include "igneous/renderer/asset_shaders.hpp"
 

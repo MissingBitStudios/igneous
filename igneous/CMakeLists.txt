@@ -1,9 +1,10 @@
-add_library(igneous STATIC
+set(SOURCES
 	src/audio/audio.cpp
 	src/audio/channel.cpp
 	src/audio/source.cpp
 	src/console/console.cpp
 	src/console/conVar.cpp
+	src/core/console_sink.hpp
 	src/core/igneous.cpp
 	src/core/input.cpp
 	src/core/log.cpp
@@ -14,14 +15,17 @@ add_library(igneous STATIC
 	src/renderer/camera.cpp
 	src/renderer/capture.cpp
 	src/renderer/fpsCamera.cpp
+	src/renderer/igneous_assets.h
 	src/renderer/renderer.cpp
+	src/renderer/splash_shaders.hpp
+)
 
+set(INCLUDES
 	include/igneous/audio/audio.hpp
 	include/igneous/audio/channel.hpp
 	include/igneous/audio/listener.hpp
 	include/igneous/audio/source.hpp
 	include/igneous/console/console.hpp
-	include/igneous/console/console_sink.hpp
 	include/igneous/console/conVar.hpp
 	include/igneous/core/debug.hpp
 	include/igneous/core/game.hpp
@@ -43,7 +47,23 @@ add_library(igneous STATIC
 	include/igneous/renderer/model.hpp
 	include/igneous/renderer/renderer.hpp
 	include/igneous/renderer/renderer.inl
-	include/igneous/renderer/splash_shaders.hpp
+)
+
+set(AMALGAMATED_INCLUDES
+	include/igneous/audio.hpp
+	include/igneous/console.hpp
+	include/igneous/core.hpp
+	include/igneous/ecs.hpp
+	include/igneous/gui.hpp
+	include/igneous/igneous.hpp
+	include/igneous/physics.hpp
+	include/igneous/renderer.hpp
+)
+
+add_library(igneous STATIC
+	${SOURCES}
+	${INCLUDES}
+	${AMALGAMATED_INCLUDES}
 )
 
 add_asset_shaders(igneous
@@ -59,4 +79,5 @@ configure_file (include/igneous/core/version.hpp.in include/igneous/core/version
 target_link_libraries(igneous PUBLIC ${IGNEOUS_LIBRARIES})
 target_include_directories(igneous PUBLIC include ${IGNEOUS_INCLUDES})
 
+source_group("Amalgamated Includes" FILES ${AMALGAMATED_INCLUDES})
 set_target_properties(igneous PROPERTIES FOLDER "igneous")

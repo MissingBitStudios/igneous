@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <igneous/console/console.hpp>
+#include <igneous/console.hpp>
 
 namespace {
 TEST(Parse, Empty)

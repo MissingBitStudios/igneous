@@ -6,7 +6,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #endif
 
-#include "igneous/console/console_sink.hpp"
+#include "console_sink.hpp"
 
 namespace igneous {
 Log::Log()
