@@ -1,5 +1,14 @@
 #pragma once
 
+#include <string>
+#include <type_traits>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+#include "igneous/renderer/vertex.hpp"
+
 namespace igneous {
 template<typename VertexType>
 Model* Renderer::loadModel(std::string path)

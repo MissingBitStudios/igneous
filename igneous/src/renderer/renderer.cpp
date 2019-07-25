@@ -7,7 +7,8 @@
 #include <bx/file.h>
 
 #include "igneous/core/log.hpp"
-#include "splash_shaders.hpp"
+#include "igneous/renderer/vertex.hpp"
+#include "splashShaders.hpp"
 
 namespace igneous {
 Renderer::Renderer()
@@ -42,7 +43,7 @@ Renderer::Renderer()
 	bgfx::destroy(splashProgram);
 
 	Vertex::init();
-	PolyVertex::init();
+	GenericVertex::init();
 
 	IG_CORE_INFO("Renderer Initialized");
 }

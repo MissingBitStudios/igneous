@@ -8,3 +8,4 @@
 #include "igneous/renderer/model.hpp"
 #include "igneous/renderer/renderer.hpp"
 #include "igneous/renderer/renderer.inl"
+#include "igneous/renderer/vertex.hpp"

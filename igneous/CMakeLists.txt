@@ -4,7 +4,7 @@ set(SOURCES
 	src/audio/source.cpp
 	src/console/console.cpp
 	src/console/conVar.cpp
-	src/core/console_sink.hpp
+	src/core/consoleSink.hpp
 	src/core/igneous.cpp
 	src/core/input.cpp
 	src/core/log.cpp
@@ -17,7 +17,7 @@ set(SOURCES
 	src/renderer/fpsCamera.cpp
 	src/renderer/igneous_assets.h
 	src/renderer/renderer.cpp
-	src/renderer/splash_shaders.hpp
+	src/renderer/splashShaders.hpp
 )
 
 set(INCLUDES
@@ -47,6 +47,7 @@ set(INCLUDES
 	include/igneous/renderer/model.hpp
 	include/igneous/renderer/renderer.hpp
 	include/igneous/renderer/renderer.inl
+	include/igneous/renderer/vertex.hpp
 )
 
 set(AMALGAMATED_INCLUDES

@@ -19,7 +19,7 @@ class Sandbox : public Game
 
 		polyShader = renderer.loadProgram("vs_cubes", "fs_cubes");
 
-		barn = renderer.loadModel<PolyVertex>("res/models/BigBarn/BigBarn.obj");
+		barn = renderer.loadModel<GenericVertex>("res/models/BigBarn/BigBarn.obj");
 
 		auto entity = registry.create();
 		registry.assign<ModelComponent>(entity, barn, polyShader);
