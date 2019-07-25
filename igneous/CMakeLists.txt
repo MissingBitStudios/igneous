@@ -11,13 +11,13 @@ set(SOURCES
 	src/ecs/systems/captureSystem.cpp
 	src/ecs/systems/rendererSystem.cpp
 	src/gui/gui.cpp
+	src/gui/imgui_assets.h
 	src/physics/physics.cpp
 	src/renderer/camera.cpp
 	src/renderer/capture.cpp
 	src/renderer/fpsCamera.cpp
-	src/renderer/igneous_assets.h
+	src/renderer/splash_assets.h
 	src/renderer/renderer.cpp
-	src/renderer/splashShaders.hpp
 )
 
 set(INCLUDES
@@ -28,7 +28,6 @@ set(INCLUDES
 	include/igneous/console/console.hpp
 	include/igneous/console/conVar.hpp
 	include/igneous/core/debug.hpp
-	include/igneous/core/game.hpp
 	include/igneous/core/igneous.hpp
 	include/igneous/core/input.hpp
 	include/igneous/core/log.hpp

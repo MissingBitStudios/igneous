@@ -7,8 +7,15 @@
 
 using namespace igneous;
 
-class Sandbox : public Game
+class Sandbox : public Application
 {
+public:
+	Sandbox()
+		: Application("Sandbox")
+	{
+	
+	}
+
 	void initialize(int _argc, char** _argv)
 	{
 		Renderer& renderer = Renderer::getInstance();
@@ -34,19 +41,26 @@ class Sandbox : public Game
 		sky->update(dt);
 	}
 
+	void onReset()
+	{
+		bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
+		bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
+	}
+
 	void render()
 	{
-		camera->use(Input::width, Input::height);
+		camera->use(getWidth(), getHeight());
 		RendererSystem::render(registry);
 
 		ImGui::ShowDemoWindow();
 	}
 
-	void shutdown()
+	int shutdown()
 	{
 		bgfx::destroy(polyShader);
 		delete sky;
 		delete camera;
+		return 0;
 	}
 private:
 	entt::registry registry;

@@ -1,6 +1,6 @@
 #include "igneous/core/input.hpp"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 #include "igneous/core/log.hpp"
 

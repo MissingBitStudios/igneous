@@ -1,8 +1,17 @@
 #pragma once
 
+#include <GLFW/glfw3.h>
+#include <imgui/imgui.h>
+
 namespace igneous {
 namespace gui
 {
+	void init(GLFWwindow* window);
+	void update(float dt);
+	void reset(uint16_t width, uint16_t height);
+	void render(ImDrawData* drawData);
+	void shutdown();
+
 	/*! Themes to use with `setTheme(Theme theme)` */
 	enum Theme
 	{

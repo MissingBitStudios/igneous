@@ -1,39 +1,96 @@
 #pragma once
 
-#include <bigg.hpp>
+#include <bgfx/bgfx.h>
+#include <GLFW/glfw3.h>
 
-#include "igneous/core/game.hpp"
-#include "igneous/console/console.hpp"
-#include "igneous/renderer/renderer.hpp"
+#include <bx/allocator.h>
 
-namespace igneous {
-class Engine : public bigg::Application
+namespace igneous
 {
-	void initialize(int _argc, char** _argv);
-
-	//Input callbacks
-	void onKey(int key, int scancode, int action, int mods);
-	void onMouseButton(int button, int action, int mods);
-	void onScroll(double xoffset, double yoffset);
-	void onCursorPos(double xpos, double ypos);
-	void onCursorEnter(int entered);
-	void onWindowSize(int width, int height);
-
-	void onReset();
-	void update(float dt);
-	int shutdown();
+// allocator
+class Allocator : public bx::AllocatorI
+{
 public:
-	Engine(Game* game);
+	void* realloc(void* _ptr, size_t _size, size_t _align, const char* _file, uint32_t _line)
+	{
+		if (_size == 0)
+		{
+			free(_ptr);
+			return nullptr;
+		}
+		else
+		{
+			return malloc(_size);
+		}
+	}
+};
+
+// Application
+class Application
+{
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void charCallback(GLFWwindow* window, unsigned int codepoint);
+	static void charModsCallback(GLFWwindow* window, unsigned int codepoint, int mods);
+	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+	static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+	static void cursorEnterCallback(GLFWwindow* window, int entered);
+	static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+	static void dropCallback(GLFWwindow* window, int count, const char** paths);
+	static void windowSizeCallback(GLFWwindow* window, int width, int height);
+public:
+	Application(const char* title = "", uint32_t width = 1280, uint32_t height = 768);
+	virtual ~Application() {};
+
+	int run(
+		int argc,
+		char** argv,
+		bgfx::RendererType::Enum type = bgfx::RendererType::Count,
+		uint16_t vendorId = BGFX_PCI_ID_NONE,
+		uint16_t deviceId = 0,
+		bgfx::CallbackI * callback = NULL,
+		bx::AllocatorI * allocator = NULL
+	);
+
+	void reset(uint32_t flags = 0);
+	uint32_t getWidth() const;
+	uint32_t getHeight() const;
+	void setSize(int width, int height);
+	const char* getTitle() const;
+	void setTitle(const char* title);
+
+	virtual void initialize(int _argc, char** _argv) {};
+	virtual void update(float dt) {};
+	virtual void render() {};
+	virtual int shutdown() { return 0; };
+
+	virtual void onReset() {};
+	virtual void onKey(int key, int scancode, int action, int mods) {}
+	virtual void onChar(unsigned int codepoint) {}
+	virtual void onCharMods(int codepoint, unsigned int mods) {}
+	virtual void onMouseButton(int button, int action, int mods) {}
+	virtual void onCursorPos(double xpos, double ypos) {}
+	virtual void onCursorEnter(int entered) {}
+	virtual void onScroll(double xoffset, double yoffset) {}
+	virtual void onDrop(int count, const char** paths) {}
+	virtual void onWindowSize(int width, int height) {}
+protected:
+	GLFWwindow* mWindow;
+	Allocator mAllocator;
+	bool mKeyDown[GLFW_KEY_LAST + 1] = { 0 };
+	bool mMouseButtonDown[GLFW_MOUSE_BUTTON_LAST + 1] = { 0 };
+	float mMouseWheelH;
+	float mMouseWheel;
 private:
-	uint32_t mReset = BGFX_RESET_NONE;
-	Game* game;
-	Console* console;
-	Renderer* renderer;
+	uint32_t mReset;
+	uint32_t mWidth;
+	uint32_t mHeight;
+	const char* mTitle;
 };
 } // end namespace igneous
 
-#define IG_IMPLEMENT_MAIN(GAME_CLASS)                                                                                  \
-int main(int argc, char** argv)                                                                                        \
-{                                                                                                                      \
-	return Engine(new GAME_CLASS).run(argc, argv, bgfx::RendererType::Count, BGFX_PCI_ID_AMD, 0, new CaptureCallback); \
+#define IG_IMPLEMENT_MAIN(APPLICATION_CLASS)                                                        \
+int main(int argc, char** argv)                                                                     \
+{                                                                                                   \
+	APPLICATION_CLASS app;                                                                          \
+	return app.run(argc, argv, bgfx::RendererType::Count, BGFX_PCI_ID_AMD, 0, new CaptureCallback); \
 }

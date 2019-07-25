@@ -17,6 +17,8 @@ public:
 	std::string getGpuInfo();
 
 	bgfx::TextureHandle loadTexture(std::string path, uint32_t _flags = 0, bool track = true);
+	const bgfx::Memory* loadMemory(const char* filename);
+	bgfx::ShaderHandle loadShader(const char* shader);
 	bgfx::ProgramHandle loadProgram(const char* vs, const char* fs);
 
 	template<typename VertexType>

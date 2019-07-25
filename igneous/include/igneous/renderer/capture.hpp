@@ -5,27 +5,11 @@
 #include <bx/string.h>
 #include <bx/filepath.h>
 #include <bx/bx.h>
+#include "igneous/core/igneous.hpp"
 #include "igneous/renderer/aviwriter.hpp"
 #include <bx/allocator.h>
 
 namespace igneous {
-class Allocator : public bx::AllocatorI
-{
-public:
-	void* realloc(void* _ptr, size_t _size, size_t _align, const char* _file, uint32_t _line)
-	{
-		if (_size == 0)
-		{
-			free(_ptr);
-			return nullptr;
-		}
-		else
-		{
-			return malloc(_size);
-		}
-	}
-};
-
 struct CaptureCallback : public bgfx::CallbackI
 {
 	CaptureCallback();

@@ -1,14 +1,14 @@
 #include "igneous/renderer/renderer.hpp"
 
-#include <bigg.hpp>
-#include <stb_image.h>
+#include <fstream>
 
+#include <stb/stb_image.h>
 #include <bimg/bimg.h>
 #include <bx/file.h>
 
 #include "igneous/core/log.hpp"
 #include "igneous/renderer/vertex.hpp"
-#include "splashShaders.hpp"
+#include "splash_assets.h"
 
 namespace igneous {
 Renderer::Renderer()
@@ -126,10 +126,29 @@ bgfx::TextureHandle Renderer::loadTexture(std::string path, uint32_t _flags, boo
 	return handle;
 }
 
-bgfx::ProgramHandle Renderer::loadProgram(const char* vs, const char* fs)
+const bgfx::Memory* Renderer::loadMemory(const char* filename)
 {
-	char vsName[512];
-	char fsName[512];
+	std::ifstream file(filename, std::ios::binary | std::ios::ate);
+	std::streamsize size = file.tellg();
+	file.seekg(0, std::ios::beg);
+	const bgfx::Memory* mem = bgfx::alloc(uint32_t(size + 1));
+	if (file.read((char*)mem->data, size))
+	{
+		mem->data[mem->size - 1] = '\0';
+		return mem;
+	}
+	return nullptr;
+}
+
+bgfx::ShaderHandle Renderer::loadShader(const char* shader)
+{
+	return bgfx::createShader(loadMemory(shader));
+}
+
+bgfx::ProgramHandle Renderer::loadProgram(const char* vsName, const char* fsName)
+{
+	char vsPath[512];
+	char fsPath[512];
 
 	const char* shaderPath = "???";
 
@@ -148,15 +167,17 @@ bgfx::ProgramHandle Renderer::loadProgram(const char* vs, const char* fs)
 	case bgfx::RendererType::Count:                                     break;
 	}
 
-	bx::strCopy(vsName, BX_COUNTOF(vsName), shaderPath);
-	bx::strCat(vsName, BX_COUNTOF(vsName), vs);
-	bx::strCat(vsName, BX_COUNTOF(vsName), ".bin");
+	bx::strCopy(vsPath, BX_COUNTOF(vsPath), shaderPath);
+	bx::strCat(vsPath, BX_COUNTOF(vsPath), vsName);
+	bx::strCat(vsPath, BX_COUNTOF(vsPath), ".bin");
 
-	bx::strCopy(fsName, BX_COUNTOF(fsName), shaderPath);
-	bx::strCat(fsName, BX_COUNTOF(fsName), fs);
-	bx::strCat(fsName, BX_COUNTOF(fsName), ".bin");
+	bx::strCopy(fsPath, BX_COUNTOF(fsPath), shaderPath);
+	bx::strCat(fsPath, BX_COUNTOF(fsPath), fsName);
+	bx::strCat(fsPath, BX_COUNTOF(fsPath), ".bin");
 
-	return bigg::loadProgram(vsName, fsName);
+	bgfx::ShaderHandle vs = loadShader(vsPath);
+	bgfx::ShaderHandle fs = loadShader(fsPath);
+	return bgfx::createProgram(vs, fs, true);
 }
 
 void Renderer::cleanUp()

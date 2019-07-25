@@ -65,15 +65,8 @@ macro(add_asset_shaders ARG_TARGET)
       message(FATAL_ERROR "add_shaders: You must provide shaders.")
     endif()
 
-    get_filename_component(ARG_OUTPUT ${ARG_OUTPUT} ABSOLUTE)
-    get_filename_component(ARG_HEADER ${ARG_HEADER} ABSOLUTE)
-
-    unset(ASSET_COMMANDS)
-    unset(ASSET_FILES)
-
     foreach(SHADER ${ARG_SHADERS})
       get_filename_component(SHADER_NAME ${SHADER} NAME_WE)
-      get_filename_component(SHADER ${SHADER} ABSOLUTE)
       if(${SHADER_NAME} MATCHES "^vs_")
         asset_shader(${SHADER} ${SHADER_NAME} VERTEX)
       elseif(${SHADER_NAME} MATCHES "^fs_")
@@ -91,7 +84,9 @@ macro(add_asset_shaders ARG_TARGET)
       COMMAND "$<TARGET_FILE:bin2c>" ${ARG_HEADER} ${ASSET_FILES}
       DEPENDS shaderc
       DEPENDS bin2c
-   )
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+
     set_target_properties(${ARG_TARGET}_assets PROPERTIES FOLDER "assets")
     add_dependencies(${ARG_TARGET} ${ARG_TARGET}_assets)
   endif()
