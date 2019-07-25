@@ -12,20 +12,22 @@ macro(add_asset_shaders ARG_TARGET)
       message(FATAL_ERROR "add_asset_shaders: You must provide a valid target.")
     endif()
 
+    cmake_parse_arguments(ARG "" "" "HEADER" ${ARGN})
+
     unset(ASSET_COMMANDS)
+    unset(HEADER)
 
-    #while(condition)
-      cmake_parse_arguments(ARG "" "HEADER" "SHADERS" ${ARGN})
-
-      if(NOT ARG_HEADER)
-        message(FATAL_ERROR "add_asset_shaders: You must provide a header path.")
-      elseif(NOT ARG_SHADERS)
-        message(FATAL_ERROR "add_asset_shaders: You must provide shaders.")
-      endif()
-
-      unset(ASSET_FILES)
-
-      foreach(SHADER ${ARG_SHADERS})
+    foreach(SHADER ${ARG_HEADER})
+      if(${SHADER} MATCHES "\.h$|\.hpp$")
+        if(HEADER)
+          list(APPEND ASSET_COMMANDS COMMAND "$<TARGET_FILE:bin2c>" ${HEADER} ${ASSET_FILES})
+        endif()
+        unset(ASSET_FILES)
+        set(HEADER ${SHADER})
+      elseif(${SHADER} MATCHES "\.sc")
+        if(NOT HEADER)
+          message(FATAL_ERROR "add_asset_shaders: You must provide an output header before any shaders.")
+        endif()
         get_filename_component(SHADER_NAME ${SHADER} NAME_WE)
         if(${SHADER_NAME} MATCHES "^vs_")
           set(DX_TYPE "vs")
@@ -67,14 +69,14 @@ macro(add_asset_shaders ARG_TARGET)
         shaderc_parse(OUT ${OPTIONS})
         list(APPEND ASSET_COMMANDS COMMAND "$<TARGET_FILE:shaderc>" ${OUT})
         list(APPEND ASSET_FILES ${ASSET_BINARY_DIR}/metal/${SHADER_NAME}.bin ${SHADER_NAME}_metal)
-      endforeach()
-
-      if(NOT EXISTS ${ARG_HEADER})
-        file(WRITE ${ARG_HEADER})
       endif()
+    endforeach()
 
-      list(APPEND ASSET_COMMANDS COMMAND "$<TARGET_FILE:bin2c>" ${ARG_HEADER} ${ASSET_FILES})
-    #endwhile()
+    if(HEADER)
+      list(APPEND ASSET_COMMANDS COMMAND "$<TARGET_FILE:bin2c>" ${HEADER} ${ASSET_FILES})
+    else()
+      message(FATAL_ERROR "add_asset_shaders: You must provide an output header.")
+    endif()
     
     add_custom_target(
       ${ARG_TARGET}_assets ALL

@@ -77,7 +77,7 @@ int main(int argc, char** argv)
 			out << "_getShader(" + name + ")\n";
 		}
 
-		std::ofstream file(argv[ 1 ]);
+		std::ofstream file(argv[ 1 ], std::ofstream::out);
 		file << out.str();
 		file.close();
 		return 0;

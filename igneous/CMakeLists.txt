@@ -66,12 +66,10 @@ add_library(igneous STATIC
 
 add_asset_shaders(igneous
 	HEADER src/renderer/splash_assets.h
-	SHADERS
 	shaders/fs_splash.sc
 	shaders/vs_splash.sc
 
 	HEADER src/gui/imgui_assets.h
-	SHADERS
 	shaders/fs_imgui.sc
 	shaders/vs_imgui.sc
 )
