@@ -8,13 +8,17 @@
 namespace igneous {
 namespace input
 {
-	/*! @private */
+	/*! @cond */
 	void init(GLFWwindow* window);
+	/*! @endcond */
 
 	/*! Sets the mouse cursor visibility
 	* \param visible `true` for visible. `false` for hidden.
 	*/
 	void setCursorVisible(bool visible);
+
+	const char* getTitle();
+	void setTitle(const char* title);
 
 	extern bool keys[GLFW_KEY_LAST + 1];
 	extern bool mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1];
@@ -22,6 +26,7 @@ namespace input
 	extern double mouseX, mouseY;
 	extern int width;
 	extern int height;
+	extern const char* title;
 	extern GLFWwindow* window;
 }
 

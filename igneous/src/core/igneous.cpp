@@ -27,10 +27,11 @@
 namespace igneous {
 // Application
 Application::Application(const char* title, uint32_t width, uint32_t height)
-	: mTitle(title), mReset(BGFX_RESET_NONE), mWindow(nullptr)
+	: mReset(BGFX_RESET_NONE), mWindow(nullptr)
 {
 	input::width = width;
 	input::height = height;
+	input::title = title;
 }
 
 // Input callbacks
@@ -162,7 +163,7 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 
 	// Create a window
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	mWindow = glfwCreateWindow(input::width, input::height, mTitle, NULL, NULL);
+	mWindow = glfwCreateWindow(input::width, input::height, input::title, NULL, NULL);
 	if (!mWindow)
 	{
 		glfwTerminate();
@@ -226,7 +227,7 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	RendererSystem::init();
 	gui::init(mWindow);
 	Console* console = &Console::getInstance();
-	input::Init(mWindow);
+	input::init(mWindow);
 	console->runFile("startup.cmd");
 	IG_CORE_INFO("Services Initialized");
 
@@ -324,16 +325,5 @@ void Application::onReset()
 void Application::setSize(int width, int height)
 {
 	glfwSetWindowSize(mWindow, width, height);
-}
-
-const char* Application::getTitle() const
-{
-	return mTitle;
-}
-
-void Application::setTitle(const char* title)
-{
-	mTitle = title;
-	glfwSetWindowTitle(mWindow, title);
 }
 } // end namespace igneous

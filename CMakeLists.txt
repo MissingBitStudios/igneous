@@ -23,7 +23,6 @@ option(IGNEOUS_EDITOR      "Build editor."        ON)
 option(IGNEOUS_INSTALL     "Install Igneous."     OFF)
 option(IGNEOUS_SAMPLES     "Build samples."       ON)
 option(IGNEOUS_TESTS       "Build tests."         ON)
-option(IGNEOUS_TOOLS       "Build tools."         ON)
 
 add_subdirectory(dependencies)
 
@@ -33,9 +32,7 @@ if(IGNEOUS_DOCS)
   add_subdirectory(docs)
 endif()
 
-if(IGNEOUS_TOOLS)
-  add_subdirectory(tools)
-endif()
+add_subdirectory(tools)
 
 if(IGNEOUS_EDITOR)
   add_subdirectory(editor)

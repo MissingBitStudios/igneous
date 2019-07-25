@@ -17,7 +17,7 @@ namespace input
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	void Init(GLFWwindow* win)
+	void init(GLFWwindow* win)
 	{
 		IG_CORE_INFO("Initializing Input");
 		window = win;
@@ -41,11 +41,23 @@ namespace input
 		glfwSetInputMode(window, GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 	}
 
+	const char* getTitle()
+	{
+		return title;
+	}
+
+	void setTitle(const char* newTitle)
+	{
+		title = newTitle;
+		glfwSetWindowTitle(window, title);
+	}
+
 	bool keys[GLFW_KEY_LAST + 1] = { 0 };
 	bool mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1] = { 0 };
 	double scrollX, scrollY = 0;
 	double mouseX, mouseY = 0;
 	int width, height = 0;
+	const char* title;
 	GLFWwindow* window = nullptr;
 }
 } // end namespace igneous

@@ -65,11 +65,15 @@ add_library(igneous STATIC
 )
 
 add_asset_shaders(igneous
-	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders
-	HEADER src/renderer/igneous_assets.h
+	HEADER src/renderer/splash_assets.h
 	SHADERS
 	shaders/fs_splash.sc
 	shaders/vs_splash.sc
+
+	HEADER src/gui/imgui_assets.h
+	SHADERS
+	shaders/fs_imgui.sc
+	shaders/vs_imgui.sc
 )
 
 configure_file (include/igneous/core/version.hpp.in include/igneous/core/version.hpp @ONLY)

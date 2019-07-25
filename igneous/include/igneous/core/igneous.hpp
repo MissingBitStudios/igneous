@@ -53,8 +53,6 @@ public:
 
 	void reset(uint32_t flags = 0);
 	void setSize(int width, int height);
-	const char* getTitle() const;
-	void setTitle(const char* title);
 
 	virtual void initialize(int _argc, char** _argv) {};
 	virtual void update(float dt) {};
