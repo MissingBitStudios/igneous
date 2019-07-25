@@ -1,6 +1,6 @@
 #include "igneous/gui/gui.hpp"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace igneous {
 namespace gui

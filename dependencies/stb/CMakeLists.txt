@@ -25,6 +25,6 @@ add_library(stb STATIC
 	stb/stretchy_buffer.h
 )
 
-target_include_directories(stb PUBLIC
-	stb
-)
+target_include_directories(stb PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+set_target_properties(stb PROPERTIES FOLDER "stb")

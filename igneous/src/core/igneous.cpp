@@ -9,7 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <RakNetVersion.h>
 #include <spdlog/version.h>
-#include <stb_image.h>
+#include <stb/stb_image.h>
 
 #include "igneous/core/log.hpp"
 #include "igneous/core/input.hpp"

@@ -1,5 +1,8 @@
 assimp 4.1.0
 bullet 2.87
 entt 3.0.0
+glfw 3.3
+glm 0.9.9.5
 googletest 1.8.1
+imgui 1.71
 spdlog 1.2.1

@@ -1,0 +1,38 @@
+
+static const unsigned char* name()
+{
+	switch (bgfx::getRendererType())
+	{
+		case bgfx::RendererType::Noop:
+		case bgfx::RendererType::Direct3D9:  return name_dx9;
+		case bgfx::RendererType::Direct3D11:
+		case bgfx::RendererType::Direct3D12: return name_dx11;
+		case bgfx::RendererType::OpenGL:     return name_glsl;
+		case bgfx::RendererType::OpenGLES:   return name_essl;
+		case bgfx::RendererType::Gnm:        return NULL;
+		case bgfx::RendererType::Metal:      return name_metal;
+		case bgfx::RendererType::Nvn:        return NULL;
+		case bgfx::RendererType::Vulkan:     return NULL;
+		case bgfx::RendererType::Count:      return NULL;
+	}
+	return NULL;
+}
+
+static const int name_len()
+{
+	switch (bgfx::getRendererType())
+	{
+		case bgfx::RendererType::Noop:
+		case bgfx::RendererType::Direct3D9:  return name_dx9_len;
+		case bgfx::RendererType::Direct3D11:
+		case bgfx::RendererType::Direct3D12: return name_dx11_len;
+		case bgfx::RendererType::OpenGL:     return name_glsl_len;
+		case bgfx::RendererType::OpenGLES:   return name_essl_len;
+		case bgfx::RendererType::Gnm:        return 0;
+		case bgfx::RendererType::Metal:      return name_metal_len;
+		case bgfx::RendererType::Nvn:        return 0;
+		case bgfx::RendererType::Vulkan:     return 0;
+		case bgfx::RendererType::Count:      return 0;
+	}
+	return 0;
+}

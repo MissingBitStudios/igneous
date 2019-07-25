@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace igneous {
 #define RETURN_EXISTS(name) if (exists(name)) { IG_CONSOLE_ERROR("A token already exists with the name: {}", name); return; }

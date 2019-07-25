@@ -19,3 +19,15 @@
 [submodule "dependencies/stb/stb"]
 	path = dependencies/stb/stb
 	url = https://github.com/nothings/stb.git
+[submodule "dependencies/bgfx.cmake"]
+	path = dependencies/bgfx.cmake
+	url = https://github.com/JoshuaBrookover/bgfx.cmake.git
+[submodule "dependencies/glfw"]
+	path = dependencies/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "dependencies/glm"]
+	path = dependencies/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "dependencies/imgui/imgui"]
+	path = dependencies/imgui/imgui
+	url = https://github.com/ocornut/imgui.git

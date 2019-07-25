@@ -10,10 +10,11 @@ set(BUILD_SHARED_LIBS  OFF CACHE INTERNAL "")
 set(ASSIMP_BUILD_TESTS OFF CACHE INTERNAL "")
 add_subdirectory(assimp)
 
-# bigg
-set(BIGG_EXAMPLES  OFF                  CACHE INTERNAL "")
-set(BIGG_ASSET_GEN ${IGNEOUS_ASSET_GEN} CACHE INTERNAL "")
-add_subdirectory(bigg)
+# bgfx
+set(BGFX_BUILD_TOOLS     ON  CACHE INTERNAL "" )
+set(BGFX_BUILD_EXAMPLES  OFF CACHE INTERNAL "" )
+set(BGFX_CUSTOM_TARGETS  OFF CACHE INTERNAL "" )
+add_subdirectory(bgfx.cmake)
 
 # bullet
 set(BUILD_CPU_DEMOS     OFF CACHE INTERNAL "")
@@ -27,12 +28,29 @@ add_subdirectory(bullet)
 set(BUILD_TESTING OFF CACHE INTERNAL "")
 add_subdirectory(entt)
 
+# glfw
+set(GLFW_BUILD_EXAMPLES  OFF CACHE INTERNAL "")
+set(GLFW_BUILD_TESTS     OFF CACHE INTERNAL "")
+set(GLFW_BUILD_DOCS      OFF CACHE INTERNAL "")
+set(GLFW_INSTALL         OFF CACHE INTERNAL "")
+add_subdirectory(glfw)
+
+# glm
+set(GLM_TEST_ENABLE      OFF CACHE INTERNAL "")
+set(BUILD_SHARED_LIBS    OFF CACHE INTERNAL "")
+set(BUILD_STATIC_LIBS    OFF CACHE INTERNAL "")
+add_subdirectory(glm)
+
+# googletest
 if(IGNEOUS_TESTS)
 	set(gtest_force_shared_crt  ON CACHE INTERNAL "")
 	set(BUILD_GMOCK             OFF CACHE INTERNAL "")
 	set(INSTALL_GTEST           OFF CACHE INTERNAL "")
 	add_subdirectory(googletest)
 endif()
+
+# imgui
+add_subdirectory(imgui)
 
 # openal
 find_package(OpenAL REQUIRED)
@@ -54,7 +72,7 @@ add_subdirectory(stb)
 # set libraries list
 set(IGNEOUS_LIBRARIES
   assimp
-  bigg
+  bgfx
   BulletDynamics
   BulletCollision
   LinearMath
@@ -62,6 +80,9 @@ set(IGNEOUS_LIBRARIES
   BulletInverseDynamics
   BulletSoftBody
   EnTT
+  glfw
+  glm
+  imgui
   ${OPENAL_LIBRARY}
   ${RAKNET_COMMON_LIBS}
   spdlog

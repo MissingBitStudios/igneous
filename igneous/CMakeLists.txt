@@ -39,7 +39,6 @@ set(INCLUDES
 	include/igneous/ecs/systems/rendererSystem.hpp
 	include/igneous/gui/gui.hpp
 	include/igneous/physics/physics.hpp
-	include/igneous/renderer/asset_shaders.hpp
 	include/igneous/renderer/aviwriter.hpp
 	include/igneous/renderer/camera.hpp
 	include/igneous/renderer/capture.hpp
