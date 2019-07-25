@@ -10,9 +10,6 @@
 [submodule "dependencies/spdlog"]
 	path = dependencies/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "dependencies/bigg"]
-	path = dependencies/bigg
-	url = https://github.com/JoshuaBrookover/bigg.git
 [submodule "dependencies/raknet"]
 	path = dependencies/raknet
 	url = https://github.com/prowolf/RakNet.git
