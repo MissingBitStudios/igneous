@@ -15,5 +15,8 @@ struct Mesh
 struct Model
 {
 	std::vector<Mesh> meshes;
+	bgfx::ProgramHandle program;
 };
+
+typedef Model* ModelHandle;
 } // end namespace igneous

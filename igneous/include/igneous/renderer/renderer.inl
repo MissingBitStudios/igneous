@@ -11,7 +11,7 @@
 
 namespace igneous {
 template<typename VertexType>
-Model* Renderer::loadModel(std::string path)
+ModelHandle Renderer::loadModel(std::string path, bgfx::ProgramHandle program)
 {
 	static_assert(std::is_base_of<Vertex, VertexType>::value, "VertexType must derive from Vertex");
 
@@ -30,7 +30,8 @@ Model* Renderer::loadModel(std::string path)
 
 	std::string directory = path.substr(0, path.find_last_of('/') + 1);
 
-	Model* model = new Model;
+	ModelHandle model = new Model;
+	model->program = program;
 
 	const auto processMesh = [&](aiMesh* mesh)
 	{

@@ -32,7 +32,6 @@ set(INCLUDES
 	include/igneous/core/input.hpp
 	include/igneous/core/log.hpp
 	include/igneous/core/version.hpp
-	include/igneous/ecs/components/modelComponent.hpp
 	include/igneous/ecs/components/transformationComponent.hpp
 	include/igneous/ecs/systems/captureSystem.hpp
 	include/igneous/ecs/systems/rendererSystem.hpp

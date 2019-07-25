@@ -22,7 +22,7 @@ public:
 	bgfx::ProgramHandle loadProgram(const char* vs, const char* fs);
 
 	template<typename VertexType>
-	Model* loadModel(std::string path);
+	Model* loadModel(std::string path, bgfx::ProgramHandle program = BGFX_INVALID_HANDLE);
 
 	void cleanUp();
 

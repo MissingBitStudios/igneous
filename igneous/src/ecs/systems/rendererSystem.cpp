@@ -32,9 +32,9 @@ namespace RendererSystem
 	void render(entt::registry &registry)
 	{
 		bgfx::UniformHandle s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Sampler);
-		registry.view<ModelComponent, Transformation>().each([s_tex](const auto, auto &model, auto &transformation)
+		registry.view<ModelHandle, Transformation>().each([s_tex](const auto, auto &model, auto &transformation)
 		{
-			for (Mesh mesh : model.model->meshes)
+			for (Mesh mesh : model->meshes)
 			{
 				bgfx::setTransform(&transformation.mtx);
 				bgfx::setVertexBuffer(0, mesh.vbh);
@@ -44,7 +44,7 @@ namespace RendererSystem
 				else
 					bgfx::setTexture(0, s_tex, checkerBoard);
 				bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
-				bgfx::submit(0, model.program);
+				bgfx::submit(0, model->program);
 			}
 		});
 		bgfx::destroy(s_tex);

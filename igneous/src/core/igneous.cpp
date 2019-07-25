@@ -27,9 +27,10 @@
 namespace igneous {
 // Application
 Application::Application(const char* title, uint32_t width, uint32_t height)
-	: mTitle(title), mWidth(width), mHeight(height)
+	: mTitle(title), mReset(BGFX_RESET_NONE), mWindow(nullptr)
 {
-
+	input::width = width;
+	input::height = height;
 }
 
 // Input callbacks
@@ -41,11 +42,11 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 	{
 		if (action == GLFW_PRESS)
 		{
-			io.KeysDown[key] = app->mKeyDown[key] = true;
+			io.KeysDown[key] = input::keys[key] = true;
 		}
 		else if (action == GLFW_RELEASE)
 		{
-			io.KeysDown[key] = app->mKeyDown[key] = false;
+			io.KeysDown[key] = input::keys[key] = false;
 		}
 	}
 
@@ -57,6 +58,7 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 	if (!io.WantCaptureKeyboard)
 	{
 		app->onKey(key, scancode, action, mods);
+		Console::getInstance().onKey(key, scancode, action, mods);
 	}
 }
 
@@ -94,11 +96,11 @@ void Application::mouseButtonCallback(GLFWwindow* window, int button, int action
 	{
 		if (action == GLFW_PRESS)
 		{
-			app->mMouseButtonDown[button] = true;
+			input::mouseButtons[button] = true;
 		}
 		else if (action == GLFW_RELEASE)
 		{
-			app->mMouseButtonDown[button] = false;
+			input::mouseButtons[button] = false;
 		}
 	}
 
@@ -111,6 +113,8 @@ void Application::mouseButtonCallback(GLFWwindow* window, int button, int action
 void Application::cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	Application* app = (Application*)glfwGetWindowUserPointer(window);
+	input::mouseX = xpos;
+	input::mouseY = ypos;
 	app->onCursorPos(xpos, ypos);
 }
 
@@ -126,8 +130,8 @@ void Application::scrollCallback(GLFWwindow* window, double xoffset, double yoff
 	ImGuiIO& io = ImGui::GetIO();
 	io.MouseWheelH += (float)xoffset;
 	io.MouseWheel += (float)yoffset;
-	app->mMouseWheelH += (float)xoffset;
-	app->mMouseWheel += (float)yoffset;
+	input::scrollX += (float)xoffset;
+	input::scrollY += (float)yoffset;
 	app->onScroll(xoffset, yoffset);
 }
 
@@ -140,15 +144,17 @@ void Application::dropCallback(GLFWwindow* window, int count, const char** paths
 void Application::windowSizeCallback(GLFWwindow* window, int width, int height)
 {
 	Application* app = (Application*)glfwGetWindowUserPointer(window);
-	app->mWidth = width;
-	app->mHeight = height;
+	input::width = width;
+	input::height = height;
 	app->reset(app->mReset);
 	app->onWindowSize(width, height);
 }
 
 int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint16_t vendorId, uint16_t deviceId, bgfx::CallbackI* callback, bx::AllocatorI* allocator)
 {
-	// Initialize the glfw
+	IG_CORE_INFO("Initializing Engine");
+	IG_CORE_INFO("Initializing GLFW");
+	// Initialize glfw
 	if (!glfwInit())
 	{
 		return -1;
@@ -156,7 +162,7 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 
 	// Create a window
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	mWindow = glfwCreateWindow(getWidth(), getHeight(), getTitle(), NULL, NULL);
+	mWindow = glfwCreateWindow(input::width, input::height, mTitle, NULL, NULL);
 	if (!mWindow)
 	{
 		glfwTerminate();
@@ -174,8 +180,10 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	glfwSetScrollCallback(mWindow, scrollCallback);
 	glfwSetDropCallback(mWindow, dropCallback);
 	glfwSetWindowSizeCallback(mWindow, windowSizeCallback);
+	IG_CORE_INFO("GLFW Initializied");
 
 	// Setup bgfx
+	IG_CORE_INFO("Initializing bgfx");
 	bgfx::PlatformData platformData;
 	memset(&platformData, 0, sizeof(platformData));
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
@@ -196,8 +204,8 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	init.callback = callback;
 	init.allocator = allocator;
 	bgfx::init(init);
+	IG_CORE_INFO("bgfx Initializied");
 
-	IG_CORE_INFO("Initializing Engine");
 	IG_CORE_INFO("Setting window title and icon");
 	GLFWimage images[4];
 	images[0].pixels = stbi_load("res/icons/icon16.png", &images[0].width, &images[0].height, 0, 4);
@@ -212,11 +220,13 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	IG_CORE_INFO("Window title and icon set");
 
 	IG_CORE_INFO("Initializing Services");
+	reset();
 	Renderer* renderer = &Renderer::getInstance();
 	Audio* audio = &Audio::getInstance();
 	RendererSystem::init();
 	gui::init(mWindow);
 	Console* console = &Console::getInstance();
+	input::Init(mWindow);
 	console->runFile("startup.cmd");
 	IG_CORE_INFO("Services Initialized");
 
@@ -249,7 +259,7 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	}
 	IG_CORE_INFO("OpenAL Extensions: {}", audio->getExtensions());
 
-	Input::setCursorVisible(mWindow, false);
+	input::setCursorVisible(false);
 
 	IG_CONSOLE_INFO("Engine Initialized");
 
@@ -275,6 +285,7 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 		ImGui::NewFrame();
 		bgfx::touch(0);
 		render();
+		console->render();
 		ImGui::Render();
 		bgfx::frame();
 	}
@@ -290,7 +301,7 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	renderer->cleanUp();
 	IG_CORE_INFO("Services Shut Down");
 	bgfx::shutdown();
-	Input::setCursorVisible(mWindow, true);
+	input::setCursorVisible(true);
 	glfwTerminate();
 	IG_CORE_INFO("Engine Shut Down");
 	return ret;
@@ -299,19 +310,15 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 void Application::reset(uint32_t flags)
 {
 	mReset = flags;
-	bgfx::reset(mWidth, mHeight, mReset);
-	gui::reset(uint16_t(getWidth()), uint16_t(getHeight()));
+	bgfx::reset(input::width, input::height, mReset);
+	gui::reset(uint16_t(input::width), uint16_t(input::height));
 	onReset();
 }
 
-uint32_t Application::getWidth() const
+void Application::onReset()
 {
-	return mWidth;
-}
-
-uint32_t Application::getHeight() const
-{
-	return mHeight;
+	bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000ff, 1.0f, 0);
+	bgfx::setViewRect(0, 0, 0, uint16_t(input::width), uint16_t(input::height));
 }
 
 void Application::setSize(int width, int height)

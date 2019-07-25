@@ -27,8 +27,6 @@ Console::Console() : consoleVar(variable("console", 0))
 	bind(IG_KEY_Z, "+test");
 	bind(IG_KEY_V, "-test");
 
-	IN_KEY_SINK(&onKey);
-
 	colors[trace] = WHITE;
 	colors[debug] = CYAN;
 	colors[info] = GREEN;

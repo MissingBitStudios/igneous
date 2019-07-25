@@ -5,8 +5,18 @@
 #include "igneous/core/log.hpp"
 
 namespace igneous {
-namespace Input
+namespace input
 {
+	void cursorVisibleCallback(float oldValue, float newValue)
+	{
+		input::setCursorVisible(newValue);
+	}
+
+	void quitCallback(const std::string& name, const arg_list& args)
+	{
+		glfwSetWindowShouldClose(window, true);
+	}
+
 	void Init(GLFWwindow* win)
 	{
 		IG_CORE_INFO("Initializing Input");
@@ -21,72 +31,14 @@ namespace Input
 		IG_CORE_INFO("Input Initialized");
 	}
 
-	void cursorVisibleCallback(float oldValue, float newValue)
-	{
-		Input::setCursorVisible(window, newValue);
-	}
-
-	void onKey(int key, int scancode, int action, int mods)
-	{
-		if (key != GLFW_KEY_UNKNOWN)
-		{
-			if (action == GLFW_PRESS)
-			{
-				keys[key] = true;
-			}
-			else if (action == GLFW_RELEASE)
-			{
-				keys[key] = false;
-			}
-			keySignal.publish(key, scancode, action, mods);
-		}
-	}
-	
-	void onMouseButton(int button, int action, int mods)
-	{
-		if (action == GLFW_PRESS)
-		{
-			mouseButtons[button] = true;
-		}
-		else if (action == GLFW_RELEASE)
-		{
-			mouseButtons[button] = false;
-		}
-		mouseSignal.publish(button, action, mods);
-	}
-
-	void onScroll(double xoffset, double yoffset)
-	{
-		scrollX = xoffset;
-		scrollY = yoffset;
-		scrollSignal.publish(xoffset, yoffset);
-	}
-
-	void onCursorPos(double xpos, double ypos)
-	{
-		mouseX = xpos;
-		mouseY = ypos;
-		cursorPosSignal.publish(xpos, ypos);
-	}
-
-	void onCursorEnter(int entered)
-	{
-		cursorEnterSignal.publish(entered);
-	}
-
-	void setCursorPos(GLFWwindow* window, double xpos, double ypos)
+	void setCursorPos(double xpos, double ypos)
 	{
 		glfwSetCursorPos(window, xpos, ypos);
 	}
 
-	void setCursorVisible(GLFWwindow* window, bool visible)
+	void setCursorVisible(bool visible)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
-	}
-
-	void quitCallback(const std::string& name, const arg_list& args)
-	{
-		glfwSetWindowShouldClose(window, true);
 	}
 
 	bool keys[GLFW_KEY_LAST + 1] = { 0 };
@@ -95,11 +47,5 @@ namespace Input
 	double mouseX, mouseY = 0;
 	int width, height = 0;
 	GLFWwindow* window = nullptr;
-
-	entt::sigh<void(int, int, int, int)> keySignal;
-	entt::sigh<void(int, int, int)> mouseSignal;
-	entt::sigh<void(double, double)> scrollSignal;
-	entt::sigh<void(double, double)> cursorPosSignal;
-	entt::sigh<void(int)> cursorEnterSignal;
 }
 } // end namespace igneous

@@ -6,25 +6,15 @@
 #include "igneous/console/console.hpp"
 
 namespace igneous {
-#define IN_KEY_SINK(callback) Input::keySignal.sink().connect<callback>()
-#define IN_MOUSE_SINK(callback) Input::mouseSignal.sink().connect<callback>()
-#define IN_SCROLL_SINK(callback) Input::scrollSignal.sink().connect<callback>()
-#define IN_CURSOR_POS_SINK(callback) Input::cursorPosSignal.sink().connect<callback>()
-#define IN_CURSOR_ENTER_SINK(callback) Input::cursorEnterSignal.sink().connect<callback>()
-
-namespace Input
+namespace input
 {
-	void Init(GLFWwindow* window);
+	/*! @private */
+	void init(GLFWwindow* window);
 
-	void cursorVisibleCallback(float oldValue, float newValue);
-	void onKey(int key, int scancode, int action, int mods);
-	void onMouseButton(int button, int action, int mods);
-	void onScroll(double xoffset, double yoffset);
-	void onCursorPos(double xpos, double ypos);
-	void onCursorEnter(int entered);
-	void setCursorPos(GLFWwindow* window, double xpos, double ypos);
-	void setCursorVisible(GLFWwindow* window, bool visible);
-	void quitCallback(const std::string& name, const arg_list& args);
+	/*! Sets the mouse cursor visibility
+	* \param visible `true` for visible. `false` for hidden.
+	*/
+	void setCursorVisible(bool visible);
 
 	extern bool keys[GLFW_KEY_LAST + 1];
 	extern bool mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1];
@@ -33,12 +23,6 @@ namespace Input
 	extern int width;
 	extern int height;
 	extern GLFWwindow* window;
-
-	extern entt::sigh<void(int, int, int, int)> keySignal;
-	extern entt::sigh<void(int, int, int)> mouseSignal;
-	extern entt::sigh<void(double, double)> scrollSignal;
-	extern entt::sigh<void(double, double)> cursorPosSignal;
-	extern entt::sigh<void(int)> cursorEnterSignal;
 }
 
 /*! @defgroup keys Keyboard keys
@@ -60,7 +44,6 @@ namespace Input
  *   - For non-printable keys, custom names are used (e.g. "F4",
  *     "BACKSPACE", etc.)
  *
- *  @ingroup input
  *  @{
  */
 
@@ -199,7 +182,6 @@ namespace Input
  *
  *  See [key input](@ref input_key) for how these are used.
  *
- *  @ingroup input
  *  @{ */
 
  /*! @brief If this bit is set one or more Shift keys were held down.
@@ -221,7 +203,6 @@ namespace Input
 	  *
 	  *  See [mouse button input](@ref input_mouse_button) for how these are used.
 	  *
-	  *  @ingroup input
 	  *  @{ */
 #define IG_MOUSE_BUTTON_1 GLFW_MOUSE_BUTTON_1
 #define IG_MOUSE_BUTTON_2 GLFW_MOUSE_BUTTON_2
@@ -241,7 +222,6 @@ namespace Input
 	   *
 	   *  See [joystick input](@ref joystick) for how these are used.
 	   *
-	   *  @ingroup input
 	   *  @{ */
 #define IG_JOYSTICK_1 GLFW_JOYSTICK_1
 #define IG_JOYSTICK_2 GLFW_JOYSTICK_2

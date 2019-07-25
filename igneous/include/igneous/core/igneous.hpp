@@ -52,8 +52,6 @@ public:
 	);
 
 	void reset(uint32_t flags = 0);
-	uint32_t getWidth() const;
-	uint32_t getHeight() const;
 	void setSize(int width, int height);
 	const char* getTitle() const;
 	void setTitle(const char* title);
@@ -63,7 +61,7 @@ public:
 	virtual void render() {};
 	virtual int shutdown() { return 0; };
 
-	virtual void onReset() {};
+	virtual void onReset();
 	virtual void onKey(int key, int scancode, int action, int mods) {}
 	virtual void onChar(unsigned int codepoint) {}
 	virtual void onCharMods(int codepoint, unsigned int mods) {}
@@ -75,15 +73,8 @@ public:
 	virtual void onWindowSize(int width, int height) {}
 protected:
 	GLFWwindow* mWindow;
-	Allocator mAllocator;
-	bool mKeyDown[GLFW_KEY_LAST + 1] = { 0 };
-	bool mMouseButtonDown[GLFW_MOUSE_BUTTON_LAST + 1] = { 0 };
-	float mMouseWheelH;
-	float mMouseWheel;
 private:
 	uint32_t mReset;
-	uint32_t mWidth;
-	uint32_t mHeight;
 	const char* mTitle;
 };
 } // end namespace igneous
