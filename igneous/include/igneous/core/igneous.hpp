@@ -41,6 +41,7 @@ public:
 	Application(const char* title = "", uint32_t width = 1280, uint32_t height = 768);
 	virtual ~Application() {};
 
+	int run(int argc, char** argv, bgfx::Init init);
 	int run(
 		int argc,
 		char** argv,
@@ -77,9 +78,9 @@ private:
 };
 } // end namespace igneous
 
-#define IG_IMPLEMENT_MAIN(APPLICATION_CLASS)                                                        \
-int main(int argc, char** argv)                                                                     \
-{                                                                                                   \
-	APPLICATION_CLASS app;                                                                          \
-	return app.run(argc, argv, bgfx::RendererType::Count, BGFX_PCI_ID_AMD, 0, new CaptureCallback); \
+#define IG_IMPLEMENT_MAIN(APPLICATION_CLASS) \
+int main(int argc, char** argv)              \
+{                                            \
+	APPLICATION_CLASS app;                   \
+	return app.run(argc, argv);              \
 }

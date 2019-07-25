@@ -35,21 +35,6 @@ private:
 	std::map<std::string, bgfx::TextureHandle> textures;
 	std::map<std::string, bgfx::ProgramHandle> programs;
 	std::map<std::string, Model*> models;
-
-	struct SplashVertex
-	{
-		float x, y, z;
-		float tex_x, tex_y;
-		static void init()
-		{
-			ms_decl
-				.begin()
-				.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-				.end();
-		}
-		static bgfx::VertexDecl ms_decl;
-	};
 };
 } // end namespace igneous
 

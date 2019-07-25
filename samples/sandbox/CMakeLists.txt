@@ -20,8 +20,8 @@ add_shaders(sandbox OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders
 	shaders/fs_bunny.sc
 	shaders/vs_sky.sc
 	shaders/fs_sky.sc
-	shaders/vs_cubes.sc
-	shaders/fs_cubes.sc
+	shaders/vs_poly.sc
+	shaders/fs_poly.sc
 )
 
 set_target_properties(sandbox PROPERTIES FOLDER "igneous/samples")

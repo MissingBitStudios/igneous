@@ -151,7 +151,7 @@ void Application::windowSizeCallback(GLFWwindow* window, int width, int height)
 	app->onWindowSize(width, height);
 }
 
-int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint16_t vendorId, uint16_t deviceId, bgfx::CallbackI* callback, bx::AllocatorI* allocator)
+int Application::run(int argc, char** argv, bgfx::Init init)
 {
 	IG_CORE_INFO("Initializing Engine");
 	IG_CORE_INFO("Initializing GLFW");
@@ -198,12 +198,6 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	bgfx::setPlatformData(platformData);
 
 	// Init bgfx
-	bgfx::Init init;
-	init.type = type;
-	init.vendorId = vendorId;
-	init.deviceId = deviceId;
-	init.callback = callback;
-	init.allocator = allocator;
 	bgfx::init(init);
 	IG_CORE_INFO("bgfx Initializied");
 
@@ -260,8 +254,6 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	}
 	IG_CORE_INFO("OpenAL Extensions: {}", audio->getExtensions());
 
-	input::setCursorVisible(false);
-
 	IG_CONSOLE_INFO("Engine Initialized");
 
 	// Initialize the application
@@ -302,10 +294,20 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	renderer->cleanUp();
 	IG_CORE_INFO("Services Shut Down");
 	bgfx::shutdown();
-	input::setCursorVisible(true);
 	glfwTerminate();
 	IG_CORE_INFO("Engine Shut Down");
 	return ret;
+}
+
+int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint16_t vendorId, uint16_t deviceId, bgfx::CallbackI* callback, bx::AllocatorI* allocator)
+{
+	bgfx::Init init;
+	init.type = type;
+	init.vendorId = vendorId;
+	init.deviceId = deviceId;
+	init.callback = callback;
+	init.allocator = allocator;
+	return run(argc, argv, init);
 }
 
 void Application::reset(uint32_t flags)

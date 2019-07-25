@@ -24,7 +24,7 @@ public:
 
 		sky = new SkySystem;
 
-		polyShader = renderer.loadProgram("vs_cubes", "fs_cubes");
+		polyShader = renderer.loadProgram("vs_poly", "vs_poly");
 
 		barn = renderer.loadModel<GenericVertex>("res/models/BigBarn/BigBarn.obj", polyShader);
 
@@ -33,6 +33,8 @@ public:
 		registry.assign<Transformation>(entity, glm::identity<glm::mat4>());
 
 		camera = new FPSCamera(glm::vec3(0.0f, 5.0f, 15.0f));
+
+		input::setCursorVisible(false);
 	}
 
 	void update(float dt)
@@ -51,7 +53,6 @@ public:
 
 	int shutdown()
 	{
-		bgfx::destroy(polyShader);
 		delete sky;
 		delete camera;
 		return 0;

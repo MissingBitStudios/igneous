@@ -14,16 +14,20 @@ namespace igneous {
 Renderer::Renderer()
 {
 	IG_CORE_INFO("Initializing Renderer");
-	static SplashVertex s_splashVertices[] =
+	static float s_splashVertices[] =
 	{
-		{ -1.0f,  1.0f, 0.0f, 0.0f, 0.0f },
-		{ 1.0f,  1.0f, 0.0f, 1.0f, 0.0f },
-		{ -1.0f, -1.0f, 0.0f, 0.0f, 1.0f },
-		{ 1.0f, -1.0f, 0.0f, 1.0f, 1.0f },
+		-1.0f,  1.0f, 0.0f, 0.0f,
+		 1.0f,  1.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f, 0.0f, 1.0f,
+		 1.0f, -1.0f, 1.0f, 1.0f
 	};
 	static const uint16_t s_splashTriList[] = { 2, 1, 0, 2, 3, 1 };
 
-	SplashVertex::init();
+	static bgfx::VertexDecl splashVertexDecl;
+	splashVertexDecl.begin()
+				.add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
+				.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+				.end();
 
 	bgfx::ShaderHandle fs = bgfx::createShader(bgfx::makeRef(fs_splash(), fs_splash_len()));
 	bgfx::ShaderHandle vs = bgfx::createShader(bgfx::makeRef(vs_splash(), vs_splash_len()));
@@ -32,7 +36,7 @@ Renderer::Renderer()
 	bgfx::UniformHandle s_splash = bgfx::createUniform("s_splash", bgfx::UniformType::Sampler);
 	bgfx::TextureHandle splashTexture = loadTexture("res/textures/splash.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP, false);
 
-	bgfx::setVertexBuffer(0, bgfx::createVertexBuffer(bgfx::makeRef(s_splashVertices, sizeof(s_splashVertices)), SplashVertex::ms_decl));
+	bgfx::setVertexBuffer(0, bgfx::createVertexBuffer(bgfx::makeRef(s_splashVertices, sizeof(s_splashVertices)), splashVertexDecl));
 	bgfx::setIndexBuffer(bgfx::createIndexBuffer(bgfx::makeRef(s_splashTriList, sizeof(s_splashTriList))));
 	bgfx::setTexture(0, s_splash, splashTexture);
 	bgfx::setState(BGFX_STATE_DEFAULT);
@@ -44,6 +48,10 @@ Renderer::Renderer()
 
 	Vertex::init();
 	GenericVertex::init();
+
+	//console::command("screenshot", screenshotCallback);
+	//console::command("start_record", startRecordCallback);
+	//console::command("end_record", endRecordCallback);
 
 	IG_CORE_INFO("Renderer Initialized");
 }
@@ -129,6 +137,10 @@ bgfx::TextureHandle Renderer::loadTexture(std::string path, uint32_t _flags, boo
 const bgfx::Memory* Renderer::loadMemory(const char* filename)
 {
 	std::ifstream file(filename, std::ios::binary | std::ios::ate);
+	if (file.fail())
+	{
+		IG_CORE_CRITICAL("Could not open shader file: {}", filename);
+	}
 	std::streamsize size = file.tellg();
 	file.seekg(0, std::ios::beg);
 	const bgfx::Memory* mem = bgfx::alloc(uint32_t(size + 1));
@@ -208,6 +220,5 @@ Renderer::~Renderer()
 	IG_CORE_INFO("Renderer Shutdown");
 }
 
-bgfx::VertexDecl Renderer::SplashVertex::ms_decl;
 bgfx::VertexDecl Vertex::ms_decl;
 } // end namespace igneous

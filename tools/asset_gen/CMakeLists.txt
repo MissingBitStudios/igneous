@@ -1,11 +1,3 @@
-set(ASSET_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated CACHE INTERNAL "")
-file(MAKE_DIRECTORY ${ASSET_BINARY_DIR})
-file(MAKE_DIRECTORY ${ASSET_BINARY_DIR}/glsl)
-file(MAKE_DIRECTORY ${ASSET_BINARY_DIR}/essl)
-file(MAKE_DIRECTORY ${ASSET_BINARY_DIR}/dx9)
-file(MAKE_DIRECTORY ${ASSET_BINARY_DIR}/dx11)
-file(MAKE_DIRECTORY ${ASSET_BINARY_DIR}/metal)
-
 macro(add_asset_shaders ARG_TARGET)
   if(IGNEOUS_ASSET_GEN)
     if(NOT TARGET ${ARG_TARGET})
@@ -69,6 +61,9 @@ macro(add_asset_shaders ARG_TARGET)
         shaderc_parse(OUT ${OPTIONS})
         list(APPEND ASSET_COMMANDS COMMAND "$<TARGET_FILE:shaderc>" ${OUT})
         list(APPEND ASSET_FILES ${ASSET_BINARY_DIR}/metal/${SHADER_NAME}.bin ${SHADER_NAME}_metal)
+
+        target_sources(${ARG_TARGET} PRIVATE ${SHADER})
+        source_group("Asset Shader Files" FILES ${SHADER})
       endif()
     endforeach()
 
@@ -91,6 +86,14 @@ macro(add_asset_shaders ARG_TARGET)
 endmacro()
 
 if(IGNEOUS_ASSET_GEN)
+  set(ASSET_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated CACHE INTERNAL "")
+  file(MAKE_DIRECTORY ${ASSET_BINARY_DIR})
+  file(MAKE_DIRECTORY ${ASSET_BINARY_DIR}/glsl)
+  file(MAKE_DIRECTORY ${ASSET_BINARY_DIR}/essl)
+  file(MAKE_DIRECTORY ${ASSET_BINARY_DIR}/dx9)
+  file(MAKE_DIRECTORY ${ASSET_BINARY_DIR}/dx11)
+  file(MAKE_DIRECTORY ${ASSET_BINARY_DIR}/metal)
+
   add_executable(bin2c
     bin2c.cpp
     strings.h
