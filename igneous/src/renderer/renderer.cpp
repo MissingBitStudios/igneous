@@ -9,6 +9,9 @@
 #include "igneous/core/log.hpp"
 #include "igneous/renderer/vertex.hpp"
 #include "splash_assets.h"
+#include "igneous/ecs/components/transformationComponent.hpp"
+#include "igneous/console/console.hpp"
+#include "igneous/core/input.hpp"
 
 namespace igneous {
 namespace renderer
@@ -16,6 +19,26 @@ namespace renderer
 	static std::map<std::string, bgfx::TextureHandle> textures;
 	static std::map<std::string, bgfx::ProgramHandle> programs;
 	std::map<std::string, Model*> models;
+
+	static bgfx::TextureHandle checkerBoard;
+
+	void screenshotCallback(const std::string& name, const arg_list& args)
+	{
+		screenshot();
+	}
+
+	void recordingCallback(float oldValue, float newValue)
+	{
+		setRecording(newValue);
+	}
+
+	void debugCallback(float oldValue, float newValue)
+	{
+		setDebugOverlay(newValue);
+	}
+
+	static ConVar* recording;
+	static ConVar* debug;
 
 	void init()
 	{
@@ -55,9 +78,26 @@ namespace renderer
 		Vertex::init();
 		GenericVertex::init();
 
-		//console::command("screenshot", screenshotCallback);
-		//console::command("start_record", startRecordCallback);
-		//console::command("end_record", endRecordCallback);
+		console::command("screenshot", screenshotCallback);
+		console::bind(IG_KEY_F2, "screenshot");
+		recording = &console::variable("recording", false, recordingCallback);
+		console::bind(IG_KEY_F9, "^recording");
+		debug = &console::variable("debug", false, debugCallback);
+		console::bind(IG_KEY_F3, "^debug");
+
+		const uint32_t checkerBoardSize = 64;
+		{
+			const bgfx::Memory* mem = bgfx::alloc(checkerBoardSize * checkerBoardSize * 4);
+			bimg::imageCheckerboard(mem->data, checkerBoardSize, checkerBoardSize, 8, 0xffe75480, 0xff000000);
+			checkerBoard = bgfx::createTexture2D(checkerBoardSize, checkerBoardSize, false, 1
+				, bgfx::TextureFormat::BGRA8
+				, 0
+				| BGFX_SAMPLER_MIN_POINT
+				| BGFX_SAMPLER_MIP_POINT
+				| BGFX_SAMPLER_MAG_POINT
+				, mem
+			);
+		}
 
 		IG_CORE_INFO("Renderer Initialized");
 	}
@@ -193,24 +233,48 @@ namespace renderer
 		return bgfx::createProgram(vs, fs, true);
 	}
 
-	void render()
+	void render(entt::registry& registry)
 	{
-
+		bgfx::UniformHandle s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Sampler);
+		registry.view<ModelHandle, Transformation>().each([s_tex](const auto, auto& model, auto& transformation)
+			{
+				for (Mesh mesh : model->meshes)
+				{
+					bgfx::setTransform(&transformation.mtx);
+					bgfx::setVertexBuffer(0, mesh.vbh);
+					bgfx::setIndexBuffer(mesh.ibh);
+					if (mesh.textures.size() > 0)
+						bgfx::setTexture(0, s_tex, mesh.textures[0]);
+					else
+						bgfx::setTexture(0, s_tex, checkerBoard);
+					bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
+					bgfx::submit(0, model->program);
+				}
+			});
+		bgfx::destroy(s_tex);
 	}
 
 	void screenshot()
 	{
-
+		bgfx::requestScreenShot(BGFX_INVALID_HANDLE, "capture/screenshot");
+		IG_CORE_INFO("Screenshot requested");
 	}
 
-	void setRecording(bool recording)
+	void setRecording(bool record)
 	{
-
+		//set reset
+		IG_CORE_INFO("Capture: {}", *recording ? "ON" : "OFF");
 	}
 
 	bool isRecording()
 	{
+		return *recording;
+	}
 
+	void setDebugOverlay(bool debugOverlay)
+	{
+		//set reset
+		IG_CORE_INFO("Debug Overlay: {}", *debug ? "ON" : "OFF");
 	}
 
 	void shutdown()
@@ -232,6 +296,8 @@ namespace renderer
 			}
 			delete it->second;
 		}
+
+		bgfx::destroy(checkerBoard);
 		IG_CORE_INFO("Renderer Shutdown");
 	}
 }

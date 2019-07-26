@@ -216,10 +216,9 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 
 	IG_CORE_INFO("Initializing Services");
 	reset();
-	renderer::init();
-	RendererSystem::init();
-	gui::init(mWindow);
 	console::init();
+	renderer::init();
+	gui::init(mWindow);
 	input::init(mWindow);
 	console::runFile("startup.cmd");
 	IG_CORE_INFO("Services Initialized");
@@ -290,7 +289,6 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 	IG_CORE_INFO("Shuting Down Services");
 	audio::shutdown();
 	gui::shutdown();
-	RendererSystem::shutdown();
 	renderer::shutdown();
 	IG_CORE_INFO("Services Shut Down");
 	bgfx::shutdown();
@@ -305,7 +303,7 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	init.type = type;
 	init.vendorId = vendorId;
 	init.deviceId = deviceId;
-	init.callback = callback;
+	init.callback = new CaptureCallback;
 	init.allocator = allocator;
 	return run(argc, argv, init);
 }

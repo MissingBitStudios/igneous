@@ -6,6 +6,8 @@
 #include <bx/debug.h>
 #include <inttypes.h>
 #include <string>
+#include <filesystem>
+#include "igneous/core/log.hpp"
 
 namespace igneous {
 void savePng(const char* _filePath, uint32_t _width, uint32_t _height, uint32_t _srcPitch, const void* _src, bimg::TextureFormat::Enum _format, bool _yflip)
@@ -134,22 +136,42 @@ void CaptureCallback::screenShot(const char* _filePath, uint32_t _width, uint32_
 {
 	char temp[1024];
 
-	// Save screen shot as PNG.
-	bx::snprintf(temp, BX_COUNTOF(temp), "%s.png", _filePath);
-	savePng(temp, _width, _height, _pitch, _data, bimg::TextureFormat::BGRA8, _yflip);
+	std::string filePath(_filePath);
+	std::string directory = filePath.substr(0, filePath.find_last_of('/'));
+	if (!std::filesystem::exists(directory) && !std::filesystem::create_directories(directory))
+	{
+		IG_CORE_ERROR("Could not save screenshot");
+	}
+	else
+	{
+		// Save screen shot as PNG.
+		bx::snprintf(temp, BX_COUNTOF(temp), "%s.png", _filePath);
+		savePng(temp, _width, _height, _pitch, _data, bimg::TextureFormat::BGRA8, _yflip);
+		IG_CORE_INFO("Screenshot saved to: {}", temp);
 
-	// Save screen shot as TGA.
-	bx::snprintf(temp, BX_COUNTOF(temp), "%s.tga", _filePath);
-	saveTga(temp, _width, _height, _pitch, _data, false, _yflip);
+		// Save screen shot as TGA.
+		bx::snprintf(temp, BX_COUNTOF(temp), "%s.tga", _filePath);
+		saveTga(temp, _width, _height, _pitch, _data, false, _yflip);
+		IG_CORE_INFO("Screenshot saved to: {}", temp);
+	}
 }
 
 void CaptureCallback::captureBegin(uint32_t _width, uint32_t _height, uint32_t /*_pitch*/, bgfx::TextureFormat::Enum /*_format*/, bool _yflip)
 {
-	m_writer = BX_NEW(allocator, AviWriter)(s_fileWriter);
-	if (!m_writer->open("capture/capture.avi", _width, _height, 30, _yflip))
+	std::string filePath("capture/capture.avi");
+	std::string directory = filePath.substr(0, filePath.find_last_of('/'));
+	if (!std::filesystem::exists(directory) && !std::filesystem::create_directories(directory))
 	{
-		BX_DELETE(allocator, m_writer);
-		m_writer = NULL;
+		IG_CORE_ERROR("Could not begin capture");
+	}
+	else
+	{
+		m_writer = BX_NEW(allocator, AviWriter)(s_fileWriter);
+		if (!m_writer->open(filePath.c_str(), _width, _height, 30, _yflip))
+		{
+			BX_DELETE(allocator, m_writer);
+			m_writer = NULL;
+		}
 	}
 }
 

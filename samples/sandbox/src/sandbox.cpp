@@ -44,7 +44,7 @@ public:
 	void render()
 	{
 		camera->use(input::width, input::height);
-		RendererSystem::render(registry);
+		renderer::render(registry);
 
 		ImGui::ShowDemoWindow();
 	}

@@ -4,6 +4,7 @@
 #include <string>
 
 #include <bgfx/bgfx.h>
+#include <entt/entt.hpp>
 
 #include "igneous/renderer/model.hpp"
 
@@ -22,10 +23,11 @@ namespace renderer
 	template<typename VertexType>
 	Model* loadModel(std::string path, bgfx::ProgramHandle program = BGFX_INVALID_HANDLE);
 
-	void render();
+	void render(entt::registry& registry);
 	void screenshot();
-	void setRecording(bool recording);
+	void setRecording(bool record);
 	bool isRecording();
+	void setDebugOverlay(bool debugOverlay);
 
 	void shutdown();
 
