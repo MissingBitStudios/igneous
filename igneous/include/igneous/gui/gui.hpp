@@ -7,9 +7,9 @@ namespace igneous {
 namespace gui
 {
 	/*! @cond */
-	void init(GLFWwindow* window);
+	void init();
 	void update(float dt);
-	void reset(uint16_t width, uint16_t height);
+	void reset();
 	void render(ImDrawData* drawData);
 	void shutdown();
 	/*! @endcond */

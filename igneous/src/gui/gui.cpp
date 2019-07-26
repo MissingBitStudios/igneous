@@ -9,6 +9,7 @@
 #endif // BX_PLATFORM_WINDOWS
 #include <GLFW/glfw3native.h>
 
+#include "igneous/core/input.hpp"
 #include "imgui_assets.h"
 
 namespace igneous {
@@ -19,7 +20,6 @@ namespace gui
 	static bgfx::UniformHandle imguiFontUniform;
 	static bgfx::ProgramHandle imguiProgram;
 
-	static GLFWwindow* gWindow = NULL;
 	static GLFWcursor* gMouseCursors[ImGuiMouseCursor_COUNT] = { 0 };
 
 	const char* imguiGetClipboardText(void* userData)
@@ -32,10 +32,8 @@ namespace gui
 		glfwSetClipboardString((GLFWwindow*)userData, text);
 	}
 
-	void init(GLFWwindow* window)
+	void init()
 	{
-		gWindow = window;
-
 		unsigned char* data;
 		int width, height;
 		ImGui::CreateContext();
@@ -92,9 +90,9 @@ namespace gui
 
 		io.SetClipboardTextFn = imguiSetClipboardText;
 		io.GetClipboardTextFn = imguiGetClipboardText;
-		io.ClipboardUserData = gWindow;
+		io.ClipboardUserData = input::window;
 #if BX_PLATFORM_WINDOWS
-		io.ImeWindowHandle = (void*)glfwGetWin32Window(gWindow);
+		io.ImeWindowHandle = (void*)glfwGetWin32Window(input::window);
 #endif
 
 		gMouseCursors[ImGuiMouseCursor_Arrow] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
@@ -107,9 +105,9 @@ namespace gui
 		gMouseCursors[ImGuiMouseCursor_Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
 	}
 
-	void reset(uint16_t width, uint16_t height)
+	void reset()
 	{
-		bgfx::setViewRect(200, 0, 0, width, height);
+		bgfx::setViewRect(200, 0, 0, input::width, input::height);
 		bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x00000000);
 	}
 
@@ -120,8 +118,8 @@ namespace gui
 		// Setup display size
 		int w, h;
 		int displayW, displayH;
-		glfwGetWindowSize(gWindow, &w, &h);
-		glfwGetFramebufferSize(gWindow, &displayW, &displayH);
+		glfwGetWindowSize(input::window, &w, &h);
+		glfwGetFramebufferSize(input::window, &displayW, &displayH);
 		io.DisplaySize = ImVec2((float)w, (float)h);
 		io.DisplayFramebufferScale = ImVec2(w > 0 ? ((float)displayW / w) : 0, h > 0 ? ((float)displayH / h) : 0);
 
@@ -134,36 +132,36 @@ namespace gui
 #if BX_PLATFORM_EMSCRIPTEN
 		const bool focused = true; // Emscripten
 #else
-		const bool focused = glfwGetWindowAttrib(gWindow, GLFW_FOCUSED) != 0;
+		const bool focused = glfwGetWindowAttrib(input::window, GLFW_FOCUSED) != 0;
 #endif
 		if (focused)
 		{
 			if (io.WantSetMousePos)
 			{
-				glfwSetCursorPos(gWindow, (double)mouse_pos_backup.x, (double)mouse_pos_backup.y);
+				glfwSetCursorPos(input::window, (double)mouse_pos_backup.x, (double)mouse_pos_backup.y);
 			}
 			else
 			{
 				double mouse_x, mouse_y;
-				glfwGetCursorPos(gWindow, &mouse_x, &mouse_y);
+				glfwGetCursorPos(input::window, &mouse_x, &mouse_y);
 				io.MousePos = ImVec2((float)mouse_x, (float)mouse_y);
 			}
 		}
 
 		// Update mouse cursor
-		if (!(io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) && glfwGetInputMode(gWindow, GLFW_CURSOR) != GLFW_CURSOR_DISABLED)
+		if (!(io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) && glfwGetInputMode(input::window, GLFW_CURSOR) != GLFW_CURSOR_DISABLED)
 		{
 			ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
 			if (imgui_cursor == ImGuiMouseCursor_None || io.MouseDrawCursor)
 			{
 				// Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
-				glfwSetInputMode(gWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+				glfwSetInputMode(input::window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 			}
 			else
 			{
 				// Show OS mouse cursor
-				glfwSetCursor(gWindow, gMouseCursors[imgui_cursor] ? gMouseCursors[imgui_cursor] : gMouseCursors[ImGuiMouseCursor_Arrow]);
-				glfwSetInputMode(gWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				glfwSetCursor(input::window, gMouseCursors[imgui_cursor] ? gMouseCursors[imgui_cursor] : gMouseCursors[ImGuiMouseCursor_Arrow]);
+				glfwSetInputMode(input::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			}
 		}
 	}

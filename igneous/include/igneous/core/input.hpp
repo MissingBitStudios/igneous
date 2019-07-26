@@ -4,12 +4,14 @@
 #include <entt/entt.hpp>
 
 #include "igneous/console/console.hpp"
+#include "igneous/core/igneous.hpp"
 
 namespace igneous {
 namespace input
 {
 	/*! @cond */
-	void init(GLFWwindow* window);
+	void init();
+	void shutdown();
 	/*! @endcond */
 
 	/*! Sets the mouse cursor visibility
@@ -20,6 +22,8 @@ namespace input
 	const char* getTitle();
 	void setTitle(const char* title);
 
+	void setSize(int width, int height);
+
 	extern bool keys[GLFW_KEY_LAST + 1];
 	extern bool mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1];
 	extern double scrollX, scrollY;
@@ -28,6 +32,7 @@ namespace input
 	extern int height;
 	extern const char* title;
 	extern GLFWwindow* window;
+	extern Application* app;
 }
 
 /*! @defgroup keys Keyboard keys

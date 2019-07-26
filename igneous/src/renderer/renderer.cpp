@@ -39,6 +39,7 @@ namespace renderer
 
 	static ConVar* recording;
 	static ConVar* debug;
+	static bgfx::UniformHandle s_tex;
 
 	void init()
 	{
@@ -98,6 +99,8 @@ namespace renderer
 				, mem
 			);
 		}
+
+		s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Sampler);
 
 		IG_CORE_INFO("Renderer Initialized");
 	}
@@ -228,30 +231,25 @@ namespace renderer
 		bx::strCat(fsPath, BX_COUNTOF(fsPath), fsName);
 		bx::strCat(fsPath, BX_COUNTOF(fsPath), ".bin");
 
-		bgfx::ShaderHandle vs = loadShader(vsPath);
-		bgfx::ShaderHandle fs = loadShader(fsPath);
-		return bgfx::createProgram(vs, fs, true);
+		return bgfx::createProgram(loadShader(vsPath), loadShader(fsPath), true);
 	}
 
 	void render(entt::registry& registry)
 	{
-		bgfx::UniformHandle s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Sampler);
-		registry.view<ModelHandle, Transformation>().each([s_tex](const auto, auto& model, auto& transformation)
+		registry.view<ModelHandle, Transformation>().each([&](const auto, auto& model, auto& transformation)
+		{
+			for (Mesh mesh : model->meshes)
 			{
-				for (Mesh mesh : model->meshes)
-				{
-					bgfx::setTransform(&transformation.mtx);
-					bgfx::setVertexBuffer(0, mesh.vbh);
-					bgfx::setIndexBuffer(mesh.ibh);
-					if (mesh.textures.size() > 0)
-						bgfx::setTexture(0, s_tex, mesh.textures[0]);
-					else
-						bgfx::setTexture(0, s_tex, checkerBoard);
-					bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA));
-					bgfx::submit(0, model->program);
-				}
-			});
-		bgfx::destroy(s_tex);
+				bgfx::setTransform(&transformation.mtx);
+				bgfx::setVertexBuffer(0, mesh.vbh);
+				bgfx::setIndexBuffer(mesh.ibh);
+				if (mesh.textures.size() > 0)
+					bgfx::setTexture(0, s_tex, mesh.textures[0]);
+				else
+					bgfx::setTexture(0, s_tex, checkerBoard);
+				bgfx::submit(0, model->program);
+			}
+		});
 	}
 
 	void screenshot()
@@ -298,6 +296,8 @@ namespace renderer
 		}
 
 		bgfx::destroy(checkerBoard);
+		bgfx::destroy(s_tex);
+		bgfx::shutdown();
 		IG_CORE_INFO("Renderer Shutdown");
 	}
 }

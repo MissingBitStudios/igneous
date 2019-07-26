@@ -33,7 +33,7 @@ namespace physics
 		IG_CORE_INFO("Physics Initialized");
 	}
 
-	void step(float dt)
+	void update(float dt)
 	{
 		dynamicsWorld->stepSimulation(dt, 10);
 	}

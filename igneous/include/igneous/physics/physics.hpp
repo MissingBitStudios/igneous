@@ -6,7 +6,7 @@ namespace igneous {
 namespace physics
 {
 	void init();
-	void step(float dt);
+	void update(float dt);
 	void shutdown();
 }
 } // end namespace igneous

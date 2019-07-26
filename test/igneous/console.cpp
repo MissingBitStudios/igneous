@@ -5,9 +5,9 @@
 namespace {
 TEST(Parse, Empty)
 {
-	EXPECT_NO_FATAL_FAILURE({
+	EXPECT_NO_FATAL_FAILURE(
 		igneous::console::init();
 		igneous::console::execute("");
-	});
+	);
 }
 } // end namespace

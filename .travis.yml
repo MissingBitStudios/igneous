@@ -37,9 +37,9 @@ matrix:
     dist: xenial
     compiler: clang
 
-  - name: "macOS Xcode 10"
+  - name: "macOS Xcode 11"
     os: osx
-    osx_image: xcode10
+    osx_image: xcode11
     before_script:
       - brew install openal-soft
 

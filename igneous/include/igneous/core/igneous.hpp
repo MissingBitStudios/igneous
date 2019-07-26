@@ -28,15 +28,6 @@ public:
 // Application
 class Application
 {
-	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	static void charCallback(GLFWwindow* window, unsigned int codepoint);
-	static void charModsCallback(GLFWwindow* window, unsigned int codepoint, int mods);
-	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-	static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
-	static void cursorEnterCallback(GLFWwindow* window, int entered);
-	static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-	static void dropCallback(GLFWwindow* window, int count, const char** paths);
-	static void windowSizeCallback(GLFWwindow* window, int width, int height);
 public:
 	Application(const char* title = "", uint32_t width = 1280, uint32_t height = 720);
 	virtual ~Application() {};
@@ -53,7 +44,6 @@ public:
 	);
 
 	void reset(uint32_t flags = 0);
-	void setSize(int width, int height);
 
 	virtual void initialize(int _argc, char** _argv) {};
 	virtual void update(float dt) {};
@@ -70,9 +60,6 @@ public:
 	virtual void onScroll(double xoffset, double yoffset) {}
 	virtual void onDrop(int count, const char** paths) {}
 	virtual void onWindowSize(int width, int height) {}
-protected:
-	GLFWwindow* mWindow;
-private:
 	uint32_t mReset;
 };
 } // end namespace igneous
