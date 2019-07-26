@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "strings.h"
+#include "header.h"
 
 const std::string readFile(const std::string& filename)
 {
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 			std::string file = argv[ i ];
 			std::string name = argv[ i + 1 ];
 			std::string pureName = name.substr(0, name.find_last_of('_'));
-			if (names.size() == 0 || names.back() != pureName)
+			if (std::find(names.begin(), names.end(), pureName) == names.end())
 			{
 				names.push_back(pureName);
 			}
@@ -69,8 +69,6 @@ int main(int argc, char** argv)
 			}
 			out << "};\n\n";
 		}
-
-		out << footer;
 
 		for (std::string name : names)
 		{

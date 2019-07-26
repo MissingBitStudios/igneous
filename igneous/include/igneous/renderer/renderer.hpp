@@ -8,11 +8,9 @@
 #include "igneous/renderer/model.hpp"
 
 namespace igneous {
-class Renderer
+namespace renderer
 {
-public:
-	static Renderer& getInstance();
-
+	void init();
 	std::string getSupportedRenderers();
 	std::string getGpuInfo();
 
@@ -24,18 +22,15 @@ public:
 	template<typename VertexType>
 	Model* loadModel(std::string path, bgfx::ProgramHandle program = BGFX_INVALID_HANDLE);
 
-	void cleanUp();
+	void render();
+	void screenshot();
+	void setRecording(bool recording);
+	bool isRecording();
 
-	Renderer(Renderer const&) = delete;
-	void operator=(Renderer const&) = delete;
-private:
-	Renderer();
-	~Renderer();
+	void shutdown();
 
-	std::map<std::string, bgfx::TextureHandle> textures;
-	std::map<std::string, bgfx::ProgramHandle> programs;
-	std::map<std::string, Model*> models;
-};
+	extern std::map<std::string, Model*> models;
+}
 } // end namespace igneous
 
 #include "igneous/renderer/renderer.inl"

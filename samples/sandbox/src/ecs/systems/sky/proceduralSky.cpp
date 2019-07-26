@@ -10,9 +10,7 @@ void ProceduralSky::init(int verticalCount, int horizontalCount)
 {
 	ScreenPosVertex::init();
 
-	Renderer* renderer = &Renderer::getInstance();
-
-	m_skyProgram = renderer->loadProgram("vs_sky", "fs_sky");
+	m_skyProgram = renderer::loadProgram("vs_sky", "fs_sky");
 
 	bx::AllocatorI* allocator = new bx::DefaultAllocator();
 

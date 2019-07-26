@@ -16,7 +16,7 @@ macro(add_asset_shaders ARG_TARGET)
         endif()
         unset(ASSET_FILES)
         set(HEADER ${SHADER})
-      elseif(${SHADER} MATCHES "\.sc")
+      elseif(${SHADER} MATCHES "\.sc$")
         if(NOT HEADER)
           message(FATAL_ERROR "add_asset_shaders: You must provide an output header before any shaders.")
         endif()
@@ -96,7 +96,7 @@ if(IGNEOUS_ASSET_GEN)
 
   add_executable(bin2c
     bin2c.cpp
-    strings.h
+    header.h
   )
 
   set_target_properties(bin2c PROPERTIES FOLDER "assets")

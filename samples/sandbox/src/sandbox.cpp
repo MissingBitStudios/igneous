@@ -18,15 +18,13 @@ public:
 
 	void initialize(int _argc, char** _argv)
 	{
-		Renderer& renderer = Renderer::getInstance();
-
 		gui::setTheme(gui::Theme::CHERRY);
 
 		sky = new SkySystem;
 
-		polyShader = renderer.loadProgram("vs_poly", "vs_poly");
+		polyShader = renderer::loadProgram("vs_poly", "vs_poly");
 
-		barn = renderer.loadModel<GenericVertex>("res/models/BigBarn/BigBarn.obj", polyShader);
+		barn = renderer::loadModel<GenericVertex>("res/models/BigBarn/BigBarn.obj", polyShader);
 
 		auto entity = registry.create();
 		registry.assign<ModelHandle>(entity, barn);

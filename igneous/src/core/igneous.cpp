@@ -59,7 +59,7 @@ void Application::keyCallback(GLFWwindow* window, int key, int scancode, int act
 	if (!io.WantCaptureKeyboard)
 	{
 		app->onKey(key, scancode, action, mods);
-		Console::getInstance().onKey(key, scancode, action, mods);
+		console::onKey(key, scancode, action, mods);
 	}
 }
 
@@ -216,13 +216,12 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 
 	IG_CORE_INFO("Initializing Services");
 	reset();
-	Renderer* renderer = &Renderer::getInstance();
-	Audio* audio = &Audio::getInstance();
+	renderer::init();
 	RendererSystem::init();
 	gui::init(mWindow);
-	Console* console = &Console::getInstance();
+	console::init();
 	input::init(mWindow);
-	console->runFile("startup.cmd");
+	console::runFile("startup.cmd");
 	IG_CORE_INFO("Services Initialized");
 
 	IG_CORE_INFO("-----Version Info-----");
@@ -234,25 +233,25 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 	IG_CORE_INFO("GLFW Version: {}.{}.{}", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION);
 	IG_CORE_INFO("GLM Version: {}.{}.{}.{}", GLM_VERSION_MAJOR, GLM_VERSION_MINOR, GLM_VERSION_PATCH, GLM_VERSION_REVISION);
 	IG_CORE_INFO("RakNet Version: {}", RAKNET_VERSION);
-	IG_CORE_INFO("OpenAL Version: {}", audio->getVersion());
+	IG_CORE_INFO("OpenAL Version: {}", audio::getVersion());
 	IG_CORE_INFO("spdlog Version: {}.{}.{}", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR, SPDLOG_VER_PATCH);
 
 	IG_CORE_INFO("-----Renderer Info-----");
-	IG_CORE_INFO(renderer->getSupportedRenderers());
-	IG_CORE_INFO(renderer->getGpuInfo());
+	IG_CORE_INFO(renderer::getSupportedRenderers());
+	IG_CORE_INFO(renderer::getGpuInfo());
 
 	IG_CORE_INFO("-----OpenAL Info-----");
-	IG_CORE_INFO("OpenAL Vendor: {}", audio->getVendor());
-	IG_CORE_INFO("OpenAL Renderer: {}", audio->getRenderer());
-	std::vector<std::string> devices = audio->getDevices();
-	std::string defaultDevice = audio->getDefaultDevice();
-	std::string selectedDevice = audio->getSelectedDevice();
+	IG_CORE_INFO("OpenAL Vendor: {}", audio::getVendor());
+	IG_CORE_INFO("OpenAL Renderer: {}", audio::getRenderer());
+	std::vector<std::string> devices = audio::getDevices();
+	std::string defaultDevice = audio::getDefaultDevice();
+	std::string selectedDevice = audio::getSelectedDevice();
 	IG_CORE_INFO("OpenAL Devices:");
 	for (std::string device : devices)
 	{
 		IG_CORE_INFO("	{}{}{}", device, device == defaultDevice ? "[Default]" : "", device == selectedDevice ? "[Selected]" : "");
 	}
-	IG_CORE_INFO("OpenAL Extensions: {}", audio->getExtensions());
+	IG_CORE_INFO("OpenAL Extensions: {}", audio::getExtensions());
 
 	IG_CONSOLE_INFO("Engine Initialized");
 
@@ -278,7 +277,7 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 		ImGui::NewFrame();
 		bgfx::touch(0);
 		render();
-		console->render();
+		console::render();
 		ImGui::Render();
 		bgfx::frame();
 	}
@@ -289,9 +288,10 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 	int ret = shutdown();
 	IG_CORE_INFO("Application Shut Down");
 	IG_CORE_INFO("Shuting Down Services");
+	audio::shutdown();
 	gui::shutdown();
 	RendererSystem::shutdown();
-	renderer->cleanUp();
+	renderer::shutdown();
 	IG_CORE_INFO("Services Shut Down");
 	bgfx::shutdown();
 	glfwTerminate();

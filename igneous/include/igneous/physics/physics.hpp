@@ -3,23 +3,10 @@
 #include <btBulletDynamicsCommon.h>
 
 namespace igneous {
-class Physics
+namespace physics
 {
-public:
-	static Physics& getInstance();
-
+	void init();
 	void step(float dt);
-
-	Physics(Physics const&) = delete;
-	void operator=(Physics const&) = delete;
-private:
-	Physics();
-	~Physics();
-
-	btDefaultCollisionConfiguration* collisionConfiguration;
-	btCollisionDispatcher* dispatcher;
-	btBroadphaseInterface* overlappingPairCache;
-	btSequentialImpulseConstraintSolver* solver;
-	btDiscreteDynamicsWorld* dynamicsWorld;
-};
+	void shutdown();
+}
 } // end namespace igneous

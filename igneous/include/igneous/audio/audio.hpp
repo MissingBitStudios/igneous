@@ -12,11 +12,9 @@
 #include "igneous/console/console.hpp"
 
 namespace igneous {
-class Audio
+namespace audio
 {
-public:
-	static Audio& getInstance();
-
+	void init();
 	const char* getVersion();
 	const char* getVendor();
 	const char* getRenderer();
@@ -28,24 +26,6 @@ public:
 	void setDevice(const std::string& specifier);
 	void setListener(const ListenerData& listener);
 	ALuint loadSound(const std::string& fileName);
-
-	Audio(Audio const&) = delete;
-	void operator=(Audio const&) = delete;
-private:
-	Audio();
-	~Audio();
-
-	static void playSoundCallback(const std::string& name, const arg_list& args);
-
-	const char* ALErrorToString(ALCenum error);
-
-	std::map<std::string, ALuint> buffers;
-
-	ALCdevice* device;
-	ALCcontext* context;
-
-	Source* ambient;
-
-	ALCenum DEVICE_SPECIFIER, DEFAULT_DEVICE_SPECIFIER;
-};
+	void shutdown();
+}
 } // end namespace igneous

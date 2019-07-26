@@ -21,13 +21,12 @@ namespace input
 	{
 		IG_CORE_INFO("Initializing Input");
 		window = win;
-		Console& console = Console::getInstance();
-		console.command("quit", quitCallback);
+		console::command("quit", quitCallback);
 
-		console.variable("cursor_visible", 0, cursorVisibleCallback);
+		console::variable("cursor_visible", 0, cursorVisibleCallback);
 
-		console.bind(GLFW_KEY_T, "^cursor_visible");
-		console.bind(GLFW_KEY_ESCAPE, "quit");
+		console::bind(GLFW_KEY_T, "^cursor_visible");
+		console::bind(GLFW_KEY_ESCAPE, "quit");
 		IG_CORE_INFO("Input Initialized");
 	}
 

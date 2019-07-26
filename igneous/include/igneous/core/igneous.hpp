@@ -38,7 +38,7 @@ class Application
 	static void dropCallback(GLFWwindow* window, int count, const char** paths);
 	static void windowSizeCallback(GLFWwindow* window, int width, int height);
 public:
-	Application(const char* title = "", uint32_t width = 1280, uint32_t height = 768);
+	Application(const char* title = "", uint32_t width = 1280, uint32_t height = 720);
 	virtual ~Application() {};
 
 	int run(int argc, char** argv, bgfx::Init init);
@@ -74,7 +74,6 @@ protected:
 	GLFWwindow* mWindow;
 private:
 	uint32_t mReset;
-	const char* mTitle;
 };
 } // end namespace igneous
 

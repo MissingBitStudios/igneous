@@ -3,45 +3,48 @@
 #include "igneous/core/log.hpp"
 
 namespace igneous {
-Physics::Physics()
+namespace physics
 {
-	IG_CORE_INFO("Initializing Physics");
-	///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-	collisionConfiguration = new btDefaultCollisionConfiguration();
+	static btDefaultCollisionConfiguration* collisionConfiguration;
+	static btCollisionDispatcher* dispatcher;
+	static btBroadphaseInterface* overlappingPairCache;
+	static btSequentialImpulseConstraintSolver* solver;
+	static btDiscreteDynamicsWorld* dynamicsWorld;
 
-	///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-	dispatcher = new btCollisionDispatcher(collisionConfiguration);
+	void init()
+	{
+		IG_CORE_INFO("Initializing Physics");
+		///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
+		collisionConfiguration = new btDefaultCollisionConfiguration();
 
-	///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-	overlappingPairCache = new btDbvtBroadphase();
+		///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
+		dispatcher = new btCollisionDispatcher(collisionConfiguration);
 
-	///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-	solver = new btSequentialImpulseConstraintSolver;
+		///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
+		overlappingPairCache = new btDbvtBroadphase();
 
-	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+		///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
+		solver = new btSequentialImpulseConstraintSolver;
 
-	dynamicsWorld->setGravity(btVector3(0, -10, 0));
-	dynamicsWorld->debugDrawWorld();
-	IG_CORE_INFO("Physics Initialized");
-}
+		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
-Physics& Physics::getInstance()
-{
-	static Physics instance;
-	return instance;
-}
+		dynamicsWorld->setGravity(btVector3(0, -10, 0));
+		dynamicsWorld->debugDrawWorld();
+		IG_CORE_INFO("Physics Initialized");
+	}
 
-void Physics::step(float dt)
-{
-	dynamicsWorld->stepSimulation(dt, 10);
-}
+	void step(float dt)
+	{
+		dynamicsWorld->stepSimulation(dt, 10);
+	}
 
-Physics::~Physics()
-{
-	delete dynamicsWorld;
-	delete solver;
-	delete overlappingPairCache;
-	delete dispatcher;
-	delete collisionConfiguration;
+	void shutdown()
+	{
+		delete dynamicsWorld;
+		delete solver;
+		delete overlappingPairCache;
+		delete dispatcher;
+		delete collisionConfiguration;
+	}
 }
 } // end namespace igneous
