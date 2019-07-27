@@ -37,12 +37,6 @@ matrix:
     dist: xenial
     compiler: clang
 
-  - name: "macOS Xcode 11"
-    os: osx
-    osx_image: xcode11
-    before_script:
-      - brew install openal-soft
-
 script:
   - mkdir build && cd build
   - cmake $CMAKE_FLAGS ..
