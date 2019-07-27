@@ -4,6 +4,7 @@
 #include <stb/stb_image.h>
 
 #include "igneous/core/log.hpp"
+#include "igneous/renderer/renderer.hpp"
 
 namespace igneous {
 namespace input
@@ -121,7 +122,7 @@ namespace input
 		Application* app = (Application*)glfwGetWindowUserPointer(window);
 		input::width = width;
 		input::height = height;
-		app->reset(app->mReset);
+		renderer::reset();
 		app->onWindowSize(width, height);
 	}
 

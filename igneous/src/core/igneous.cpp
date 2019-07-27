@@ -11,22 +11,9 @@
 #include <bgfx/platform.h>
 #include <imgui/imgui.h>
 
-#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
-#	define GLFW_EXPOSE_NATIVE_X11
-#	define GLFW_EXPOSE_NATIVE_GLX
-#elif BX_PLATFORM_OSX
-#	define GLFW_EXPOSE_NATIVE_COCOA
-#	define GLFW_EXPOSE_NATIVE_NSGL
-#elif BX_PLATFORM_WINDOWS
-#	define GLFW_EXPOSE_NATIVE_WIN32
-#	define GLFW_EXPOSE_NATIVE_WGL
-#endif // BX_PLATFORM_
-#include <GLFW/glfw3native.h>
-
 namespace igneous {
 // Application
 Application::Application(const char* title, uint32_t width, uint32_t height)
-	: mReset(BGFX_RESET_NONE)
 {
 	input::width = width;
 	input::height = height;
@@ -37,30 +24,10 @@ Application::Application(const char* title, uint32_t width, uint32_t height)
 int Application::run(int argc, char** argv, bgfx::Init init)
 {
 	IG_CORE_INFO("Initializing Engine");
-	input::init();
-	
-	// Setup bgfx
-	IG_CORE_INFO("Initializing bgfx");
-	bgfx::PlatformData platformData;
-	memset(&platformData, 0, sizeof(platformData));
-#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
-	platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(input::window);
-	platformData.ndt = glfwGetX11Display();
-#elif BX_PLATFORM_OSX
-	platformData.nwh = glfwGetCocoaWindow(input::window);
-#elif BX_PLATFORM_WINDOWS
-	platformData.nwh = glfwGetWin32Window(input::window);
-#endif // BX_PLATFORM_
-	bgfx::setPlatformData(platformData);
-
-	// Init bgfx
-	bgfx::init(init);
-	IG_CORE_INFO("bgfx Initializied");
-
 	IG_CORE_INFO("Initializing Services");
-	reset();
+	input::init();
 	console::init();
-	renderer::init();
+	renderer::init(init);
 	gui::init();
 	audio::init();
 	console::runFile("startup.cmd");
@@ -99,7 +66,6 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 
 	// Initialize the application
 	IG_CORE_INFO("Initializing Application");
-	reset();
 	initialize(argc, argv);
 	IG_CONSOLE_INFO("Application Initialized");
 
@@ -147,14 +113,6 @@ int Application::run(int argc, char** argv, bgfx::RendererType::Enum type, uint1
 	init.callback = new CaptureCallback;
 	init.allocator = allocator;
 	return run(argc, argv, init);
-}
-
-void Application::reset(uint32_t flags)
-{
-	mReset = flags;
-	bgfx::reset(input::width, input::height, mReset);
-	gui::reset();
-	onReset();
 }
 
 void Application::onReset()

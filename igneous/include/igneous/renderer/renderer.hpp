@@ -11,7 +11,7 @@
 namespace igneous {
 namespace renderer
 {
-	void init();
+	void init(bgfx::Init init);
 	std::string getSupportedRenderers();
 	std::string getGpuInfo();
 
@@ -28,6 +28,13 @@ namespace renderer
 	void setRecording(bool record);
 	bool isRecording();
 	void setDebugOverlay(bool debugOverlay);
+
+	void reset();
+
+	void setFlag(uint32_t flag, bool value);
+	bool getFlag(uint32_t newFlags);
+	void setFlags(uint32_t flags);
+	uint32_t getFlags();
 
 	void shutdown();
 

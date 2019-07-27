@@ -5,6 +5,7 @@
 #include <stb/stb_image.h>
 #include <bimg/bimg.h>
 #include <bx/file.h>
+#include <bgfx/platform.h>
 
 #include "igneous/core/log.hpp"
 #include "igneous/renderer/vertex.hpp"
@@ -12,6 +13,19 @@
 #include "igneous/ecs/components/transformationComponent.hpp"
 #include "igneous/console/console.hpp"
 #include "igneous/core/input.hpp"
+#include "igneous/gui/gui.hpp"
+
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#	define GLFW_EXPOSE_NATIVE_X11
+#	define GLFW_EXPOSE_NATIVE_GLX
+#elif BX_PLATFORM_OSX
+#	define GLFW_EXPOSE_NATIVE_COCOA
+#	define GLFW_EXPOSE_NATIVE_NSGL
+#elif BX_PLATFORM_WINDOWS
+#	define GLFW_EXPOSE_NATIVE_WIN32
+#	define GLFW_EXPOSE_NATIVE_WGL
+#endif // BX_PLATFORM_
+#include <GLFW/glfw3native.h>
 
 namespace igneous {
 namespace renderer
@@ -21,6 +35,7 @@ namespace renderer
 	std::map<std::string, Model*> models;
 
 	static bgfx::TextureHandle checkerBoard;
+	static uint32_t flags = BGFX_RESET_NONE;
 
 	void screenshotCallback(const std::string& name, const arg_list& args)
 	{
@@ -29,7 +44,10 @@ namespace renderer
 
 	void recordingCallback(float oldValue, float newValue)
 	{
-		setRecording(newValue);
+		if ((bool)oldValue != (bool)newValue)
+		{
+			setRecording(newValue);
+		}
 	}
 
 	void debugCallback(float oldValue, float newValue)
@@ -41,9 +59,28 @@ namespace renderer
 	static ConVar* debug;
 	static bgfx::UniformHandle s_tex;
 
-	void init()
+	void init(bgfx::Init init)
 	{
 		IG_CORE_INFO("Initializing Renderer");
+		// Setup bgfx
+		IG_CORE_INFO("Initializing bgfx");
+		bgfx::PlatformData platformData;
+		memset(&platformData, 0, sizeof(platformData));
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+		platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(input::window);
+		platformData.ndt = glfwGetX11Display();
+#elif BX_PLATFORM_OSX
+		platformData.nwh = glfwGetCocoaWindow(input::window);
+#elif BX_PLATFORM_WINDOWS
+		platformData.nwh = glfwGetWin32Window(input::window);
+#endif // BX_PLATFORM_
+		bgfx::setPlatformData(platformData);
+
+		// Init bgfx
+		bgfx::init(init);
+		IG_CORE_INFO("bgfx Initializied");
+
+		reset();
 		static float s_splashVertices[] =
 		{
 			-1.0f,  1.0f, 0.0f, 0.0f,
@@ -234,6 +271,13 @@ namespace renderer
 		return bgfx::createProgram(loadShader(vsPath), loadShader(fsPath), true);
 	}
 
+	void reset()
+	{
+		bgfx::reset(input::width, input::height, flags);
+		gui::reset();
+		input::app->onReset();
+	}
+
 	void render(entt::registry& registry)
 	{
 		registry.view<ModelHandle, Transformation>().each([&](const auto, auto& model, auto& transformation)
@@ -260,7 +304,8 @@ namespace renderer
 
 	void setRecording(bool record)
 	{
-		//set reset
+		setFlag(BGFX_RESET_CAPTURE, record);
+		//*recording = record;
 		IG_CORE_INFO("Capture: {}", *recording ? "ON" : "OFF");
 	}
 
@@ -273,6 +318,28 @@ namespace renderer
 	{
 		//set reset
 		IG_CORE_INFO("Debug Overlay: {}", *debug ? "ON" : "OFF");
+	}
+
+	void setFlag(uint32_t flag, bool value)
+	{
+		flags = (value) ? (flags | flag) : (flags & ~flag);
+		reset();
+	}
+
+	bool getFlag(uint32_t flag)
+	{
+		return flags & flag;
+	}
+
+	void setFlags(uint32_t newFlags)
+	{
+		flags = newFlags;
+		reset();
+	}
+
+	uint32_t getFlags()
+	{
+		return flags;
 	}
 
 	void shutdown()

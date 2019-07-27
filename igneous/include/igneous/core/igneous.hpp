@@ -43,8 +43,6 @@ public:
 		bx::AllocatorI * allocator = NULL
 	);
 
-	void reset(uint32_t flags = 0);
-
 	virtual void initialize(int _argc, char** _argv) {};
 	virtual void update(float dt) {};
 	virtual void render() {};
@@ -60,7 +58,6 @@ public:
 	virtual void onScroll(double xoffset, double yoffset) {}
 	virtual void onDrop(int count, const char** paths) {}
 	virtual void onWindowSize(int width, int height) {}
-	uint32_t mReset;
 };
 } // end namespace igneous
 
