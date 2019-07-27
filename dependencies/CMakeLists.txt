@@ -15,9 +15,6 @@ set(BGFX_BUILD_TOOLS     ON  CACHE INTERNAL "" )
 set(BGFX_BUILD_EXAMPLES  OFF CACHE INTERNAL "" )
 set(BGFX_CUSTOM_TARGETS  OFF CACHE INTERNAL "" )
 add_subdirectory(bgfx.cmake)
-if (APPLE OR IOS)
-  target_compile_options(bgfx PRIVATE "-Wno-deprecated-declarations")
-endif()
 
 # bullet
 set(BUILD_CPU_DEMOS     OFF CACHE INTERNAL "")
