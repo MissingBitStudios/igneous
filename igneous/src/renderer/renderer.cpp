@@ -278,13 +278,13 @@ namespace renderer
 		input::app->onReset();
 	}
 
-	void render(entt::registry& registry)
+	void render()
 	{
-		registry.view<ModelHandle, Transformation>().each([&](const auto, auto& model, auto& transformation)
+		ecs::registry.view<ModelHandle, Transformation>().each([&](const auto, auto& model, auto& transformation)
 		{
 			for (Mesh mesh : model->meshes)
 			{
-				bgfx::setTransform(&transformation.mtx);
+				bgfx::setTransform(&transformation);
 				bgfx::setVertexBuffer(0, mesh.vbh);
 				bgfx::setIndexBuffer(mesh.ibh);
 				if (mesh.textures.size() > 0)

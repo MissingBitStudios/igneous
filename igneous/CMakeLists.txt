@@ -8,6 +8,7 @@ set(SOURCES
 	src/core/igneous.cpp
 	src/core/input.cpp
 	src/core/log.cpp
+	src/ecs/ecs.cpp
 	src/gui/gui.cpp
 	src/gui/imgui_assets.h
 	src/physics/physics.cpp
@@ -31,6 +32,8 @@ set(INCLUDES
 	include/igneous/core/log.hpp
 	include/igneous/core/version.hpp
 	include/igneous/ecs/components/transformationComponent.hpp
+	include/igneous/ecs/ecs.hpp
+	include/igneous/ecs/ecs.inl
 	include/igneous/gui/gui.hpp
 	include/igneous/physics/physics.hpp
 	include/igneous/renderer/aviwriter.hpp

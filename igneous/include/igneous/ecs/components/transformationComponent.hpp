@@ -3,8 +3,5 @@
 #include <glm/glm.hpp>
 
 namespace igneous {
-struct Transformation
-{
-	glm::mat4 mtx;
-};
+typedef glm::mat4 Transformation;
 } // end namespace igneous

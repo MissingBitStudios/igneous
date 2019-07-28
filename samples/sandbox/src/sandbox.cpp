@@ -26,9 +26,7 @@ public:
 
 		barn = renderer::loadModel<GenericVertex>("res/models/BigBarn/BigBarn.obj", polyShader);
 
-		auto entity = registry.create();
-		registry.assign<ModelHandle>(entity, barn);
-		registry.assign<Transformation>(entity, glm::identity<glm::mat4>());
+		auto entity = ecs::create<ModelHandle, Transformation>(barn, glm::identity<glm::mat4>());
 
 		camera = new FPSCamera(glm::vec3(0.0f, 5.0f, 15.0f));
 
@@ -44,7 +42,7 @@ public:
 	void render()
 	{
 		camera->use(input::width, input::height);
-		renderer::render(registry);
+		renderer::render();
 
 		ImGui::ShowDemoWindow();
 	}
@@ -56,7 +54,6 @@ public:
 		return 0;
 	}
 private:
-	entt::registry registry;
 	bgfx::ProgramHandle polyShader;
 	ModelHandle barn;
 	SkySystem* sky;
