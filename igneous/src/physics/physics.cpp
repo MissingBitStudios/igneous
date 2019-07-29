@@ -1,6 +1,10 @@
 #include "igneous/physics/physics.hpp"
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "igneous/core/log.hpp"
+#include "igneous/ecs/ecs.hpp"
+#include "igneous/ecs/components/transformationComponent.hpp"
 
 namespace igneous {
 namespace physics
@@ -10,6 +14,8 @@ namespace physics
 	static btBroadphaseInterface* overlappingPairCache;
 	static btSequentialImpulseConstraintSolver* solver;
 	static btDiscreteDynamicsWorld* dynamicsWorld;
+	static btSphereShape sphere(10.0f);
+	static btTransform transform;
 
 	void init()
 	{
@@ -30,12 +36,71 @@ namespace physics
 
 		dynamicsWorld->setGravity(btVector3(0, -10, 0));
 		dynamicsWorld->debugDrawWorld();
+
+		transform.setFromOpenGLMatrix(glm::value_ptr(glm::identity<glm::mat4>()));
 		IG_CORE_INFO("Physics Initialized");
+	}
+
+	btRigidBody* createRigidBody(float mass, const btTransform& startTransform, btCollisionShape* shape, const btVector4& color = btVector4(1, 0, 0, 1))
+	{
+		assert((!shape || shape->getShapeType() != INVALID_SHAPE_PROXYTYPE));
+
+		//rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			shape->calculateLocalInertia(mass, localInertia);
+
+		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+
+#define USE_MOTIONSTATE 1
+#ifdef USE_MOTIONSTATE
+		btDefaultMotionState * myMotionState = new btDefaultMotionState(startTransform);
+
+		btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
+
+		btRigidBody* body = new btRigidBody(cInfo);
+		//body->setContactProcessingThreshold(m_defaultContactProcessingThreshold);
+
+#else
+		btRigidBody* body = new btRigidBody(mass, 0, shape, localInertia);
+		body->setWorldTransform(startTransform);
+#endif  //
+
+		body->setUserIndex(-1);
+		dynamicsWorld->addRigidBody(body);
+		return body;
+	}
+
+	RigidBodyHandle loadRigidBody(std::string path)
+	{
+		return createRigidBody(10.0f, transform, &sphere);
 	}
 
 	void update(float dt)
 	{
-		dynamicsWorld->stepSimulation(dt, 10);
+		dynamicsWorld->stepSimulation(dt);
+		ecs::registry.view<RigidBodyHandle, Transformation>().each([&](const auto, auto& rigidBody, auto& transformation)
+		{
+				btTransform t = rigidBody->getWorldTransform();
+				t.getOpenGLMatrix(glm::value_ptr(transformation));
+				/*
+				btVector3 origin = rigidBody->getWorldTransform().getOrigin();
+				transformation[3][0] = origin.getX();
+				transformation[3][1] = origin.getY();
+				transformation[3][2] = origin.getZ();
+				*/
+		});
+	}
+
+	void renderDebug(int debugFlags)
+	{
+		if (dynamicsWorld && dynamicsWorld->getDebugDrawer())
+		{
+			dynamicsWorld->getDebugDrawer()->setDebugMode(debugFlags);
+			dynamicsWorld->debugDrawWorld();
+		}
 	}
 
 	void shutdown()

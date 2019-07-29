@@ -24,11 +24,12 @@ public:
 
 		polyShader = renderer::loadProgram("vs_poly", "vs_poly");
 
-		barn = renderer::loadModel<GenericVertex>("res/models/BigBarn/BigBarn.obj", polyShader);
+		ModelHandle barn = renderer::loadModel<GenericVertex>("res/models/BigBarn/BigBarn.obj", polyShader);
+		RigidBodyHandle rigidBody = physics::loadRigidBody("");
 
-		auto entity = ecs::create<ModelHandle, Transformation>(barn, glm::identity<glm::mat4>());
+		auto entity = ecs::create<ModelHandle, Transformation, RigidBodyHandle>(barn, glm::identity<glm::mat4>(), rigidBody);
 
-		camera = new FPSCamera(glm::vec3(0.0f, 5.0f, 15.0f));
+		camera = new FPSCamera(glm::vec3(0.0f, -15.0f, 15.0f));
 
 		input::setCursorVisible(false);
 	}
@@ -37,6 +38,7 @@ public:
 	{
 		camera->update(dt);
 		sky->update(dt);
+		physics::update(dt);
 	}
 
 	void render()
@@ -55,7 +57,6 @@ public:
 	}
 private:
 	bgfx::ProgramHandle polyShader;
-	ModelHandle barn;
 	SkySystem* sky;
 	Camera* camera;
 };

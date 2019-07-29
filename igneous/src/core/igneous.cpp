@@ -28,6 +28,7 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 	input::init();
 	console::init();
 	renderer::init(init);
+	physics::init();
 	gui::init();
 	audio::init();
 	console::runFile("startup.cmd");
@@ -97,6 +98,7 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 	IG_CORE_INFO("Shuting Down Services");
 	audio::shutdown();
 	gui::shutdown();
+	physics::shutdown();
 	renderer::shutdown();
 	input::shutdown();
 	IG_CORE_INFO("Services Shut Down");
