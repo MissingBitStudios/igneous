@@ -23,6 +23,7 @@ set(BUILD_BULLET2_DEMOS          OFF CACHE INTERNAL "")
 set(BUILD_UNIT_TESTS             OFF CACHE INTERNAL "")
 set(BUILD_EXTRAS                 OFF CACHE INTERNAL "")
 set(BUILD_PYBULLET               OFF CACHE INTERNAL "")
+set(USE_MSVC_RUNTIME_LIBRARY_DLL ON  CACHE INTERNAL "")
 add_subdirectory(bullet)
 
 # entt

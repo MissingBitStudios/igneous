@@ -15,7 +15,7 @@ namespace physics
 	static btSequentialImpulseConstraintSolver* solver;
 	static btDiscreteDynamicsWorld* dynamicsWorld;
 	static btSphereShape sphere(10.0f);
-	static btTransform transform;
+	static btTransform identityTransform;
 
 	void init()
 	{
@@ -37,12 +37,16 @@ namespace physics
 		dynamicsWorld->setGravity(btVector3(0, -10, 0));
 		dynamicsWorld->debugDrawWorld();
 
-		transform.setFromOpenGLMatrix(glm::value_ptr(glm::identity<glm::mat4>()));
+		identityTransform.setFromOpenGLMatrix(glm::value_ptr(glm::identity<glm::mat4>()));
 		IG_CORE_INFO("Physics Initialized");
 	}
 
-	btRigidBody* createRigidBody(float mass, const btTransform& startTransform, btCollisionShape* shape, const btVector4& color = btVector4(1, 0, 0, 1))
+	RigidBodyHandle loadRigidBody(std::string path)
 	{
+		btScalar mass = 10.0f;
+		btCollisionShape* shape = &sphere;
+		btTransform transform = identityTransform;
+
 		assert((!shape || shape->getShapeType() != INVALID_SHAPE_PROXYTYPE));
 
 		//rigidbody is dynamic if and only if mass is non zero, otherwise static
@@ -56,7 +60,7 @@ namespace physics
 
 #define USE_MOTIONSTATE 1
 #ifdef USE_MOTIONSTATE
-		btDefaultMotionState * myMotionState = new btDefaultMotionState(startTransform);
+		btDefaultMotionState * myMotionState = new btDefaultMotionState(transform);
 
 		btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
 
@@ -73,11 +77,6 @@ namespace physics
 		return body;
 	}
 
-	RigidBodyHandle loadRigidBody(std::string path)
-	{
-		return createRigidBody(10.0f, transform, &sphere);
-	}
-
 	void update(float dt)
 	{
 		dynamicsWorld->stepSimulation(dt);
@@ -85,12 +84,6 @@ namespace physics
 		{
 				btTransform t = rigidBody->getWorldTransform();
 				t.getOpenGLMatrix(glm::value_ptr(transformation));
-				/*
-				btVector3 origin = rigidBody->getWorldTransform().getOrigin();
-				transformation[3][0] = origin.getX();
-				transformation[3][1] = origin.getY();
-				transformation[3][2] = origin.getZ();
-				*/
 		});
 	}
 

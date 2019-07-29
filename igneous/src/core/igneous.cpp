@@ -84,6 +84,7 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 		gui::update(dt);
 		bgfx::touch(0);
 		ImGui::NewFrame();
+		physics::update(dt);
 		update(dt);
 		render();
 		ImGui::Render();
