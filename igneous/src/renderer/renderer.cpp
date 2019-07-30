@@ -14,6 +14,7 @@
 #include "igneous/console/console.hpp"
 #include "igneous/core/input.hpp"
 #include "igneous/gui/gui.hpp"
+#include "igneous/physics/physics.hpp"
 
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
 #	define GLFW_EXPOSE_NATIVE_X11
@@ -103,12 +104,17 @@ namespace renderer
 		bgfx::UniformHandle s_splash = bgfx::createUniform("s_splash", bgfx::UniformType::Sampler);
 		bgfx::TextureHandle splashTexture = loadTexture("res/textures/splash.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP, false);
 
-		bgfx::setVertexBuffer(0, bgfx::createVertexBuffer(bgfx::makeRef(s_splashVertices, sizeof(s_splashVertices)), splashVertexDecl));
-		bgfx::setIndexBuffer(bgfx::createIndexBuffer(bgfx::makeRef(s_splashTriList, sizeof(s_splashTriList))));
+		bgfx::VertexBufferHandle vb = bgfx::createVertexBuffer(bgfx::makeRef(s_splashVertices, sizeof(s_splashVertices)), splashVertexDecl);
+		bgfx::IndexBufferHandle ib = bgfx::createIndexBuffer(bgfx::makeRef(s_splashTriList, sizeof(s_splashTriList)));
+		
+		bgfx::setVertexBuffer(0, vb);
+		bgfx::setIndexBuffer(ib);
 		bgfx::setTexture(0, s_splash, splashTexture);
 		bgfx::setState(BGFX_STATE_DEFAULT);
 		bgfx::submit(0, splashProgram);
 		bgfx::frame();
+		bgfx::destroy(vb);
+		bgfx::destroy(ib);
 		bgfx::destroy(splashTexture);
 		bgfx::destroy(s_splash);
 		bgfx::destroy(splashProgram);
@@ -294,6 +300,11 @@ namespace renderer
 				bgfx::submit(0, model->program);
 			}
 		});
+
+		if (*debug)
+		{
+			physics::renderDebug(DBG_DrawWireframe | DBG_DrawAabb);
+		}
 	}
 
 	void screenshot()

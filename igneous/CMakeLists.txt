@@ -11,6 +11,8 @@ set(SOURCES
 	src/ecs/ecs.cpp
 	src/gui/gui.cpp
 	src/gui/imgui_assets.h
+	src/physics/debugRenderer.cpp
+	src/physics/debugRenderer.hpp
 	src/physics/physics.cpp
 	src/renderer/camera.cpp
 	src/renderer/capture.cpp
@@ -71,6 +73,10 @@ add_asset_shaders(igneous
 	HEADER src/gui/imgui_assets.h
 	shaders/fs_imgui.sc
 	shaders/vs_imgui.sc
+
+	HEADER src/physics/debug_assets.h
+	shaders/fs_debug.sc
+	shaders/vs_debug.sc
 )
 
 configure_file (include/igneous/core/version.hpp.in include/igneous/core/version.hpp @ONLY)

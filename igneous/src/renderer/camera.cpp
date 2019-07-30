@@ -12,6 +12,7 @@ void Camera::use(const uint32_t width, const uint32_t height) const
 	glm::mat4 view = getViewMatrix();
 	glm::mat4 proj = getProjectionMatrix((float)width / (float)height);
 	bgfx::setViewTransform(0, &view[0][0], &proj[0][0]);
+	bgfx::setViewTransform(100, &view[0][0], &proj[0][0]);
 }
 
 glm::mat4 Camera::getViewMatrix() const

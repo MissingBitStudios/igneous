@@ -5,6 +5,7 @@
 #include "igneous/core/log.hpp"
 #include "igneous/ecs/ecs.hpp"
 #include "igneous/ecs/components/transformationComponent.hpp"
+#include "debugRenderer.hpp"
 
 namespace igneous {
 namespace physics
@@ -17,6 +18,8 @@ namespace physics
 
 	static btSphereShape sphere(10.0f);
 	static btTransform identityTransform;
+
+	static DebugRenderer* debugRenderer;
 
 	void init()
 	{
@@ -39,6 +42,9 @@ namespace physics
 		dynamicsWorld->debugDrawWorld();
 
 		identityTransform.setFromOpenGLMatrix(glm::value_ptr(glm::identity<glm::mat4>()));
+
+		debugRenderer = new DebugRenderer();
+		dynamicsWorld->setDebugDrawer(debugRenderer);
 		IG_CORE_INFO("Physics Initialized");
 	}
 
@@ -94,6 +100,7 @@ namespace physics
 		{
 			dynamicsWorld->getDebugDrawer()->setDebugMode(debugFlags);
 			dynamicsWorld->debugDrawWorld();
+			debugRenderer->render();
 		}
 	}
 
@@ -104,6 +111,7 @@ namespace physics
 		delete overlappingPairCache;
 		delete dispatcher;
 		delete collisionConfiguration;
+		delete debugRenderer;
 	}
 }
 } // end namespace igneous
