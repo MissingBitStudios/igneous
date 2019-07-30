@@ -35,7 +35,7 @@ namespace physics
 
 		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
-		dynamicsWorld->setGravity(btVector3(0, -10, 0));
+		dynamicsWorld->setGravity(btVector3(0, -10.0f, 0));
 		dynamicsWorld->debugDrawWorld();
 
 		identityTransform.setFromOpenGLMatrix(glm::value_ptr(glm::identity<glm::mat4>()));
