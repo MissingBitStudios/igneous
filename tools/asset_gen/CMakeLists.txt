@@ -99,5 +99,5 @@ if(IGNEOUS_ASSET_GEN)
     header.h
   )
 
-  set_target_properties(bin2c PROPERTIES FOLDER "assets")
+  set_target_properties(bin2c PROPERTIES FOLDER "igneous/tools")
 endif()

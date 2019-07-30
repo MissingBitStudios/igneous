@@ -38,7 +38,6 @@ public:
 	{
 		camera->update(dt);
 		sky->update(dt);
-		physics::update(dt);
 	}
 
 	void render()

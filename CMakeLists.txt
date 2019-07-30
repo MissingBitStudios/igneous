@@ -34,11 +34,11 @@ endif()
 
 add_subdirectory(tools)
 
+add_subdirectory(igneous)
+
 if(IGNEOUS_EDITOR)
   add_subdirectory(editor)
 endif()
-
-add_subdirectory(igneous)
 
 if(IGNEOUS_SAMPLES)
   add_subdirectory(samples)

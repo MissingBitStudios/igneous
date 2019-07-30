@@ -14,6 +14,7 @@ namespace physics
 	static btBroadphaseInterface* overlappingPairCache;
 	static btSequentialImpulseConstraintSolver* solver;
 	static btDiscreteDynamicsWorld* dynamicsWorld;
+
 	static btSphereShape sphere(10.0f);
 	static btTransform identityTransform;
 
