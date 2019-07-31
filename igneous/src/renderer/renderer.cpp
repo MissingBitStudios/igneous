@@ -8,7 +8,6 @@
 #include <bgfx/platform.h>
 
 #include "igneous/core/log.hpp"
-#include "igneous/renderer/vertex.hpp"
 #include "splash_assets.h"
 #include "igneous/ecs/components/transformationComponent.hpp"
 #include "igneous/console/console.hpp"
@@ -118,9 +117,6 @@ namespace renderer
 		bgfx::destroy(splashTexture);
 		bgfx::destroy(s_splash);
 		bgfx::destroy(splashProgram);
-
-		Vertex::init();
-		GenericVertex::init();
 
 		console::command("screenshot", screenshotCallback);
 		console::bind(IG_KEY_F2, "screenshot");
@@ -277,6 +273,97 @@ namespace renderer
 		return bgfx::createProgram(loadShader(vsPath), loadShader(fsPath), true);
 	}
 
+	ModelHandle loadModel(std::string path, bgfx::ProgramHandle program)
+	{
+		std::ifstream file(path, std::ios::in | std::ios::binary);
+		if (file.fail())
+		{
+			IG_CORE_CRITICAL("Could not open model file: {}", path);
+		}
+
+		file.seekg(sizeof(uint64_t), std::ios::beg);
+		uint8_t numAttributes;
+		file.read((char*)&numAttributes, sizeof(uint8_t));
+		bgfx::VertexDecl vertexDecl;
+		vertexDecl.begin();
+		for (int i = 0; i < numAttributes; i++)
+		{
+			uint8_t attribute;
+			file.read((char*)&attribute, sizeof(uint8_t));
+
+			if (attribute == bgfx::Attrib::Position)
+			{
+				vertexDecl.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float);
+			}
+			else if (attribute == bgfx::Attrib::Normal)
+			{
+				vertexDecl.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float);
+			}
+			else if (attribute == bgfx::Attrib::Tangent)
+			{
+				vertexDecl.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float);
+			}
+			else if (attribute == bgfx::Attrib::Bitangent)
+			{
+				vertexDecl.add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float);
+			}
+			else if (attribute >= bgfx::Attrib::TexCoord0 && attribute <= bgfx::Attrib::TexCoord7)
+			{
+				vertexDecl.add((bgfx::Attrib::Enum)attribute, 2, bgfx::AttribType::Float);
+			}
+			else if (attribute >= bgfx::Attrib::Color0 && attribute <= bgfx::Attrib::Color3)
+			{
+				vertexDecl.add((bgfx::Attrib::Enum)attribute, 4, bgfx::AttribType::Uint8, true);
+			}
+		}
+		vertexDecl.end();
+
+		unsigned int numMeshes;
+		file.read((char*)&numMeshes, sizeof(unsigned int));
+
+		int pos = file.tellg();
+
+		uint32_t modelSize = 0;
+		for (int i = 0; i < numMeshes; i++)
+		{
+			unsigned int numVerticies;
+			unsigned int numIndicies;
+			file.read((char*)&numVerticies, sizeof(unsigned int));
+			file.read((char*)&numIndicies, sizeof(unsigned int));
+			modelSize += (uint32_t)numVerticies * (uint32_t)vertexDecl.getStride() + (uint32_t)numIndicies * sizeof(uint16_t);
+		}
+
+		const void* modelData = malloc(modelSize);
+		file.read((char*)modelData, modelSize);
+
+		file.seekg(pos, std::ios::beg);
+
+		std::vector<Mesh> meshes;
+		uint32_t amountRead = 0;
+		for (int i = 0; i < numMeshes; i++)
+		{
+			unsigned int numVerticies;
+			unsigned int numIndicies;
+			file.read((char*)&numVerticies, sizeof(unsigned int));
+			file.read((char*)&numIndicies, sizeof(unsigned int));
+			uint32_t verticiesSize = (uint32_t)numVerticies * (uint32_t)vertexDecl.getStride();
+			uint32_t indiciesSize = (uint32_t)numIndicies * sizeof(uint16_t);
+			Mesh mesh;
+			mesh.vbh = bgfx::createVertexBuffer(bgfx::makeRef((uint8_t*)modelData + amountRead, verticiesSize), vertexDecl);
+			amountRead += verticiesSize;
+			mesh.ibh = bgfx::createIndexBuffer(bgfx::makeRef((uint8_t*)modelData + amountRead, indiciesSize));
+			amountRead += indiciesSize;
+
+			meshes.push_back(mesh);
+		}
+
+		Model* model = new Model;
+		model->meshes = meshes;
+		model->program = program;
+
+		return model;
+	}
+
 	void reset()
 	{
 		bgfx::reset(input::width, input::height, flags);
@@ -379,6 +466,4 @@ namespace renderer
 		IG_CORE_INFO("Renderer Shutdown");
 	}
 }
-
-bgfx::VertexDecl Vertex::ms_decl;
 } // end namespace igneous

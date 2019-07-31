@@ -22,14 +22,14 @@ public:
 
 		sky = new SkySystem;
 
-		polyShader = renderer::loadProgram("vs_poly", "vs_poly");
+		polyShader = renderer::loadProgram("vs_poly", "fs_poly");
 
-		ModelHandle barn = renderer::loadModel<GenericVertex>("res/models/BigBarn/BigBarn.obj", polyShader);
-		RigidBodyHandle rigidBody = physics::loadRigidBody("");
+		ModelHandle barn = renderer::loadModel("res/models/BigBarn.bin", polyShader);
+		RigidBodyHandle rigidBody = physics::loadRigidBody("res/models/BigBarn.bin");
 
 		auto entity = ecs::create<ModelHandle, Transformation, RigidBodyHandle>(barn, glm::identity<glm::mat4>(), rigidBody);
 
-		camera = new FPSCamera(glm::vec3(0.0f, -15.0f, 15.0f));
+		camera = new FPSCamera(glm::vec3(0.0f, 5.0f, 15.0f));
 
 		input::setCursorVisible(false);
 	}

@@ -105,6 +105,7 @@ int main(int argc, char** argv)
 	vertexFile.close();
 
 	Assimp::Importer importer;
+	importer.SetPropertyString(AI_CONFIG_PP_OG_EXCLUDE_LIST, "lod0 lod1 lod2 lod3 collision");
 	const aiScene* scene = importer.ReadFile(modelFilePath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_JoinIdenticalVertices | aiProcess_OptimizeGraph | aiProcess_OptimizeMeshes);
 	// check for errors
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -122,13 +123,14 @@ int main(int argc, char** argv)
 	outputFile.write((char*)&attributeListSize, sizeof(uint8_t));
 	outputFile.write((char*)attributeList.data(), attributeListSize * sizeof(uint8_t));
 
-	aiNode* lod0 = scene->mRootNode;// ->FindNode("lod0")
+	aiNode* lod0 = scene->mRootNode->FindNode("lod0");
 	if (lod0 == NULL)
 	{
 		logMsg("Could not find lod0 mesh. It is required.");
 		return 1;
 	}
 
+	logMsg("Writing lod0 model");
 	unsigned int numMeshes = lod0->mNumMeshes;
 	std::cout << "Mesh count: " << numMeshes << "\n";
 	outputFile.write((char*)&numMeshes, sizeof(unsigned int));
@@ -228,21 +230,31 @@ int main(int argc, char** argv)
 			aiFace face = mesh->mFaces[i];
 			for (unsigned int j = 0; j < face.mNumIndices; j++)
 			{
-				outputFile.write((char*)& face.mIndices[j], sizeof(unsigned int));
+				uint16_t index = face.mIndices[j];
+				outputFile.write((char*)&index, sizeof(uint16_t));
 			}
 		}
 	}
 
-	aiNode* collision = scene->mRootNode;// ->FindNode("collision")
+	aiNode* collision = scene->mRootNode->FindNode("collision");
 	if (collision == NULL)
 	{
 		logMsg("Could not find collision mesh. Skipping...");
 	}
 	else
 	{
-		aiMesh* mesh = scene->mMeshes[collision->mMeshes[collision->mMeshes[0]]];
+		collisionOffset = outputFile.tellp();
+		outputFile.seekp(0, std::ios::beg);
+		outputFile.write((char*)&collisionOffset, sizeof(uint64_t));
+		outputFile.seekp(collisionOffset, std::ios::beg);
+
+		logMsg("Writing collision mesh");
+
+		aiMesh* mesh = scene->mMeshes[collision->mMeshes[0]];
 		unsigned int numIndicies = mesh->mNumFaces * 3;
+		std::cout << "Collision Mesh vertex count: " << mesh->mNumVertices << "\n";
 		outputFile.write((char*)&mesh->mNumVertices, sizeof(unsigned int));
+		std::cout << "Collision Mesh index count: " << numIndicies << "\n";
 		outputFile.write((char*)&numIndicies, sizeof(unsigned int));
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -257,7 +269,8 @@ int main(int argc, char** argv)
 			aiFace face = mesh->mFaces[i];
 			for (unsigned int j = 0; j < face.mNumIndices; j++)
 			{
-				outputFile.write((char*)&face.mIndices[j], sizeof(unsigned int));
+				uint16_t index = face.mIndices[j];
+				outputFile.write((char*)&index, sizeof(uint16_t));
 			}
 		}
 	}

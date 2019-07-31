@@ -20,8 +20,7 @@ namespace renderer
 	bgfx::ShaderHandle loadShader(const char* shader);
 	bgfx::ProgramHandle loadProgram(const char* vs, const char* fs);
 
-	template<typename VertexType>
-	Model* loadModel(std::string path, bgfx::ProgramHandle program = BGFX_INVALID_HANDLE);
+	ModelHandle loadModel(std::string path, bgfx::ProgramHandle program);
 
 	void render();
 	void screenshot();
@@ -41,5 +40,3 @@ namespace renderer
 	extern std::map<std::string, Model*> models;
 }
 } // end namespace igneous
-
-#include "igneous/renderer/renderer.inl"

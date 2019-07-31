@@ -76,7 +76,7 @@ namespace physics
 		bgfx::setVertexBuffer(0, vb);
 		bgfx::IndexBufferHandle ib = bgfx::createIndexBuffer(bgfx::makeRef(debugIndicies.data(), (uint32_t)debugIndicies.size() * sizeof(uint16_t)));
 		bgfx::setIndexBuffer(ib);
-		bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_PT_LINES | BGFX_STATE_LINEAA);
+		bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_PT_LINES | BGFX_STATE_LINEAA | BGFX_STATE_POINT_SIZE(3));
 		bgfx::setViewRect(100, 0, 0, input::width, input::height);
 		bgfx::submit(100, debugProgram);
 		bgfx::destroy(vb);
