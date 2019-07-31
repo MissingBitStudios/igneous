@@ -1,6 +1,5 @@
 #include "igneous/igneous.hpp"
 
-#include <assimp/version.h>
 #include <btBulletDynamicsCommon.h>
 #include <bx/string.h>
 #include <entt/entt.hpp>
@@ -36,7 +35,6 @@ int Application::run(int argc, char** argv, bgfx::Init init)
 
 	IG_CORE_INFO("-----Version Info-----");
 	IG_CORE_INFO("Igneous Version: {}", IGNEOUS_VERSION);
-	IG_CORE_INFO("Assimp Version: {}.{}.{}", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision());
 	IG_CORE_INFO("Bullet Version: {}", BT_BULLET_VERSION);
 	IG_CORE_INFO("Dear ImGui Version: {}", IMGUI_VERSION);
 	IG_CORE_INFO("EnTT Version: {}", ENTT_VERSION);

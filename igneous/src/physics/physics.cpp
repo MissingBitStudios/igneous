@@ -1,11 +1,14 @@
 #include "igneous/physics/physics.hpp"
 
+#include <fstream>
+
 #include <glm/gtc/type_ptr.hpp>
 
 #include "igneous/core/log.hpp"
 #include "igneous/ecs/ecs.hpp"
 #include "igneous/ecs/components/transformationComponent.hpp"
 #include "debugRenderer.hpp"
+#include "igneous/core/debug.hpp"
 
 namespace igneous {
 namespace physics
@@ -50,8 +53,33 @@ namespace physics
 
 	RigidBodyHandle loadRigidBody(std::string path)
 	{
+		std::ifstream file(path, std::ios::in | std::ios::binary);
+		if (file.fail())
+		{
+			IG_CORE_CRITICAL("Could not open model file: {}", path);
+		}
+
+		uint64_t collisionOffset;
+		file.read((char*)&collisionOffset, sizeof(uint64_t));
+		file.seekg(collisionOffset, std::ios::beg);
+
+		unsigned int numVerticies;
+		file.read((char*)&numVerticies, sizeof(unsigned int));
+		unsigned int verticiesSize = numVerticies * 3 * sizeof(float);
+
+		void* vertexData = malloc(verticiesSize);
+		file.read((char*)vertexData, verticiesSize);
+		file.close();
+		
+		btConvexHullShape* shape = new btConvexHullShape((btScalar*)vertexData, numVerticies, 3 * sizeof(float));
+		free(vertexData);
+
+		shape->optimizeConvexHull();
+#if IG_DEBUG
+		shape->initializePolyhedralFeatures();
+#endif
+
 		btScalar mass = 10.0f;
-		btCollisionShape* shape = &sphere;
 		btTransform transform = identityTransform;
 
 		assert((!shape || shape->getShapeType() != INVALID_SHAPE_PROXYTYPE));

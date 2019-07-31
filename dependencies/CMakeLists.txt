@@ -73,7 +73,6 @@ add_subdirectory(stb)
 
 # set libraries list
 set(IGNEOUS_LIBRARIES
-  assimp
   bgfx
   BulletDynamics
   BulletCollision
@@ -93,8 +92,6 @@ CACHE INTERNAL "")
 
 # set includes list
 set(IGNEOUS_INCLUDES
-  ${CMAKE_CURRENT_SOURCE_DIR}/assimp/include
-  ${CMAKE_CURRENT_BINARY_DIR}/assimp/include
   ${CMAKE_CURRENT_SOURCE_DIR}/bullet/src
   ${OPENAL_INCLUDE_DIR}
   ${RAKNET_INCLUDE_DIRS}

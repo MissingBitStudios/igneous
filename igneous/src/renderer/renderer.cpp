@@ -357,6 +357,8 @@ namespace renderer
 			meshes.push_back(mesh);
 		}
 
+		file.close();
+
 		Model* model = new Model;
 		model->meshes = meshes;
 		model->program = program;

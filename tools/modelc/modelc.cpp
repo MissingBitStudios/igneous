@@ -254,24 +254,12 @@ int main(int argc, char** argv)
 		unsigned int numIndicies = mesh->mNumFaces * 3;
 		std::cout << "Collision Mesh vertex count: " << mesh->mNumVertices << "\n";
 		outputFile.write((char*)&mesh->mNumVertices, sizeof(unsigned int));
-		std::cout << "Collision Mesh index count: " << numIndicies << "\n";
-		outputFile.write((char*)&numIndicies, sizeof(unsigned int));
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			outputFile.write((char*)&mesh->mVertices[i].x, sizeof(float));
 			outputFile.write((char*)&mesh->mVertices[i].y, sizeof(float));
 			outputFile.write((char*)&mesh->mVertices[i].z, sizeof(float));
-		}
-
-		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-		{
-			aiFace face = mesh->mFaces[i];
-			for (unsigned int j = 0; j < face.mNumIndices; j++)
-			{
-				uint16_t index = face.mIndices[j];
-				outputFile.write((char*)&index, sizeof(uint16_t));
-			}
 		}
 	}
 	
