@@ -22,8 +22,6 @@ int ctoi(char c)
 	return c - '0';
 }
 
-// -v res/vertex/color.vtx -m res/models/BigBarn/BigBarn.obj -o ../../build/samples/sandbox/res/models/BigBarn.bin
-// ..\..\..\samples\sandbox
 int main(int argc, char** argv)
 {
 	bx::CommandLine cmd(argc, argv);

@@ -24,5 +24,7 @@ add_shaders(sandbox OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders
 	shaders/fs_poly.sc
 )
 
+add_model(sandbox VERTEX res/vertex/color.vtx MODEL res/models/barn.dae OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/res/models/barn.bin)
+
 set_target_properties(sandbox PROPERTIES FOLDER "igneous/samples")
 set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT sandbox)

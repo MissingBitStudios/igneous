@@ -324,7 +324,7 @@ namespace renderer
 		int pos = file.tellg();
 
 		uint32_t modelSize = 0;
-		for (int i = 0; i < numMeshes; i++)
+		for (unsigned int i = 0; i < numMeshes; i++)
 		{
 			unsigned int numVerticies;
 			unsigned int numIndicies;
@@ -340,7 +340,7 @@ namespace renderer
 
 		std::vector<Mesh> meshes;
 		uint32_t amountRead = 0;
-		for (int i = 0; i < numMeshes; i++)
+		for (unsigned int i = 0; i < numMeshes; i++)
 		{
 			unsigned int numVerticies;
 			unsigned int numIndicies;

@@ -66,8 +66,8 @@ namespace physics
 		debugVertices.push_back(fromVertex);
 		debugVertices.push_back(toVertex);
 
-		debugIndicies.push_back(debugIndicies.size());
-		debugIndicies.push_back(debugIndicies.size());
+		debugIndicies.push_back((uint16_t)debugIndicies.size());
+		debugIndicies.push_back((uint16_t)debugIndicies.size());
 	}
 
 	void DebugRenderer::render()

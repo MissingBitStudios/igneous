@@ -244,11 +244,10 @@ namespace gui
 // backgrounds (@todo: complete with BG_MED, BG_LOW)
 #define BG(v)   ImVec4(0.200f, 0.220f, 0.270f, v)
 // text
-#define TEXT(v) ImVec4(0.860f, 0.930f, 0.890f, v)
 
 		auto& style = ImGui::GetStyle();
-		style.Colors[ImGuiCol_Text] = TEXT(0.78f);
-		style.Colors[ImGuiCol_TextDisabled] = TEXT(0.28f);
+		style.Colors[ImGuiCol_Text] = ImVec4(0.860f, 0.930f, 0.890f, 0.78f);
+		style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.860f, 0.930f, 0.890f, 0.28f);
 		style.Colors[ImGuiCol_WindowBg] = ImVec4(0.13f, 0.14f, 0.17f, 1.00f);
 		style.Colors[ImGuiCol_ChildWindowBg] = BG(0.58f);
 		style.Colors[ImGuiCol_PopupBg] = BG(0.9f);
@@ -277,9 +276,9 @@ namespace gui
 		style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);
 		style.Colors[ImGuiCol_ResizeGripHovered] = MED(0.78f);
 		style.Colors[ImGuiCol_ResizeGripActive] = MED(1.00f);
-		style.Colors[ImGuiCol_PlotLines] = TEXT(0.63f);
+		style.Colors[ImGuiCol_PlotLines] = ImVec4(0.860f, 0.930f, 0.890f, 0.63f);
 		style.Colors[ImGuiCol_PlotLinesHovered] = MED(1.00f);
-		style.Colors[ImGuiCol_PlotHistogram] = TEXT(0.63f);
+		style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.860f, 0.930f, 0.890f, 0.63f);
 		style.Colors[ImGuiCol_PlotHistogramHovered] = MED(1.00f);
 		style.Colors[ImGuiCol_TextSelectedBg] = MED(0.43f);
 		// [...]
