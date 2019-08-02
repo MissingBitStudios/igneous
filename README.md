@@ -5,6 +5,7 @@
 [![Documentation Status](https://readthedocs.org/projects/igneous/badge/?version=latest)](https://igneous.readthedocs.io/en/latest/?badge=latest)
 [![Join the chat at https://discord.gg/CCUwTar](https://img.shields.io/badge/chat-on_discord-7389D8.svg?logo=discord&logoColor=ffffff&labelColor=6A7EC2)](https://discord.gg/CCUwTar)
 [![Join the chat at https://www.reddit.com/r/igneous/](https://img.shields.io/badge/chat-on_reddit-FF5700.svg?logo=reddit&logoColor=ffffff&labelColor=FF4500)](https://www.reddit.com/r/igneous/)
+[![Track on https://trello.com/b/05omR9Mj/igneous](https://img.shields.io/badge/track-on_trello-007BC2.svg?logo=trello&logoColor=ffffff&labelColor=026AA7)](https://trello.com/b/05omR9Mj/igneous)
 
 Igneous is an open source game engine written in C++.
 

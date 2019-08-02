@@ -275,6 +275,10 @@ namespace renderer
 
 	ModelHandle loadModel(std::string path, bgfx::ProgramHandle program)
 	{
+		if (models.count(path))
+		{
+			return models.at(path);
+		}
 		std::ifstream file(path, std::ios::in | std::ios::binary);
 		if (file.fail())
 		{
@@ -358,6 +362,33 @@ namespace renderer
 		}
 
 		file.close();
+
+		Model* model = new Model;
+		model->meshes = meshes;
+		model->program = program;
+
+		models[path] = model;
+		return model;
+	}
+
+	ModelHandle generateModel(std::vector<std::pair<unsigned int, unsigned int>> modelSizes, void* modelData, bgfx::VertexDecl vertexDecl, bgfx::ProgramHandle program)
+	{
+		std::vector<Mesh> meshes;
+		uint32_t amountRead = 0;
+		for (auto meshSize : modelSizes)
+		{
+			unsigned int numVerticies = meshSize.first;
+			unsigned int numIndicies = meshSize.second;
+			uint32_t verticiesSize = (uint32_t)numVerticies * (uint32_t)vertexDecl.getStride();
+			uint32_t indiciesSize = (uint32_t)numIndicies * sizeof(uint16_t);
+			Mesh mesh;
+			mesh.vbh = bgfx::createVertexBuffer(bgfx::makeRef((uint8_t*)modelData + amountRead, verticiesSize), vertexDecl);
+			amountRead += verticiesSize;
+			mesh.ibh = bgfx::createIndexBuffer(bgfx::makeRef((uint8_t*)modelData + amountRead, indiciesSize));
+			amountRead += indiciesSize;
+
+			meshes.push_back(mesh);
+		}
 
 		Model* model = new Model;
 		model->meshes = meshes;

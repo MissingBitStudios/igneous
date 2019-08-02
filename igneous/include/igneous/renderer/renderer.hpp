@@ -21,6 +21,7 @@ namespace renderer
 	bgfx::ProgramHandle loadProgram(const char* vs, const char* fs);
 
 	ModelHandle loadModel(std::string path, bgfx::ProgramHandle program);
+	ModelHandle generateModel(std::vector<std::pair<unsigned int, unsigned int>> modelSizes, void* modelData, bgfx::VertexDecl vertexDecl, bgfx::ProgramHandle program);
 
 	void render();
 	void screenshot();
