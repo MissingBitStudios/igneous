@@ -1,53 +1,24 @@
+#include "ziggurat.hpp"
+
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <vector>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <bgfx/bgfx.h>
-#include <bx/commandline.h>
-
-typedef std::vector<uint8_t> attribute_list;
-
-void logMsg(std::string msg)
-{
-	std::cout << msg << "\n";
-}
 
 int ctoi(char c)
 {
 	return c - '0';
 }
 
-int main(int argc, char** argv)
+bool compileModel(const std::filesystem::path& vertexFilePath, const std::filesystem::path& modelFilePath, const std::filesystem::path& outputFilePath)
 {
-	bx::CommandLine cmd(argc, argv);
-
-	const char* vertexFilePath = cmd.findOption('v', "vertex");
-	if (vertexFilePath == NULL)
-	{
-		logMsg("-v Vertex layout must be provided.");
-		return 1;
-	}
-
-	const char* modelFilePath = cmd.findOption('m', "Model");
-	if (modelFilePath == NULL)
-	{
-		logMsg("-m Model file must be provided.");
-		return 1;
-	}
-
-	const char* outputFilePath = cmd.findOption('o', "output");
-	if (outputFilePath == NULL)
-	{
-		logMsg("-o Output file must be provided.");
-		return 1;
-	}
-
-	attribute_list attributeList;
+	std::filesystem::create_directories(outputFilePath.parent_path());
+	std::vector<uint8_t> attributeList;
 	std::ifstream vertexFile(vertexFilePath, std::ios::in);
 	std::string token;
 	while (vertexFile >> token)
@@ -77,8 +48,8 @@ int main(int argc, char** argv)
 			}
 			else
 			{
-				logMsg("Value after TEXCOORD must be in the range 0-7");
-				return 1;
+				std::cerr << "Value after TEXCOORD must be in the range 0-7" << std::endl;
+				return false;
 			}
 		}
 		else if (!token.rfind("COLOR", 0) && token.length() == 6)
@@ -90,26 +61,26 @@ int main(int argc, char** argv)
 			}
 			else
 			{
-				logMsg("Value after COLOR must be in the range 0-3");
-				return 1;
+				std::cerr << "Value after COLOR must be in the range 0-3" << std::endl;
+				return false;
 			}
 		}
 		else
 		{
-			logMsg("Unrecognized vertex attribute.");
-			return 1;
+			std::cerr << "Unrecognized vertex attribute." << std::endl;
+			return false;
 		}
 	}
 	vertexFile.close();
 
 	Assimp::Importer importer;
 	importer.SetPropertyString(AI_CONFIG_PP_OG_EXCLUDE_LIST, "lod0 lod1 lod2 lod3 collision");
-	const aiScene* scene = importer.ReadFile(modelFilePath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_JoinIdenticalVertices | aiProcess_OptimizeGraph | aiProcess_OptimizeMeshes);
+	const aiScene* scene = importer.ReadFile(modelFilePath.string(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_JoinIdenticalVertices | aiProcess_OptimizeGraph | aiProcess_OptimizeMeshes);
 	// check for errors
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		logMsg("Could not open model file");
-		return 1;
+		std::cerr << "Could not open model file" << std::endl;
+		return false;
 	}
 
 	std::ofstream outputFile(outputFilePath, std::ios::out | std::ios::binary);
@@ -122,24 +93,20 @@ int main(int argc, char** argv)
 	outputFile.write((char*)attributeList.data(), attributeListSize * sizeof(uint8_t));
 
 	aiNode* lod0 = scene->mRootNode->FindNode("lod0");
-	if (lod0 == NULL)
+	if (!lod0)
 	{
-		logMsg("Could not find lod0 mesh. It is required.");
-		return 1;
+		std::cerr << "Could not find lod0 mesh. It is required." << std::endl;
+		return false;
 	}
 
-	logMsg("Writing lod0 model");
 	unsigned int numMeshes = lod0->mNumMeshes;
-	std::cout << "Mesh count: " << numMeshes << "\n";
 	outputFile.write((char*)&numMeshes, sizeof(unsigned int));
 
 	for (unsigned int meshIndex = 0; meshIndex < numMeshes; meshIndex++)
 	{
 		aiMesh* mesh = scene->mMeshes[lod0->mMeshes[meshIndex]];
 		unsigned int numIndicies = mesh->mNumFaces * 3;
-		std::cout << "Mesh [" << meshIndex << "] vertex count: " << mesh->mNumVertices << "\n";
 		outputFile.write((char*)&mesh->mNumVertices, sizeof(unsigned int));
-		std::cout << "Mesh [" << meshIndex << "] index count: " << numIndicies << "\n";
 		outputFile.write((char*)&numIndicies, sizeof(unsigned int));
 	}
 
@@ -235,22 +202,15 @@ int main(int argc, char** argv)
 	}
 
 	aiNode* collision = scene->mRootNode->FindNode("collision");
-	if (collision == NULL)
-	{
-		logMsg("Could not find collision mesh. Skipping...");
-	}
-	else
+	if (collision)
 	{
 		collisionOffset = outputFile.tellp();
 		outputFile.seekp(0, std::ios::beg);
 		outputFile.write((char*)&collisionOffset, sizeof(uint64_t));
 		outputFile.seekp(collisionOffset, std::ios::beg);
 
-		logMsg("Writing collision mesh");
-
 		aiMesh* mesh = scene->mMeshes[collision->mMeshes[0]];
 		unsigned int numIndicies = mesh->mNumFaces * 3;
-		std::cout << "Collision Mesh vertex count: " << mesh->mNumVertices << "\n";
 		outputFile.write((char*)&mesh->mNumVertices, sizeof(unsigned int));
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -263,5 +223,5 @@ int main(int argc, char** argv)
 	
 	outputFile.close();
 	
-	return 0;
+	return true;
 }

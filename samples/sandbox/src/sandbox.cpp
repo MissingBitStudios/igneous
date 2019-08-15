@@ -24,8 +24,8 @@ public:
 
 		polyShader = renderer::loadProgram("vs_poly", "fs_poly");
 
-		ModelHandle barn = renderer::loadModel("res/models/BigBarn.bin", polyShader);
-		RigidBodyHandle rigidBody = physics::loadRigidBody("res/models/BigBarn.bin");
+		ModelHandle barn = renderer::loadModel("res/models/barn.bin", polyShader);
+		RigidBodyHandle rigidBody = physics::loadRigidBody("res/models/barn.bin");
 
 		auto entity = ecs::create<ModelHandle, Transformation, RigidBodyHandle>(barn, glm::identity<glm::mat4>(), rigidBody);
 

@@ -1,0 +1,8 @@
+--HEADER
+NAME:Sandbox
+VERSION:0.0.0
+--ASSETS
+MODEL:barn.dae color.vtx
+COPY:icons
+COPY:audio
+COPY:textures

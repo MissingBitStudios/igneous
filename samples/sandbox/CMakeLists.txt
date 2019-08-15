@@ -12,8 +12,6 @@ add_executable(sandbox
 
 target_link_libraries(sandbox igneous)
 
-copy_directory(sandbox ${CMAKE_CURRENT_SOURCE_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/res)
-
 add_shaders(sandbox OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders
 	SHADERS
 	shaders/vs_bunny.sc
@@ -24,7 +22,7 @@ add_shaders(sandbox OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders
 	shaders/fs_poly.sc
 )
 
-add_model(sandbox VERTEX res/vertex/color.vtx MODEL res/models/barn.dae OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/res/models/barn.bin)
+add_assets(sandbox .igneous)
 
 set_target_properties(sandbox PROPERTIES FOLDER "igneous/samples")
 set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT sandbox)
