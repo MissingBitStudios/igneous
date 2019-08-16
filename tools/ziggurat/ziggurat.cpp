@@ -8,23 +8,25 @@
 
 int main(int argc, char** argv)
 {
-	if (argc != 4)
+	if (argc != 3)
 	{
 		std::cerr << "A config file, source directory, and binary directory must be provided." << std::endl;
 		return 1;
 	}
 
-	std::string config = argv[1];
-	std::filesystem::path sourceDir(argv[2]);
+	std::filesystem::path sourceDir(argv[1]);
 	std::filesystem::path sourceResDir = sourceDir / "res";
-	std::filesystem::path binaryDir(argv[3]);
+	std::filesystem::path binaryDir(argv[2]);
 	std::filesystem::path binaryResDir = binaryDir / "res";
+	std::filesystem::path configPath = sourceDir / ".igneous";
+	std::filesystem::path stampPath = binaryDir / ".igneous.stamp";
 
-	std::ifstream configFile(config, std::ios::in);
+	std::ifstream configFile(configPath, std::ios::in);
+	StampList stampList(stampPath);
 
 	if (configFile.fail())
 	{
-		std::cerr << "Could not load the config file: " << config << std::endl;
+		std::cerr << "Could not load the config file: " << configPath << std::endl;
 		return 1;
 	}
 
@@ -54,11 +56,14 @@ int main(int argc, char** argv)
 
 					std::filesystem::path vertexPath = sourceResDir / "vertex" / vertex;
 					std::filesystem::path modelPath = sourceResDir / "models" / model;
-					std::filesystem::path modelBinPath = binaryResDir / "models" / (model.substr(0, model.find_first_of('.')) + ".bin");
+					std::filesystem::path modelBinPath = (binaryResDir / "models" / model).replace_extension(".bin");
 
-					if (!compileModel(vertexPath, modelPath, modelBinPath))
+					if (stampList.isOutOfDate(modelPath))
 					{
-						return 1;
+						if (!compileModel(vertexPath, modelPath, modelBinPath))
+						{
+							return 1;
+						}
 					}
 				}
 				else if (command == "COPY")

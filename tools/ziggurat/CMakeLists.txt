@@ -3,6 +3,7 @@ add_executable(ziggurat
 	ziggurat.hpp
 	model.cpp
 	copy.cpp
+	stampList.cpp
 )
 
 target_link_libraries(ziggurat
@@ -18,10 +19,10 @@ target_include_directories(ziggurat PUBLIC
 
 set_target_properties(ziggurat PROPERTIES FOLDER "igneous/tools")
 
-macro(add_assets ARG_TARGET ARG_CONFIG_FILE)
+macro(add_assets ARG_TARGET ARG_SOURCE_DIR ARG_BINARY_DIR)
 	add_custom_target(
 		${ARG_TARGET}_ziggurat ALL
-		"$<TARGET_FILE:ziggurat>" ${ARG_CONFIG_FILE} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
+		"$<TARGET_FILE:ziggurat>" ${ARG_SOURCE_DIR} ${ARG_BINARY_DIR}
 		DEPENDS ziggurat
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)

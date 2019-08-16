@@ -22,7 +22,7 @@ add_shaders(sandbox OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders
 	shaders/fs_poly.sc
 )
 
-add_assets(sandbox .igneous)
+add_assets(sandbox ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 set_target_properties(sandbox PROPERTIES FOLDER "igneous/samples")
 set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT sandbox)
