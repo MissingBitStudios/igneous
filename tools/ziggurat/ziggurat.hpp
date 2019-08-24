@@ -3,7 +3,10 @@
 #include <filesystem>
 #include <unordered_map>
 
+#define ZIGGURAT_VERSION 0
+
 bool copyDir(const std::filesystem::path& from, const std::filesystem::path& to);
+bool copyFile(const std::filesystem::path& from, const std::filesystem::path& to);
 
 bool compileModel(const std::filesystem::path& vertexFilePath, const std::filesystem::path& modelFilePath, const std::filesystem::path& outputFilePath);
 

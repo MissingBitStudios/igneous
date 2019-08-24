@@ -16,6 +16,11 @@ StampList::StampList(const std::filesystem::path& stampFilePath)
 			stamps[filePath] = std::stoll(timestamp);
 		}
 	}
+
+	if (!stamps.count("ziggurat") || stamps["ziggurat"] < ZIGGURAT_VERSION)
+	{
+		stamps = { { "ziggurat", ZIGGURAT_VERSION } };
+	}
 }
 
 StampList::~StampList()

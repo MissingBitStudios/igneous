@@ -58,7 +58,7 @@ int main(int argc, char** argv)
 					std::filesystem::path modelPath = sourceResDir / "models" / model;
 					std::filesystem::path modelBinPath = (binaryResDir / "models" / model).replace_extension(".bin");
 
-					if (stampList.isOutOfDate(modelPath))
+					if (stampList.isOutOfDate(modelPath) || !std::filesystem::exists(modelBinPath))
 					{
 						if (!compileModel(vertexPath, modelPath, modelBinPath))
 						{
