@@ -2,7 +2,9 @@ add_executable(ziggurat
 	ziggurat.cpp
 	ziggurat.hpp
 	model.cpp
+	material.cpp
 	copy.cpp
+	create.cpp
 	stampList.cpp
 )
 

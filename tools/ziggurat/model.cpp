@@ -4,78 +4,79 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <bgfx/bgfx.h>
 
-int ctoi(char c)
-{
-	return c - '0';
-}
+const std::unordered_map<std::string, bgfx::Attrib::Enum> attribLookupTable = {
+	{"POSITION", bgfx::Attrib::Position},
+	{"NORMAL", bgfx::Attrib::Normal},
+	{"TANGENT", bgfx::Attrib::Tangent},
+	{"BITANGENT", bgfx::Attrib::Bitangent},
+	{"COLOR0", bgfx::Attrib::Color0},
+	{"COLOR1", bgfx::Attrib::Color1},
+	{"COLOR2", bgfx::Attrib::Color2},
+	{"COLOR3", bgfx::Attrib::Color3},
+	{"INDICES", bgfx::Attrib::Indices},
+	{"WEIGHT", bgfx::Attrib::Weight},
+	{"TEXCOORD0", bgfx::Attrib::TexCoord0},
+	{"TEXCOORD1", bgfx::Attrib::TexCoord1},
+	{"TEXCOORD2", bgfx::Attrib::TexCoord2},
+	{"TEXCOORD3", bgfx::Attrib::TexCoord3},
+	{"TEXCOORD4", bgfx::Attrib::TexCoord4},
+	{"TEXCOORD5", bgfx::Attrib::TexCoord5},
+	{"TEXCOORD6", bgfx::Attrib::TexCoord6},
+	{"TEXCOORD7", bgfx::Attrib::TexCoord7}
+};
 
-bool compileModel(const std::filesystem::path& vertexFilePath, const std::filesystem::path& modelFilePath, const std::filesystem::path& outputFilePath)
+bool Ziggurat::compileModel(const std::string& name)
 {
-	std::filesystem::create_directories(outputFilePath.parent_path());
+	std::filesystem::path modelConfigPath = sourceResDir / "models" / (name + ".mdl");
+
+	if (!stampList->isOutOfDate(modelConfigPath))
+	{
+		return true;
+	}
+
+	std::ifstream modelConfigFile(modelConfigPath);
+	std::string modelPath, vertexName, lod0Name, collisionName;
+
+	std::string param;
+	while (modelConfigFile >> param)
+	{
+		if (param == "MODEL")
+		{
+			modelConfigFile >> modelPath;
+		}
+		else if (param == "VERTEX")
+		{
+			modelConfigFile >> vertexName;
+		}
+		else if (param == "LOD")
+		{
+			modelConfigFile >> lod0Name;
+		}
+		else if (param == "COLLISION")
+		{
+			modelConfigFile >> collisionName;
+		}
+	}
+
 	std::vector<uint8_t> attributeList;
-	std::ifstream vertexFile(vertexFilePath, std::ios::in);
+	std::ifstream vertexFile(sourceResDir / "vertex" / (vertexName + ".vtx"), std::ios::in);
 	std::string token;
 	while (vertexFile >> token)
 	{
-		if (token == "POSITION")
-		{
-			attributeList.push_back(bgfx::Attrib::Position);
-		}
-		else if (token == "NORMAL")
-		{
-			attributeList.push_back(bgfx::Attrib::Normal);
-		}
-		else if (token == "TANGENT")
-		{
-			attributeList.push_back(bgfx::Attrib::Tangent);
-		}
-		else if (token == "BITANGENT")
-		{
-			attributeList.push_back(bgfx::Attrib::Bitangent);
-		}
-		else if (!token.rfind("TEXCOORD", 0) && token.length() == 9)
-		{
-			int index = ctoi(token.back());
-			if (index >= 0 && index <= 7)
-			{
-				attributeList.push_back(bgfx::Attrib::TexCoord0 + index);
-			}
-			else
-			{
-				std::cerr << "Value after TEXCOORD must be in the range 0-7" << std::endl;
-				return false;
-			}
-		}
-		else if (!token.rfind("COLOR", 0) && token.length() == 6)
-		{
-			int index = ctoi(token.back());
-			if (index >= 0 && index <= 3)
-			{
-				attributeList.push_back(bgfx::Attrib::Color0 + index);
-			}
-			else
-			{
-				std::cerr << "Value after COLOR must be in the range 0-3" << std::endl;
-				return false;
-			}
-		}
-		else
-		{
-			std::cerr << "Unrecognized vertex attribute." << std::endl;
-			return false;
-		}
+		attributeList.push_back(attribLookupTable.at(token));
 	}
 	vertexFile.close();
 
 	Assimp::Importer importer;
-	importer.SetPropertyString(AI_CONFIG_PP_OG_EXCLUDE_LIST, "lod0 lod1 lod2 lod3 collision");
-	const aiScene* scene = importer.ReadFile(modelFilePath.string(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_JoinIdenticalVertices | aiProcess_OptimizeGraph | aiProcess_OptimizeMeshes);
+	importer.SetPropertyString(AI_CONFIG_PP_OG_EXCLUDE_LIST, lod0Name + " " + collisionName);
+	const aiScene* scene = importer.ReadFile((sourceResDir / "models" / modelPath).string(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_JoinIdenticalVertices | aiProcess_OptimizeGraph | aiProcess_OptimizeMeshes);
 	// check for errors
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -83,7 +84,7 @@ bool compileModel(const std::filesystem::path& vertexFilePath, const std::filesy
 		return false;
 	}
 
-	std::ofstream outputFile(outputFilePath, std::ios::out | std::ios::binary);
+	std::ofstream outputFile(binaryResDir / "models" / (name + ".bin"), std::ios::out | std::ios::binary);
 
 	uint64_t collisionOffset = 0;
 	outputFile.write((char*)&collisionOffset, sizeof(uint64_t));
@@ -92,7 +93,7 @@ bool compileModel(const std::filesystem::path& vertexFilePath, const std::filesy
 	outputFile.write((char*)&attributeListSize, sizeof(uint8_t));
 	outputFile.write((char*)attributeList.data(), attributeListSize * sizeof(uint8_t));
 
-	aiNode* lod0 = scene->mRootNode->FindNode("lod0");
+	aiNode* lod0 = scene->mRootNode->FindNode(lod0Name.c_str());
 	if (!lod0)
 	{
 		std::cerr << "Could not find lod0 mesh. It is required." << std::endl;
@@ -108,15 +109,16 @@ bool compileModel(const std::filesystem::path& vertexFilePath, const std::filesy
 		unsigned int numIndicies = mesh->mNumFaces * 3;
 		outputFile.write((char*)&mesh->mNumVertices, sizeof(unsigned int));
 		outputFile.write((char*)&numIndicies, sizeof(unsigned int));
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		std::string materialName(material->GetName().C_Str());
+		size_t materialNameLength = materialName.length();
+		outputFile.write((char*)&materialNameLength, sizeof(size_t));
+		outputFile.write(materialName.c_str(), materialNameLength);
 	}
 
 	for (unsigned int meshIndex = 0; meshIndex < numMeshes; meshIndex++)
 	{
 		aiMesh* mesh = scene->mMeshes[lod0->mMeshes[meshIndex]];
-
-		const aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		aiColor4D diffuse;
-		bool hasMtlColor = AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuse);
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
@@ -124,67 +126,40 @@ bool compileModel(const std::filesystem::path& vertexFilePath, const std::filesy
 			{
 				if (attribute == bgfx::Attrib::Position)
 				{
-					if (mesh->mVertices)
-					{
-						outputFile.write((char*)& mesh->mVertices[i].x, sizeof(float));
-						outputFile.write((char*)& mesh->mVertices[i].y, sizeof(float));
-						outputFile.write((char*)& mesh->mVertices[i].z, sizeof(float));
-					}
+					outputFile.write((char*)& mesh->mVertices[i].x, sizeof(float));
+					outputFile.write((char*)& mesh->mVertices[i].y, sizeof(float));
+					outputFile.write((char*)& mesh->mVertices[i].z, sizeof(float));
 				}
 				else if (attribute == bgfx::Attrib::Normal)
 				{
-					if (mesh->mNormals)
-					{
-						outputFile.write((char*)&mesh->mNormals[i].x, sizeof(float));
-						outputFile.write((char*)&mesh->mNormals[i].y, sizeof(float));
-						outputFile.write((char*)&mesh->mNormals[i].z, sizeof(float));
-					}
+					outputFile.write((char*)&mesh->mNormals[i].x, sizeof(float));
+					outputFile.write((char*)&mesh->mNormals[i].y, sizeof(float));
+					outputFile.write((char*)&mesh->mNormals[i].z, sizeof(float));
 				}
 				else if (attribute == bgfx::Attrib::Tangent)
 				{
-					if (mesh->mTangents)
-					{
 						outputFile.write((char*)&mesh->mTangents[i].x, sizeof(float));
-						outputFile.write((char*)&mesh->mTangents[i].y, sizeof(float));
-						outputFile.write((char*)&mesh->mTangents[i].z, sizeof(float));
-					}
+					outputFile.write((char*)&mesh->mTangents[i].y, sizeof(float));
+					outputFile.write((char*)&mesh->mTangents[i].z, sizeof(float));
 				}
 				else if (attribute == bgfx::Attrib::Bitangent)
 				{
-					if (mesh->mBitangents)
-					{
-						outputFile.write((char*)&mesh->mBitangents[i].x, sizeof(float));
-						outputFile.write((char*)&mesh->mBitangents[i].y, sizeof(float));
-						outputFile.write((char*)&mesh->mBitangents[i].z, sizeof(float));
-					}
+					outputFile.write((char*)&mesh->mBitangents[i].x, sizeof(float));
+					outputFile.write((char*)&mesh->mBitangents[i].y, sizeof(float));
+					outputFile.write((char*)&mesh->mBitangents[i].z, sizeof(float));
 				}
 				else if (attribute >= bgfx::Attrib::TexCoord0 && attribute <= bgfx::Attrib::TexCoord7)
 				{
-					if (mesh->mTextureCoords[attribute - bgfx::Attrib::TexCoord0])
-					{
-						outputFile.write((char*)&mesh->mTextureCoords[attribute - bgfx::Attrib::TexCoord0][i].x, sizeof(float));
-						outputFile.write((char*)&mesh->mTextureCoords[attribute - bgfx::Attrib::TexCoord0][i].y, sizeof(float));
-					}
+					outputFile.write((char*)&mesh->mTextureCoords[attribute - bgfx::Attrib::TexCoord0][i].x, sizeof(float));
+					outputFile.write((char*)&mesh->mTextureCoords[attribute - bgfx::Attrib::TexCoord0][i].y, sizeof(float));
 				}
 				else if (attribute >= bgfx::Attrib::Color0 && attribute <= bgfx::Attrib::Color3)
 				{
 					uint8_t color[4];
-
-					if (hasMtlColor)
-					{
-						color[0] = diffuse.r * 255;
-						color[1] = diffuse.g * 255;
-						color[2] = diffuse.b * 255;
-						color[3] = diffuse.a * 255;
-					}
-					else if (mesh->mColors[attribute - bgfx::Attrib::Color0])
-					{
-						color[0] = mesh->mColors[attribute - bgfx::Attrib::Color0][i].r * 255;
-						color[1] = mesh->mColors[attribute - bgfx::Attrib::Color0][i].g * 255;
-						color[2] = mesh->mColors[attribute - bgfx::Attrib::Color0][i].b * 255;
-						color[3] = mesh->mColors[attribute - bgfx::Attrib::Color0][i].a * 255;
-					}
-
+					color[0] = mesh->mColors[attribute - bgfx::Attrib::Color0][i].r * 255;
+					color[1] = mesh->mColors[attribute - bgfx::Attrib::Color0][i].g * 255;
+					color[2] = mesh->mColors[attribute - bgfx::Attrib::Color0][i].b * 255;
+					color[3] = mesh->mColors[attribute - bgfx::Attrib::Color0][i].a * 255;
 					outputFile.write((char*)&color, sizeof(color));
 				}
 			}
@@ -201,7 +176,7 @@ bool compileModel(const std::filesystem::path& vertexFilePath, const std::filesy
 		}
 	}
 
-	aiNode* collision = scene->mRootNode->FindNode("collision");
+	aiNode* collision = scene->mRootNode->FindNode(collisionName.c_str());
 	if (collision)
 	{
 		collisionOffset = outputFile.tellp();

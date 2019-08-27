@@ -32,10 +32,12 @@ namespace renderer
 {
 	static std::map<std::string, bgfx::TextureHandle> textures;
 	static std::map<std::string, bgfx::ProgramHandle> programs;
-	std::map<std::string, Model*> models;
+	static std::map<std::string, MaterialHandle> materials;
+	std::map<std::string, ModelHandle> models;
 
 	static bgfx::TextureHandle checkerBoard;
 	static uint32_t flags = BGFX_RESET_NONE;
+	static bgfx::UniformHandle U_COLOR;
 
 	void screenshotCallback(const std::string& name, const arg_list& args)
 	{
@@ -141,6 +143,8 @@ namespace renderer
 
 		s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Sampler);
 
+		U_COLOR = bgfx::createUniform("u_color", bgfx::UniformType::Vec4);
+
 		IG_CORE_INFO("Renderer Initialized");
 	}
 
@@ -217,7 +221,7 @@ namespace renderer
 		return handle;
 	}
 
-	const bgfx::Memory* loadMemory(const char* filename)
+	const bgfx::Memory* loadMemory(const std::string& filename)
 	{
 		std::ifstream file(filename, std::ios::binary | std::ios::ate);
 		if (file.fail())
@@ -235,17 +239,14 @@ namespace renderer
 		return nullptr;
 	}
 
-	bgfx::ShaderHandle loadShader(const char* shader)
+	bgfx::ShaderHandle loadShader(const std::string& shader)
 	{
 		return bgfx::createShader(loadMemory(shader));
 	}
 
-	bgfx::ProgramHandle loadProgram(const char* vsName, const char* fsName)
+	bgfx::ProgramHandle loadProgram(const std::string& vsName, const std::string& fsName)
 	{
-		char vsPath[512];
-		char fsPath[512];
-
-		const char* shaderPath = "???";
+		std::string shaderPath;
 
 		switch (bgfx::getRendererType())
 		{
@@ -262,18 +263,15 @@ namespace renderer
 		case bgfx::RendererType::Count:                                     break;
 		}
 
-		bx::strCopy(vsPath, BX_COUNTOF(vsPath), shaderPath);
-		bx::strCat(vsPath, BX_COUNTOF(vsPath), vsName);
-		bx::strCat(vsPath, BX_COUNTOF(vsPath), ".bin");
-
-		bx::strCopy(fsPath, BX_COUNTOF(fsPath), shaderPath);
-		bx::strCat(fsPath, BX_COUNTOF(fsPath), fsName);
-		bx::strCat(fsPath, BX_COUNTOF(fsPath), ".bin");
-
-		return bgfx::createProgram(loadShader(vsPath), loadShader(fsPath), true);
+		return bgfx::createProgram(loadShader(shaderPath + vsName + ".bin"), loadShader(shaderPath + fsName + ".bin"), true);
 	}
 
-	ModelHandle loadModel(std::string path, bgfx::ProgramHandle program)
+	bgfx::ProgramHandle loadProgram(const std::string& name)
+	{
+		return loadProgram("vs_" + name, "fs_" + name);
+	}
+
+	ModelHandle loadModel(std::string path)
 	{
 		if (models.count(path))
 		{
@@ -325,7 +323,7 @@ namespace renderer
 		unsigned int numMeshes;
 		file.read((char*)&numMeshes, sizeof(unsigned int));
 
-		int pos = file.tellg();
+		std::streampos pos = file.tellg();
 
 		uint32_t modelSize = 0;
 		for (unsigned int i = 0; i < numMeshes; i++)
@@ -335,6 +333,11 @@ namespace renderer
 			file.read((char*)&numVerticies, sizeof(unsigned int));
 			file.read((char*)&numIndicies, sizeof(unsigned int));
 			modelSize += (uint32_t)numVerticies * (uint32_t)vertexDecl.getStride() + (uint32_t)numIndicies * sizeof(uint16_t);
+			size_t materialNameLength;
+			file.read((char*)&materialNameLength, sizeof(size_t));
+			std::string materialName;
+			materialName.resize(materialNameLength);
+			file.read(materialName.data(), materialNameLength);
 		}
 
 		const void* modelData = malloc(modelSize);
@@ -350,6 +353,12 @@ namespace renderer
 			unsigned int numIndicies;
 			file.read((char*)&numVerticies, sizeof(unsigned int));
 			file.read((char*)&numIndicies, sizeof(unsigned int));
+			size_t materialNameLength;
+			file.read((char*)&materialNameLength, sizeof(size_t));
+			std::string materialName;
+			materialName.resize(materialNameLength);
+			file.read(materialName.data(), materialNameLength);
+
 			uint32_t verticiesSize = (uint32_t)numVerticies * (uint32_t)vertexDecl.getStride();
 			uint32_t indiciesSize = (uint32_t)numIndicies * sizeof(uint16_t);
 			Mesh mesh;
@@ -357,6 +366,7 @@ namespace renderer
 			amountRead += verticiesSize;
 			mesh.ibh = bgfx::createIndexBuffer(bgfx::makeRef((uint8_t*)modelData + amountRead, indiciesSize));
 			amountRead += indiciesSize;
+			mesh.material = loadMaterial(materialName);
 
 			meshes.push_back(mesh);
 		}
@@ -365,36 +375,48 @@ namespace renderer
 
 		Model* model = new Model;
 		model->meshes = meshes;
-		model->program = program;
 
 		models[path] = model;
 		return model;
 	}
 
-	ModelHandle generateModel(std::vector<std::pair<unsigned int, unsigned int>> modelSizes, void* modelData, bgfx::VertexDecl vertexDecl, bgfx::ProgramHandle program)
+	MaterialHandle loadMaterial(std::string name)
 	{
-		std::vector<Mesh> meshes;
-		uint32_t amountRead = 0;
-		for (auto meshSize : modelSizes)
+		if (materials.count(name))
 		{
-			unsigned int numVerticies = meshSize.first;
-			unsigned int numIndicies = meshSize.second;
-			uint32_t verticiesSize = (uint32_t)numVerticies * (uint32_t)vertexDecl.getStride();
-			uint32_t indiciesSize = (uint32_t)numIndicies * sizeof(uint16_t);
-			Mesh mesh;
-			mesh.vbh = bgfx::createVertexBuffer(bgfx::makeRef((uint8_t*)modelData + amountRead, verticiesSize), vertexDecl);
-			amountRead += verticiesSize;
-			mesh.ibh = bgfx::createIndexBuffer(bgfx::makeRef((uint8_t*)modelData + amountRead, indiciesSize));
-			amountRead += indiciesSize;
+			return materials.at(name);
+		}
+		MaterialHandle material = new Material;
 
-			meshes.push_back(mesh);
+		std::ifstream file("res/materials/" + name + ".bin", std::ios::in | std::ios::binary);
+		
+		if (file.fail())
+		{
+			IG_CORE_CRITICAL("Could not open material file: {}", name);
 		}
 
-		Model* model = new Model;
-		model->meshes = meshes;
-		model->program = program;
+		uint8_t shaderNameLength;
+		file.read((char*)&shaderNameLength, sizeof(uint8_t));
+		std::string shaderName;
+		shaderName.resize(shaderNameLength);
+		file.read(shaderName.data(), shaderNameLength);
 
-		return model;
+		material->shader = loadProgram(shaderName);
+		material->state = BGFX_STATE_DEFAULT;
+
+		MATERIAL_ATTRIBUTE materialAttribute;
+		while (file.read((char*)&materialAttribute, sizeof(materialAttribute)))
+		{
+			if (materialAttribute == COLOR)
+			{
+				float* vec4 = new float[4];
+				file.read((char*)vec4, 4 * sizeof(float));
+				material->uniforms.push_back(std::make_pair(U_COLOR, vec4));
+			}
+		}
+
+		materials[name] = material;
+		return material;
 	}
 
 	void reset()
@@ -413,11 +435,16 @@ namespace renderer
 				bgfx::setTransform(&transformation);
 				bgfx::setVertexBuffer(0, mesh.vbh);
 				bgfx::setIndexBuffer(mesh.ibh);
-				if (mesh.textures.size() > 0)
-					bgfx::setTexture(0, s_tex, mesh.textures[0]);
-				else
-					bgfx::setTexture(0, s_tex, checkerBoard);
-				bgfx::submit(0, model->program);
+				for (auto uniform : mesh.material->uniforms)
+				{
+					bgfx::setUniform(uniform.first, uniform.second);
+				}
+				for (auto texture : mesh.material->textures)
+				{
+					bgfx::setTexture(0, texture.first, texture.second);
+				}
+				bgfx::setState(mesh.material->state);
+				bgfx::submit(0, mesh.material->shader);
 			}
 		});
 

@@ -10,78 +10,61 @@ int main(int argc, char** argv)
 {
 	if (argc != 3)
 	{
-		std::cerr << "A config file, source directory, and binary directory must be provided." << std::endl;
+		std::cerr << "A source directory, and binary directory must be provided." << std::endl;
 		return 1;
 	}
 
-	std::filesystem::path sourceDir(argv[1]);
-	std::filesystem::path sourceResDir = sourceDir / "res";
-	std::filesystem::path binaryDir(argv[2]);
-	std::filesystem::path binaryResDir = binaryDir / "res";
-	std::filesystem::path configPath = sourceDir / ".igneous";
-	std::filesystem::path stampPath = binaryDir / ".igneous.stamp";
+	Ziggurat ziggurat(argv[1], argv[2]);
 
-	std::ifstream configFile(configPath, std::ios::in);
-	StampList stampList(stampPath);
+	return ziggurat.build();
+}
 
-	if (configFile.fail())
+Ziggurat::Ziggurat(const std::filesystem::path& sourceDirectory, const std::filesystem::path& binaryDirectory)
+{
+	sourceDir = sourceDirectory;
+	sourceResDir = sourceDir / "res";
+
+	binaryDir = binaryDirectory;
+	binaryResDir = binaryDir / "res";
+	stampList = new StampList(binaryDir / ".igneous.stamp");
+}
+
+int Ziggurat::build()
+{
+	createDirs({ "audio", "icons", "textures", "models", "materials" });
+
+	copyDir(sourceResDir / "audio");
+	copyDir(sourceResDir / "icons");
+	copyDir(sourceResDir / "textures");
+
+	for (auto path : std::filesystem::directory_iterator(sourceResDir / "materials"))
 	{
-		std::cerr << "Could not load the config file: " << configPath << std::endl;
-		return 1;
-	}
-
-	std::string line;
-	while (std::getline(configFile, line))
-	{
-		if (line.substr(0, 2) != "--")
+		if (!path.is_directory())
 		{
-			size_t firstColon = line.find_first_of(':');
-			if (firstColon == std::string::npos)
+			std::filesystem::path materialPath = path;
+			if (materialPath.extension() == ".mtl" && !compileMaterial(materialPath.stem().string()))
 			{
-				std::cerr << "Command name and args required: " << line << std::endl;
-				return 1;
+				return false;
 			}
-			else
+		}
+	}
+
+	for (auto path : std::filesystem::directory_iterator(sourceResDir / "models"))
+	{
+		if (!path.is_directory())
+		{
+			std::filesystem::path modelPath = path;
+			if (modelPath.extension() == ".mdl" && !compileModel(modelPath.stem().string()))
 			{
-				std::string command = line.substr(0, firstColon);
-				std::istringstream args(line.substr(firstColon + 1));
-				if (command == "MODEL")
-				{
-					std::string model, vertex;
-					if (!(args >> model >> vertex))
-					{
-						std::cerr << "Both model and vertex required: " << line << std::endl;
-						return 1;
-					}
-
-					std::filesystem::path vertexPath = sourceResDir / "vertex" / vertex;
-					std::filesystem::path modelPath = sourceResDir / "models" / model;
-					std::filesystem::path modelBinPath = (binaryResDir / "models" / model).replace_extension(".bin");
-
-					if (stampList.isOutOfDate(modelPath) || !std::filesystem::exists(modelBinPath))
-					{
-						if (!compileModel(vertexPath, modelPath, modelBinPath))
-						{
-							return 1;
-						}
-					}
-				}
-				else if (command == "COPY")
-				{
-					std::string dir;
-					if (!(args >> dir))
-					{
-						std::cerr << "No dir given for copy: " << line << std::endl;
-						return 1;
-					}
-					if (!copyDir(sourceResDir / dir, binaryResDir / dir))
-					{
-						return 1;
-					}
-				}
+				return false;
 			}
 		}
 	}
 
 	return 0;
+}
+
+Ziggurat::~Ziggurat()
+{
+	delete stampList;
 }

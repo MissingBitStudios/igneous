@@ -22,9 +22,7 @@ public:
 
 		sky = new SkySystem;
 
-		polyShader = renderer::loadProgram("vs_poly", "fs_poly");
-
-		ModelHandle barn = renderer::loadModel("res/models/barn.bin", polyShader);
+		ModelHandle barn = renderer::loadModel("res/models/barn.bin");
 		RigidBodyHandle rigidBody = physics::loadRigidBody("res/models/barn.bin");
 
 		auto entity = ecs::create<ModelHandle, Transformation, RigidBodyHandle>(barn, glm::identity<glm::mat4>(), rigidBody);
@@ -55,7 +53,6 @@ public:
 		return 0;
 	}
 private:
-	bgfx::ProgramHandle polyShader;
 	SkySystem* sky;
 	Camera* camera;
 };

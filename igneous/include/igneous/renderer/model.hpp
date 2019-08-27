@@ -4,18 +4,19 @@
 
 #include <bgfx/bgfx.h>
 
+#include "igneous/renderer/material.hpp"
+
 namespace igneous {
 struct Mesh
 {
 	bgfx::VertexBufferHandle vbh;
 	bgfx::IndexBufferHandle ibh;
-	std::vector<bgfx::TextureHandle> textures;
+	MaterialHandle material;
 };
 
 struct Model
 {
 	std::vector<Mesh> meshes;
-	bgfx::ProgramHandle program;
 };
 
 typedef Model* ModelHandle;

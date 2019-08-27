@@ -25,7 +25,7 @@ StampList::StampList(const std::filesystem::path& stampFilePath)
 
 StampList::~StampList()
 {
-	std::ofstream stampFile(dataPath, std::ios::out | std::ofstream::trunc);
+	std::ofstream stampFile(dataPath, std::ios::out | std::ios::trunc);
 
 	for (auto it = stamps.begin(); it != stamps.end(); it++)
 	{
@@ -33,12 +33,13 @@ StampList::~StampList()
 	}
 }
 
-bool StampList::isOutOfDate(const std::filesystem::path& file)
+bool StampList::isOutOfDate(const std::filesystem::path& path)
 {
-	long long current = std::filesystem::last_write_time(file).time_since_epoch().count();
-	if (!stamps.count(file.string()) || stamps.at(file.string()) < current)
+	std::string absolutePath = std::filesystem::absolute(path).string();
+	long long current = std::filesystem::last_write_time(path).time_since_epoch().count();
+	if (!stamps.count(absolutePath) || stamps.at(absolutePath) < current)
 	{
-		stamps[file.string()] = current;
+		stamps[absolutePath] = current;
 		return true;
 	}
 	return false;

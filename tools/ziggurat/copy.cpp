@@ -3,30 +3,41 @@
 #include <filesystem>
 #include <iostream>
 
-bool copyDir(const std::filesystem::path& from, const std::filesystem::path& to)
+bool Ziggurat::copyDir(const std::filesystem::path& path)
 {
-	try
+	for (auto path : std::filesystem::recursive_directory_iterator(path))
 	{
-		std::filesystem::copy(from, to, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+		if (!path.is_directory())
+		{
+			if (!copyFile(path))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			std::filesystem::path to = binaryDir / std::filesystem::relative(path, sourceDir);
+			std::filesystem::create_directories(to);
+		}
 	}
-	catch (const std::filesystem::filesystem_error& e)
-	{
-		std::cerr << "Copy error on file: " << from << " -> " << e.what() << std::endl;
-		return false;
-	}
-	
 	return true;
 }
 
-bool copyFile(const std::filesystem::path& from, const std::filesystem::path& to)
+bool Ziggurat::copyFile(const std::filesystem::path& path)
 {
+	if (!stampList->isOutOfDate(path))
+	{
+		return true;
+	}
+
 	try
 	{
-		std::filesystem::copy_file(from, to, std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::path to = binaryDir / std::filesystem::relative(path, sourceDir);
+		std::filesystem::copy_file(path, to, std::filesystem::copy_options::overwrite_existing);
 	}
 	catch (const std::filesystem::filesystem_error& e)
 	{
-		std::cerr << "Copy error on file: " << from << " -> " << e.what() << std::endl;
+		std::cerr << "Copy error on file: " << path << " -> " << e.what() << std::endl;
 		return false;
 	}
 

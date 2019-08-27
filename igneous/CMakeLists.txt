@@ -42,6 +42,7 @@ set(INCLUDES
 	include/igneous/renderer/camera.hpp
 	include/igneous/renderer/capture.hpp
 	include/igneous/renderer/fpsCamera.hpp
+	include/igneous/renderer/material.hpp
 	include/igneous/renderer/model.hpp
 	include/igneous/renderer/renderer.hpp
 )

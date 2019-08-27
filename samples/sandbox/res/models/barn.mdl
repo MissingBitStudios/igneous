@@ -1,0 +1,5 @@
+MODEL barn/barn.dae
+VERTEX position
+
+LOD lod0
+COLLISION collision

@@ -16,12 +16,13 @@ namespace renderer
 	std::string getGpuInfo();
 
 	bgfx::TextureHandle loadTexture(std::string path, uint32_t _flags = 0, bool track = true);
-	const bgfx::Memory* loadMemory(const char* filename);
-	bgfx::ShaderHandle loadShader(const char* shader);
-	bgfx::ProgramHandle loadProgram(const char* vs, const char* fs);
+	const bgfx::Memory* loadMemory(const std::string& filename);
+	bgfx::ShaderHandle loadShader(const std::string& shader);
+	bgfx::ProgramHandle loadProgram(const std::string& vs, const std::string& fs);
+	bgfx::ProgramHandle loadProgram(const std::string& name);
 
-	ModelHandle loadModel(std::string path, bgfx::ProgramHandle program);
-	ModelHandle generateModel(std::vector<std::pair<unsigned int, unsigned int>> modelSizes, void* modelData, bgfx::VertexDecl vertexDecl, bgfx::ProgramHandle program);
+	ModelHandle loadModel(std::string path);
+	MaterialHandle loadMaterial(std::string name);
 
 	void render();
 	void screenshot();
