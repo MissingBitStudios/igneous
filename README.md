@@ -58,7 +58,6 @@ The API reference and tutorials are available on https://igneous.readthedocs.io
 
 * [Assimp](https://github.com/assimp/assimp) - [Website](http://assimp.sourceforge.net/)
 * [bgfx](https://github.com/bkaradzic/bgfx)
-* [bigg](https://github.com/JoshuaBrookover/bigg)
 * [Bullet Physics](https://github.com/bulletphysics/bullet3) - [Website](http://bulletphysics.org/)
 * [EnTT](https://github.com/skypjack/entt)
 * [GLFW](https://github.com/glfw/glfw) - [Website](http://www.glfw.org/)
@@ -83,7 +82,7 @@ We use [SemVer](http://semver.org/spec/v2.0.0.html) for versioning. For the vers
 
 ## Authors
 
-* [ProWolf](https://github.com/prowolf)
+* [widberg](https://github.com/widberg)
 * [pcguy123](https://github.com/pcguy123)
 
 See also the list of [contributors](https://github.com/MissingBitStudios/igneous/graphs/contributors) who participated in this project.
