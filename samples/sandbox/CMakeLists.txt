@@ -14,12 +14,12 @@ target_link_libraries(sandbox igneous)
 
 add_shaders(sandbox OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/shaders
 	SHADERS
-	shaders/vs_bunny.sc
-	shaders/fs_bunny.sc
-	shaders/vs_sky.sc
-	shaders/fs_sky.sc
-	shaders/vs_poly.sc
-	shaders/fs_poly.sc
+	res/shaders/vs_bunny.sc
+	res/shaders/fs_bunny.sc
+	res/shaders/vs_sky.sc
+	res/shaders/fs_sky.sc
+	res/shaders/vs_poly.sc
+	res/shaders/fs_poly.sc
 )
 
 add_assets(sandbox ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})

@@ -66,16 +66,16 @@ add_library(igneous STATIC
 
 add_asset_shaders(igneous
 	HEADER src/renderer/splash_assets.h
-	shaders/fs_splash.sc
-	shaders/vs_splash.sc
+	res/shaders/fs_splash.sc
+	res/shaders/vs_splash.sc
 
 	HEADER src/gui/imgui_assets.h
-	shaders/fs_imgui.sc
-	shaders/vs_imgui.sc
+	res/shaders/fs_imgui.sc
+	res/shaders/vs_imgui.sc
 
 	HEADER src/physics/debug_assets.h
-	shaders/fs_debug.sc
-	shaders/vs_debug.sc
+	res/shaders/fs_debug.sc
+	res/shaders/vs_debug.sc
 )
 
 configure_file (include/igneous/core/version.hpp.in include/igneous/core/version.hpp @ONLY)
