@@ -26,8 +26,6 @@ option(IGNEOUS_TESTS       "Build tests."         ON)
 
 add_subdirectory(dependencies)
 
-include(cmake/macros.cmake)
-
 if(IGNEOUS_DOCS)
   add_subdirectory(docs)
 endif()
