@@ -47,7 +47,7 @@ void ProceduralSky::init(int verticalCount, int horizontalCount)
 		}
 	}
 
-	m_vbh = bgfx::createVertexBuffer(bgfx::copy(vertices, sizeof(ScreenPosVertex) * verticalCount * horizontalCount), ScreenPosVertex::ms_decl);
+	m_vbh = bgfx::createVertexBuffer(bgfx::copy(vertices, sizeof(ScreenPosVertex) * verticalCount * horizontalCount), ScreenPosVertex::ms_layout);
 	m_ibh = bgfx::createIndexBuffer(bgfx::copy(indices, sizeof(uint16_t) * k));
 
 	BX_FREE(allocator, indices);
@@ -69,4 +69,4 @@ void ProceduralSky::draw()
 	bgfx::submit(0, m_skyProgram);
 }
 
-bgfx::VertexDecl ProceduralSky::ScreenPosVertex::ms_decl;
+bgfx::VertexLayout ProceduralSky::ScreenPosVertex::ms_layout;

@@ -14,6 +14,7 @@ add_subdirectory(assimp)
 set(BGFX_BUILD_TOOLS     ON  CACHE INTERNAL "" )
 set(BGFX_BUILD_EXAMPLES  OFF CACHE INTERNAL "" )
 set(BGFX_CUSTOM_TARGETS  OFF CACHE INTERNAL "" )
+set(BGFX_INSTALL         OFF CACHE INTERNAL "" )
 add_subdirectory(bgfx.cmake)
 
 # bullet

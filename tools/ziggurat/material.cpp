@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <unordered_map>
 
-enum MATERIAL_ATTRIBUTE : uint8_t
+enum class MaterialAttribute : uint8_t
 {
 	COLOR,
 	DIFFUSE,
@@ -15,11 +15,11 @@ enum MATERIAL_ATTRIBUTE : uint8_t
 	SPECULAR
 };
 
-const std::unordered_map<std::string, MATERIAL_ATTRIBUTE> attributeLookupTable = {
-	   {"color", COLOR},
-	   {"diffuse", DIFFUSE},
-	   {"normal", NORMAL},
-	   {"specular", SPECULAR}
+const std::unordered_map<std::string, MaterialAttribute> attributeLookupTable = {
+	   {"color", MaterialAttribute::COLOR},
+	   {"diffuse", MaterialAttribute::DIFFUSE},
+	   {"normal", MaterialAttribute::NORMAL},
+	   {"specular", MaterialAttribute::SPECULAR}
 };
 
 bool Ziggurat::compileMaterial(const std::string& name)
@@ -50,10 +50,10 @@ bool Ziggurat::compileMaterial(const std::string& name)
 	std::string attributeName;
 	while (materialFile >> attributeName)
 	{
-		MATERIAL_ATTRIBUTE attribute = attributeLookupTable.at(attributeName);
+		MaterialAttribute attribute = attributeLookupTable.at(attributeName);
 		file.write((char*)&attribute, sizeof(attribute));
 
-		if (attribute == COLOR)
+		if (attribute == MaterialAttribute::COLOR)
 		{
 			std::string r, g, b, a;
 			materialFile >> r >> g >> b >> a;

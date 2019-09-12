@@ -15,7 +15,7 @@
 namespace igneous {
 namespace gui
 {
-	static bgfx::VertexDecl    imguiVertexDecl;
+	static bgfx::VertexLayout    imguiVertexLayout;
 	static bgfx::TextureHandle imguiFontTexture;
 	static bgfx::UniformHandle imguiFontUniform;
 	static bgfx::ProgramHandle imguiProgram;
@@ -40,7 +40,7 @@ namespace gui
 		ImGuiIO& io = ImGui::GetIO();
 
 		// Setup vertex declaration
-		imguiVertexDecl
+		imguiVertexLayout
 			.begin()
 			.add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
@@ -177,12 +177,12 @@ namespace gui
 			uint32_t numVertices = (uint32_t)drawList->VtxBuffer.size();
 			uint32_t numIndices = (uint32_t)drawList->IdxBuffer.size();
 
-			if (!bgfx::getAvailTransientVertexBuffer(numVertices, imguiVertexDecl) || !bgfx::getAvailTransientIndexBuffer(numIndices))
+			if (!bgfx::getAvailTransientVertexBuffer(numVertices, imguiVertexLayout) || !bgfx::getAvailTransientIndexBuffer(numIndices))
 			{
 				break;
 			}
 
-			bgfx::allocTransientVertexBuffer(&tvb, numVertices, imguiVertexDecl);
+			bgfx::allocTransientVertexBuffer(&tvb, numVertices, imguiVertexLayout);
 			bgfx::allocTransientIndexBuffer(&tib, numIndices);
 
 			ImDrawVert* verts = (ImDrawVert*)tvb.data;

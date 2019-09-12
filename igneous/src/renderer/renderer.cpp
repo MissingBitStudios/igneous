@@ -92,8 +92,8 @@ namespace renderer
 		};
 		static const uint16_t s_splashTriList[] = { 2, 1, 0, 2, 3, 1 };
 
-		static bgfx::VertexDecl splashVertexDecl;
-		splashVertexDecl.begin()
+		static bgfx::VertexLayout splashVertexLayout;
+		splashVertexLayout.begin()
 			.add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
 			.end();
@@ -105,7 +105,7 @@ namespace renderer
 		bgfx::UniformHandle s_splash = bgfx::createUniform("s_splash", bgfx::UniformType::Sampler);
 		bgfx::TextureHandle splashTexture = loadTexture("res/textures/splash.png", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP, false);
 
-		bgfx::VertexBufferHandle vb = bgfx::createVertexBuffer(bgfx::makeRef(s_splashVertices, sizeof(s_splashVertices)), splashVertexDecl);
+		bgfx::VertexBufferHandle vb = bgfx::createVertexBuffer(bgfx::makeRef(s_splashVertices, sizeof(s_splashVertices)), splashVertexLayout);
 		bgfx::IndexBufferHandle ib = bgfx::createIndexBuffer(bgfx::makeRef(s_splashTriList, sizeof(s_splashTriList)));
 		
 		bgfx::setVertexBuffer(0, vb);
@@ -286,8 +286,8 @@ namespace renderer
 		file.seekg(sizeof(uint64_t), std::ios::beg);
 		uint8_t numAttributes;
 		file.read((char*)&numAttributes, sizeof(uint8_t));
-		bgfx::VertexDecl vertexDecl;
-		vertexDecl.begin();
+		bgfx::VertexLayout vertexLayout;
+		vertexLayout.begin();
 		for (int i = 0; i < numAttributes; i++)
 		{
 			uint8_t attribute;
@@ -295,30 +295,30 @@ namespace renderer
 
 			if (attribute == bgfx::Attrib::Position)
 			{
-				vertexDecl.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float);
+				vertexLayout.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float);
 			}
 			else if (attribute == bgfx::Attrib::Normal)
 			{
-				vertexDecl.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float);
+				vertexLayout.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float);
 			}
 			else if (attribute == bgfx::Attrib::Tangent)
 			{
-				vertexDecl.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float);
+				vertexLayout.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float);
 			}
 			else if (attribute == bgfx::Attrib::Bitangent)
 			{
-				vertexDecl.add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float);
+				vertexLayout.add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float);
 			}
 			else if (attribute >= bgfx::Attrib::TexCoord0 && attribute <= bgfx::Attrib::TexCoord7)
 			{
-				vertexDecl.add((bgfx::Attrib::Enum)attribute, 2, bgfx::AttribType::Float);
+				vertexLayout.add((bgfx::Attrib::Enum)attribute, 2, bgfx::AttribType::Float);
 			}
 			else if (attribute >= bgfx::Attrib::Color0 && attribute <= bgfx::Attrib::Color3)
 			{
-				vertexDecl.add((bgfx::Attrib::Enum)attribute, 4, bgfx::AttribType::Uint8, true);
+				vertexLayout.add((bgfx::Attrib::Enum)attribute, 4, bgfx::AttribType::Uint8, true);
 			}
 		}
-		vertexDecl.end();
+		vertexLayout.end();
 
 		unsigned int numMeshes;
 		file.read((char*)&numMeshes, sizeof(unsigned int));
@@ -332,7 +332,7 @@ namespace renderer
 			unsigned int numIndicies;
 			file.read((char*)&numVerticies, sizeof(unsigned int));
 			file.read((char*)&numIndicies, sizeof(unsigned int));
-			modelSize += (uint32_t)numVerticies * (uint32_t)vertexDecl.getStride() + (uint32_t)numIndicies * sizeof(uint16_t);
+			modelSize += (uint32_t)numVerticies * (uint32_t)vertexLayout.getStride() + (uint32_t)numIndicies * sizeof(uint16_t);
 			size_t materialNameLength;
 			file.read((char*)&materialNameLength, sizeof(size_t));
 			std::string materialName;
@@ -359,10 +359,10 @@ namespace renderer
 			materialName.resize(materialNameLength);
 			file.read(materialName.data(), materialNameLength);
 
-			uint32_t verticiesSize = (uint32_t)numVerticies * (uint32_t)vertexDecl.getStride();
+			uint32_t verticiesSize = (uint32_t)numVerticies * (uint32_t)vertexLayout.getStride();
 			uint32_t indiciesSize = (uint32_t)numIndicies * sizeof(uint16_t);
 			Mesh mesh;
-			mesh.vbh = bgfx::createVertexBuffer(bgfx::makeRef((uint8_t*)modelData + amountRead, verticiesSize), vertexDecl);
+			mesh.vbh = bgfx::createVertexBuffer(bgfx::makeRef((uint8_t*)modelData + amountRead, verticiesSize), vertexLayout);
 			amountRead += verticiesSize;
 			mesh.ibh = bgfx::createIndexBuffer(bgfx::makeRef((uint8_t*)modelData + amountRead, indiciesSize));
 			amountRead += indiciesSize;

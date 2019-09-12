@@ -16,16 +16,16 @@ namespace physics
 		float r, g, b;
 		static void init()
 		{
-			ms_decl
+			ms_layout
 				.begin()
 				.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
 				.add(bgfx::Attrib::Color0, 3, bgfx::AttribType::Float)
 				.end();
 		}
-		static bgfx::VertexDecl ms_decl;
+		static bgfx::VertexLayout ms_layout;
 	};
 
-	bgfx::VertexDecl DebugVertex::ms_decl;
+	bgfx::VertexLayout DebugVertex::ms_layout;
 
 	static bgfx::ProgramHandle debugProgram;
 	static std::vector<DebugVertex> debugVertices;
@@ -72,7 +72,7 @@ namespace physics
 
 	void DebugRenderer::render()
 	{
-		bgfx::VertexBufferHandle vb = bgfx::createVertexBuffer(bgfx::makeRef(debugVertices.data(), (uint32_t)debugVertices.size() * DebugVertex::ms_decl.getStride()), DebugVertex::ms_decl);
+		bgfx::VertexBufferHandle vb = bgfx::createVertexBuffer(bgfx::makeRef(debugVertices.data(), (uint32_t)debugVertices.size() * DebugVertex::ms_layout.getStride()), DebugVertex::ms_layout);
 		bgfx::setVertexBuffer(0, vb);
 		bgfx::IndexBufferHandle ib = bgfx::createIndexBuffer(bgfx::makeRef(debugIndicies.data(), (uint32_t)debugIndicies.size() * sizeof(uint16_t)));
 		bgfx::setIndexBuffer(ib);
