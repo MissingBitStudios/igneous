@@ -8,7 +8,7 @@
 
 namespace igneous {
 template<typename Mutex>
-class console_sink : public spdlog::sinks::base_sink <Mutex>
+class console_sink : public spdlog::sinks::base_sink<Mutex>
 {
 public:
 	console_sink()
@@ -24,8 +24,8 @@ public:
 protected:
 	void sink_it_(const spdlog::details::log_msg& msg) override
 	{
-		fmt::memory_buffer formatted;
-		spdlog::sinks::sink::formatter_->format(msg, formatted);
+		spdlog::memory_buf_t formatted;
+		spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
 		console::write(fmt::to_string(formatted), levels[msg.level]);
 	}
 
